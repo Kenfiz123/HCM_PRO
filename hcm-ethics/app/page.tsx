@@ -1,4 +1,5 @@
 import React from 'react';
+import Image from 'next/image';
 
 export default function Home() {
   return (
@@ -42,7 +43,7 @@ export default function Home() {
           </p>
           
           <div style={{ position: 'relative', width: '250px', height: '250px', borderRadius: '50%', padding: '10px', background: 'linear-gradient(135deg, var(--gold), var(--gold-dark))', boxShadow: '0 10px 30px rgba(0,0,0,0.5)', animation: 'pulse-gold 3s infinite' }}>
-            <img src="/hcm-portrait.png" alt="Chân dung Chủ tịch Hồ Chí Minh" style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover', border: '5px solid #fff' }} />
+            <Image src="/hcm-portrait.png" alt="Chân dung Chủ tịch Hồ Chí Minh" width={230} height={230} priority style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover', border: '5px solid #fff' }} />
           </div>
         </div>
       </section>
@@ -81,7 +82,7 @@ export default function Home() {
                 <li>Nhấn mạnh việc tu dưỡng đạo đức là việc làm suốt đời.</li>
               </ul>
               <div style={{ marginTop: '1.5rem', textAlign: 'center' }}>
-                <img src="/ethics-icon.png" alt="Biểu tượng đạo đức" style={{ width: '100px', opacity: 0.8 }} />
+                <Image src="/ethics-icon.png" alt="Biểu tượng đạo đức" width={100} height={100} style={{ width: '100px', height: 'auto', opacity: 0.8 }} />
               </div>
             </div>
           </div>

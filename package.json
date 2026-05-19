@@ -1,0 +1,17 @@
+{
+  "name": "hcm-pro",
+  "private": true,
+  "packageManager": "npm@10.9.3",
+  "workspaces": [
+    "hcm-ethics"
+  ],
+  "engines": {
+    "node": ">=20.9.0"
+  },
+  "scripts": {
+    "dev": "npm --workspace hcm-ethics run dev",
+    "build": "npm --workspace hcm-ethics run build",
+    "start": "npm --workspace hcm-ethics run start",
+    "lint": "npm --workspace hcm-ethics run lint"
+  }
+}

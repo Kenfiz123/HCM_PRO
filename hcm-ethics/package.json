@@ -2,6 +2,10 @@
   "name": "hcm-ethics",
   "version": "0.1.0",
   "private": true,
+  "packageManager": "npm@10.9.3",
+  "engines": {
+    "node": ">=20.9.0"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
