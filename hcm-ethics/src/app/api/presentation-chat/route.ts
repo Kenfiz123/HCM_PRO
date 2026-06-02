@@ -110,9 +110,19 @@ export async function POST(request: Request) {
   const openAiApiKey = process.env.OPENAI_API_KEY?.trim();
 
   if (!openRouterApiKey && !openAiApiKey) {
+    const localAnswer = buildLocalAnswer(question);
+    if (!localAnswer) {
+      return jsonResponse(
+        {
+          error: "Chưa kết nối AI online. Hãy kiểm tra `OPENROUTER_API_KEY` trên Vercel và redeploy lại.",
+        },
+        503,
+      );
+    }
+
     return jsonResponse(
       {
-        answer: buildLocalAnswer(question),
+        answer: localAnswer,
         source: "local" satisfies ChatSource,
       },
       200,
@@ -133,10 +143,20 @@ export async function POST(request: Request) {
     );
   } catch (error) {
     console.warn("Presentation chatbot fallback:", error);
+    const localAnswer = buildLocalAnswer(question);
+
+    if (!localAnswer) {
+      return jsonResponse(
+        {
+          error: buildAiProviderError(openRouterApiKey ? "OpenRouter" : "OpenAI", error),
+        },
+        502,
+      );
+    }
 
     return jsonResponse(
       {
-        answer: buildLocalAnswer(question),
+        answer: localAnswer,
         source: "local" satisfies ChatSource,
       },
       200,
@@ -249,7 +269,7 @@ async function readErrorBody(response: Response): Promise<string> {
   return errorText.slice(0, 500);
 }
 
-function buildLocalAnswer(question: string): string {
+function buildLocalAnswer(question: string): string | null {
   const normalizedQuestion = normalizeForSearch(question);
 
   if (normalizedQuestion.includes("co so") || normalizedQuestion.includes("hinh thanh")) {
@@ -276,7 +296,7 @@ function buildLocalAnswer(question: string): string {
     return "Mini game Caro Quiz Battle dùng để ôn tập nội dung bài qua câu hỏi, điểm số và bảng xếp hạng realtime.";
   }
 
-  return "AI đang ở chế độ dự phòng nên chưa thể trả lời câu hỏi ngoài dữ liệu cục bộ. Hãy kiểm tra cấu hình `OPENROUTER_API_KEY` hoặc thử lại sau.";
+  return null;
 }
 
 function normalizeForSearch(value: string): string {
@@ -290,6 +310,24 @@ function hasUnsafeIntent(question: string): boolean {
   const normalizedQuestion = normalizeForSearch(question);
 
   return unsafeIntentKeywords.some((keyword) => normalizedQuestion.includes(keyword));
+}
+
+function buildAiProviderError(provider: "OpenAI" | "OpenRouter", error: unknown): string {
+  const detail = error instanceof Error ? error.message : "";
+
+  if (detail.includes("401") || detail.includes("403")) {
+    return `${provider} không xác thực được API key. Hãy kiểm tra biến môi trường và redeploy lại.`;
+  }
+
+  if (detail.includes("404")) {
+    return `${provider} không tìm thấy model đang cấu hình. Hãy kiểm tra biến model hoặc dùng \`openrouter/auto\`.`;
+  }
+
+  if (detail.includes("429")) {
+    return `${provider} đang bị giới hạn lượt gọi hoặc hết quota. Hãy kiểm tra quota/tín dụng rồi thử lại.`;
+  }
+
+  return `${provider} chưa phản hồi được. Hãy kiểm tra Vercel logs của route \`/api/presentation-chat\` rồi thử lại.`;
 }
 
 function limitAnswer(answer: string): string {
