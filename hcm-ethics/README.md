@@ -66,7 +66,7 @@ Chỉ dùng anon key ở client. Không đưa `SUPABASE_SERVICE_ROLE_KEY` vào f
 `NEXT_PUBLIC_SUPABASE_URL` nên là URL project gốc dạng `https://xxxx.supabase.co`, không cần thêm `/rest/v1`. App vẫn tự chuẩn hóa nếu lỡ nhập URL có `/rest/v1`.
 `NEXT_PUBLIC_GAME_URL` là link QR trên màn hình presenter; hiện đang trỏ tới `https://hcm-pro-black.vercel.app/game`.
 `OPENROUTER_API_KEY` chỉ chạy ở server qua `/api/presentation-chat`; nếu có key này, chatbot sẽ ưu tiên OpenRouter. `OPENROUTER_MODEL` mặc định là `openrouter/auto`.
-`OPENAI_API_KEY` chỉ chạy ở server qua `/api/presentation-chat`, không được thêm tiền tố `NEXT_PUBLIC_`. Nếu chưa cấu hình key, chatbot vẫn trả lời bằng fallback nội bộ theo nội dung bài.
+`OPENAI_API_KEY` chỉ chạy ở server qua `/api/presentation-chat`, không được thêm tiền tố `NEXT_PUBLIC_`. Nếu chưa cấu hình OpenRouter/OpenAI, chatbot chỉ dùng fallback nội bộ cho một số câu hỏi cục bộ.
 
 Nếu chưa cấu hình Supabase, game vẫn chơi được. Leaderboard sẽ hiển thị trạng thái `Chưa kết nối Supabase`.
 

@@ -21,7 +21,7 @@ const quickQuestions = [
 ];
 
 const openingMessage: ChatMessage = {
-  content: "Mình trả lời ngắn gọn theo nội dung bài thuyết trình.",
+  content: "Mình trả lời trực tiếp, đúng trọng tâm và rõ ý theo câu hỏi của bạn.",
   id: "opening",
   role: "assistant",
 };
@@ -40,8 +40,8 @@ export default function PresentationChatbot() {
       return;
     }
 
-    if (trimmedQuestion.length > 300) {
-      setError("Câu hỏi quá dài. Hãy rút gọn dưới 300 ký tự.");
+    if (trimmedQuestion.length > 1000) {
+      setError("Câu hỏi quá dài. Hãy rút gọn dưới 1000 ký tự.");
       return;
     }
 
@@ -151,9 +151,9 @@ export default function PresentationChatbot() {
             <form className="flex gap-2" onSubmit={handleSubmit}>
               <input
                 className="min-w-0 flex-1 rounded-2xl border border-white/15 bg-white px-4 py-3 text-sm font-semibold text-[#1a0a00] outline-none transition placeholder:text-[#7c5f4c] focus:border-[#ffd700] focus:ring-4 focus:ring-[#ffd700]/25"
-                maxLength={300}
+                maxLength={1000}
                 onChange={(event) => setQuestion(event.target.value)}
-                placeholder="Nhập câu hỏi về bài..."
+                placeholder="Nhập câu hỏi..."
                 value={question}
               />
               <button
