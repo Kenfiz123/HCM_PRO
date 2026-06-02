@@ -52,11 +52,7 @@ export async function fetchLeaderboard(limit = 10): Promise<{
   }
 
   const { data, error } = await supabase
-    .from("scores")
-    .select("*")
-    .order("score", { ascending: false })
-    .order("created_at", { ascending: true })
-    .limit(limit);
+    .rpc("get_leaderboard", { p_limit: limit });
 
   if (error) {
     return { rows: [], error: error.message };
@@ -70,7 +66,14 @@ export async function submitScore(payload: ScoreInsert): Promise<{ error: string
     return { error: "Chưa kết nối Supabase" };
   }
 
-  const { error } = await supabase.from("scores").insert(payload);
+  const { error } = await supabase.rpc("upsert_player_score", {
+    p_player_name: payload.player_name,
+    p_score: payload.score,
+    p_result: payload.result,
+    p_correct_answers: payload.correct_answers,
+    p_wrong_answers: payload.wrong_answers,
+    p_total_moves: payload.total_moves,
+  });
   return { error: error?.message ?? null };
 }
 

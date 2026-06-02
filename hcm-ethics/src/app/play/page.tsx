@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import GameBoard from "@/components/GameBoard";
 import Leaderboard from "@/components/Leaderboard";
 import QuizModal from "@/components/QuizModal";
@@ -34,15 +34,6 @@ type ScoreCard = {
   kind: ScoreCardKind;
   tone: CardTone;
   value?: number;
-};
-
-const CARD_BACKGROUNDS: Record<CardTone, string> = {
-  emerald: "border-emerald-300/40 bg-emerald-300/15 hover:bg-emerald-300/25",
-  cyan: "border-cyan-300/40 bg-cyan-300/15 hover:bg-cyan-300/25",
-  fuchsia: "border-fuchsia-300/40 bg-fuchsia-300/15 hover:bg-fuchsia-300/25",
-  amber: "border-amber-300/40 bg-amber-300/15 hover:bg-amber-300/25",
-  rose: "border-rose-300/40 bg-rose-300/15 hover:bg-rose-300/25",
-  slate: "border-slate-300/30 bg-slate-300/10 hover:bg-slate-300/20",
 };
 
 function resultFromWinner(winner: "X" | "O" | null): GameResult {
@@ -212,13 +203,75 @@ export default function PlayPage() {
   const scoreRef = useRef(0);
   const roundEndingRef = useRef(false);
   const nextRoundTimerRef = useRef<number | null>(null);
+  const liveSyncTimerRef = useRef<number | null>(null);
 
-  function updateScore(updater: (currentScore: number) => number) {
-    setScore((currentScore) => {
-      const nextScore = Math.max(0, Math.floor(updater(currentScore)));
-      scoreRef.current = nextScore;
-      return nextScore;
+  useEffect(() => {
+    void submitScore({
+      player_name: playerName,
+      score: 0,
+      result: "draw",
+      correct_answers: 0,
+      wrong_answers: 0,
+      total_moves: 0,
     });
+
+    return () => {
+      if (liveSyncTimerRef.current) {
+        window.clearTimeout(liveSyncTimerRef.current);
+      }
+    };
+  }, [playerName]);
+
+  function queueLiveScoreSync(
+    nextScore: number,
+    stats: {
+      result?: GameResult;
+      correctAnswers?: number;
+      wrongAnswers?: number;
+      moves?: number;
+    } = {},
+  ) {
+    if (liveSyncTimerRef.current) {
+      window.clearTimeout(liveSyncTimerRef.current);
+    }
+
+    liveSyncTimerRef.current = window.setTimeout(() => {
+      void submitScore({
+        player_name: playerName,
+        score: nextScore,
+        result: stats.result ?? roundResult ?? "draw",
+        correct_answers: stats.correctAnswers ?? correctAnswers,
+        wrong_answers: stats.wrongAnswers ?? wrongAnswers,
+        total_moves: stats.moves ?? totalMoves,
+      });
+    }, 180);
+  }
+
+  function setScoreValue(
+    nextScore: number,
+    stats?: {
+      result?: GameResult;
+      correctAnswers?: number;
+      wrongAnswers?: number;
+      moves?: number;
+    },
+  ) {
+    const safeScore = Math.max(0, Math.floor(nextScore));
+    scoreRef.current = safeScore;
+    setScore(safeScore);
+    queueLiveScoreSync(safeScore, stats);
+  }
+
+  function updateScore(
+    updater: (currentScore: number) => number,
+    stats?: {
+      result?: GameResult;
+      correctAnswers?: number;
+      wrongAnswers?: number;
+      moves?: number;
+    },
+  ) {
+    setScoreValue(updater(scoreRef.current), stats);
   }
 
   function clearNextRoundTimer() {
@@ -254,26 +307,19 @@ export default function PlayPage() {
     const finalResult = checked.winner ? resultFromWinner(checked.winner) : "draw";
     const roundBonus = getRoundBonus(finalResult, moves);
     const finalScore = Math.max(0, scoreRef.current + roundBonus);
-    scoreRef.current = finalScore;
 
     roundEndingRef.current = true;
     setBoard(nextBoard);
     setWinnerState(checked);
     setRoundResult(finalResult);
     setTurn("round-end");
-    setScore(finalScore);
-    setSubmitStatus("Đang gửi điểm...");
-
-    void submitScore({
-      player_name: playerName,
-      score: finalScore,
+    setScoreValue(finalScore, {
       result: finalResult,
-      correct_answers: nextCorrect,
-      wrong_answers: nextWrong,
-      total_moves: moves,
-    }).then(({ error }) => {
-      setSubmitStatus(error ? error : "Đã cập nhật leaderboard realtime");
+      correctAnswers: nextCorrect,
+      wrongAnswers: nextWrong,
+      moves,
     });
+    setSubmitStatus("Leaderboard realtime đã cập nhật");
 
     clearNextRoundTimer();
     nextRoundTimerRef.current = window.setTimeout(() => {
@@ -380,13 +426,21 @@ export default function PlayPage() {
     setCurrentQuestion(null);
 
     if (correct) {
-      updateScore((currentScore) => currentScore + 30);
+      updateScore((currentScore) => currentScore + 30, {
+        correctAnswers: nextCorrect,
+        wrongAnswers: nextWrong,
+        moves: totalMoves,
+      });
       setCardMessage("Trả lời đúng: +30 điểm. Chọn 1 trong 3 lá bài để nhận hiệu ứng.");
       setCardChoices(getRandomCards());
       return;
     }
 
-    updateScore((currentScore) => currentScore * 0.5);
+    updateScore((currentScore) => currentScore * 0.5, {
+      correctAnswers: nextCorrect,
+      wrongAnswers: nextWrong,
+      moves: totalMoves,
+    });
     setCardMessage("Trả lời sai: mất 50% quỹ điểm hiện tại. Bot sẽ mạnh hơn ở lượt kế tiếp.");
     setEnhancedBotNext(true);
     resumeAfterQuiz(true);
@@ -434,7 +488,7 @@ export default function PlayPage() {
     }
 
     scoreRef.current = result.player_score;
-    setScore(result.player_score);
+    setScoreValue(result.player_score);
     setCardMessage(`${result.message} Điểm của bạn hiện là ${result.player_score}.`);
     setTargetingCard(null);
     resumeAfterQuiz(false);
@@ -600,19 +654,21 @@ export default function PlayPage() {
             <div className="grid gap-4 md:grid-cols-3">
               {cardChoices.map((card) => (
                 <button
-                  className={`min-h-56 rounded-[1.5rem] border p-5 text-left transition hover:-translate-y-1 ${CARD_BACKGROUNDS[card.tone]}`}
+                  className="min-h-56 rounded-[1.5rem] border border-cyan-300/30 bg-gradient-to-br from-slate-900 via-indigo-950 to-fuchsia-950 p-5 text-center transition hover:-translate-y-1 hover:border-cyan-200 hover:shadow-2xl hover:shadow-cyan-500/20"
                   key={card.id}
                   onClick={() => chooseCard(card)}
                   type="button"
                 >
-                  <div className="flex items-center justify-between gap-3">
-                    <span className="rounded-full bg-white/15 px-3 py-1 text-xs font-black uppercase tracking-[0.16em] text-white">
-                      Lá bài
-                    </span>
-                    <span className="rounded-full bg-slate-950/40 px-3 py-1 text-lg font-black text-white">{card.badge}</span>
+                  <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full border border-cyan-200/40 bg-cyan-200/10 text-5xl font-black text-cyan-100">
+                    ?
                   </div>
-                  <h3 className="mt-8 text-2xl font-black text-white">{card.title}</h3>
-                  <p className="mt-4 text-sm font-semibold leading-6 text-slate-100">{card.description}</p>
+                  <h3 className="mt-8 text-2xl font-black text-white">Lá bài bí mật</h3>
+                  <p className="mt-4 text-sm font-semibold leading-6 text-slate-300">
+                    Nội dung đang úp. Chọn lá này để lật và áp dụng hiệu ứng.
+                  </p>
+                  <div className="mt-8 rounded-full bg-white/10 px-4 py-2 text-xs font-black uppercase tracking-[0.18em] text-cyan-100">
+                    Chọn lá
+                  </div>
                 </button>
               ))}
             </div>
