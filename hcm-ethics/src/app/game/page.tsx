@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { FormEvent, useState } from "react";
+import { type FormEvent, useState } from "react";
 
 export default function GameHomePage() {
   const router = useRouter();
@@ -27,7 +27,7 @@ export default function GameHomePage() {
           <div>
             <h1 className="neon-title text-5xl font-black leading-tight md:text-7xl">Caro Quiz Battle</h1>
             <p className="mt-5 max-w-2xl text-lg leading-8 text-slate-200">
-              Đánh caro với bot, trả lời câu hỏi để nhận kỹ năng và leo bảng xếp hạng.
+              Đánh caro với bot, trả lời câu hỏi để chọn thẻ bài và leo bảng xếp hạng.
             </p>
           </div>
 
@@ -85,7 +85,7 @@ export default function GameHomePage() {
           <div className="mt-5 rounded-2xl bg-gradient-to-r from-cyan-300/15 via-fuchsia-300/15 to-yellow-300/15 p-4">
             <div className="grid grid-cols-3 gap-3 text-center">
               <div>
-                <p className="text-2xl font-black text-cyan-100">9x9</p>
+                <p className="text-2xl font-black text-cyan-100">15x15</p>
                 <p className="text-xs text-slate-300">Bàn caro</p>
               </div>
               <div>

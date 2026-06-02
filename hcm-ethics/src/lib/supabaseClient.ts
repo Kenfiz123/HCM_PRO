@@ -102,13 +102,21 @@ export async function applyTargetCardEffect(payload: {
   return { result: (firstRow ?? null) as TargetCardEffectResult | null, error: null };
 }
 
-export async function clearLeaderboard(): Promise<{ error: string | null }> {
-  if (!supabase) {
-    return { error: "Chưa kết nối Supabase" };
+export async function clearLeaderboard(password: string): Promise<{ error: string | null }> {
+  const response = await fetch("/api/leaderboard/clear", {
+    body: JSON.stringify({ password }),
+    headers: {
+      "Content-Type": "application/json",
+    },
+    method: "POST",
+  });
+  const data = (await response.json().catch(() => ({}))) as { error?: string };
+
+  if (!response.ok) {
+    return { error: data.error ?? "Không xóa được bảng xếp hạng" };
   }
 
-  const { error } = await supabase.rpc("clear_leaderboard");
-  return { error: error?.message ?? null };
+  return { error: null };
 }
 
 export function subscribeLeaderboard(onChange: () => void): (() => void) | null {

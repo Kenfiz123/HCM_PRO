@@ -1,6 +1,6 @@
 "use client";
 
-const DEFAULT_GAME_URL = "https://hcm-geneekcu9-kenfis-projects.vercel.app/game";
+const DEFAULT_GAME_URL = "https://hcm-pro-black.vercel.app/game";
 
 export default function QRCodeJoin() {
   const joinUrl = normalizeGameUrl(process.env.NEXT_PUBLIC_GAME_URL || DEFAULT_GAME_URL);

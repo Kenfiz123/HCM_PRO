@@ -1,6 +1,6 @@
 # Caro Quiz Battle
 
-Mini game cuối bài thuyết trình: người chơi nhập tên, đánh caro 9x9 với bot, trả lời quiz lấy từ nội dung PDF, chọn thẻ bài điểm số và cập nhật điểm lên leaderboard Supabase realtime.
+Mini game cuối bài thuyết trình: người chơi nhập tên, đánh caro 15x15 với bot, trả lời quiz lấy từ nội dung, chọn thẻ bài điểm số và cập nhật điểm lên leaderboard Supabase realtime.
 
 ## Tech stack
 
@@ -41,7 +41,7 @@ File SQL cũng tạo các RPC:
 
 Client không cần quyền update/delete trực tiếp; các RPC server-side sẽ cập nhật điểm an toàn hơn.
 
-Nếu bấm `Xóa data BXH` và Supabase báo `DELETE requires a WHERE clause`, chạy file `supabase/fix-clear-leaderboard.sql` trong SQL Editor để cập nhật lại RPC `clear_leaderboard`.
+Nếu bấm `Xóa data BXH` và Supabase báo `DELETE requires a WHERE clause`, hoặc sau khi thêm pass xóa BXH, chạy file `supabase/fix-clear-leaderboard.sql` trong SQL Editor để cập nhật lại RPC `clear_leaderboard` và chỉ cho service role được gọi hàm xóa.
 Nếu dùng thẻ `Cướp 30%/50%/70%/100%`, chạy file `supabase/fix-card-percent-effects.sql` trong SQL Editor để cập nhật RPC tính phần trăm.
 
 ## Thêm env
@@ -52,14 +52,17 @@ Copy `.env.example` thành `.env.local` trong thư mục `hcm-ethics`:
 NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_ANON_KEY=
 NEXT_PUBLIC_SITE_URL=http://localhost:3000
-NEXT_PUBLIC_GAME_URL=https://hcm-geneekcu9-kenfis-projects.vercel.app/game
+NEXT_PUBLIC_GAME_URL=https://hcm-pro-black.vercel.app/game
+SUPABASE_SERVICE_ROLE_KEY=
+LEADERBOARD_CLEAR_PASSWORD=
 OPENAI_API_KEY=
 OPENAI_MODEL=gpt-4o-mini
 ```
 
 Chỉ dùng anon key ở client. Không đưa `SUPABASE_SERVICE_ROLE_KEY` vào frontend.
+`SUPABASE_SERVICE_ROLE_KEY` và `LEADERBOARD_CLEAR_PASSWORD` chỉ dùng ở server để xác thực nút `Xóa data BXH`; không thêm tiền tố `NEXT_PUBLIC_`.
 `NEXT_PUBLIC_SUPABASE_URL` nên là URL project gốc dạng `https://xxxx.supabase.co`, không cần thêm `/rest/v1`. App vẫn tự chuẩn hóa nếu lỡ nhập URL có `/rest/v1`.
-`NEXT_PUBLIC_GAME_URL` là link QR trên màn hình presenter; hiện đang trỏ tới `https://hcm-geneekcu9-kenfis-projects.vercel.app/game`.
+`NEXT_PUBLIC_GAME_URL` là link QR trên màn hình presenter; hiện đang trỏ tới `https://hcm-pro-black.vercel.app/game`.
 `OPENAI_API_KEY` chỉ chạy ở server qua `/api/presentation-chat`, không được thêm tiền tố `NEXT_PUBLIC_`. Nếu chưa cấu hình key, chatbot vẫn trả lời bằng fallback nội bộ theo nội dung bài.
 
 Nếu chưa cấu hình Supabase, game vẫn chơi được. Leaderboard sẽ hiển thị trạng thái `Chưa kết nối Supabase`.
@@ -96,7 +99,9 @@ npm run build
    - `NEXT_PUBLIC_SUPABASE_URL`
    - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
    - `NEXT_PUBLIC_SITE_URL` bằng URL Vercel public.
-   - `NEXT_PUBLIC_GAME_URL` bằng `https://hcm-geneekcu9-kenfis-projects.vercel.app/game` để QR dẫn đúng trang chơi.
+   - `NEXT_PUBLIC_GAME_URL` bằng `https://hcm-pro-black.vercel.app/game` để QR dẫn đúng trang chơi.
+   - `SUPABASE_SERVICE_ROLE_KEY` để server gọi RPC xóa bảng xếp hạng.
+   - `LEADERBOARD_CLEAR_PASSWORD` là pass cần nhập trước khi xóa data BXH.
    - `OPENAI_API_KEY` để bật chatbot AI cho trang thuyết trình.
    - `OPENAI_MODEL` tùy chọn, mặc định `gpt-4o-mini`.
 4. Deploy.

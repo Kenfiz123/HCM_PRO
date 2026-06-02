@@ -18,7 +18,10 @@ export default function LeaderboardPage() {
             >
               Chơi ngay
             </Link>
-            <LeaderboardClearButton />
+            <LeaderboardClearButton
+              inputClassName="w-32 rounded-2xl border border-white/10 bg-slate-950/40 px-4 py-3 text-sm font-semibold text-white outline-none transition placeholder:text-slate-400 focus:border-cyan-300"
+              wrapperClassName="flex flex-wrap items-center gap-2"
+            />
             <Link
               className="rounded-2xl border border-white/10 px-5 py-3 font-bold text-white transition hover:border-fuchsia-300 hover:bg-fuchsia-300/10"
               href="/presenter"

@@ -259,7 +259,7 @@ end;
 $$;
 
 revoke all on function public.clear_leaderboard() from public;
-grant execute on function public.clear_leaderboard() to anon, authenticated;
+grant execute on function public.clear_leaderboard() to service_role;
 
 do $$
 begin

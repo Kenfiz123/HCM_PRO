@@ -14,7 +14,7 @@ export const quizQuestions: QuizQuestion[] = [
     options: ["Hai nguồn gốc", "Ba nguồn gốc", "Bốn nguồn gốc", "Năm nguồn gốc"],
     correctAnswerIndex: 1,
     explanation:
-      "PDF nêu rõ tư tưởng đạo đức Hồ Chí Minh được hình thành từ ba nguồn gốc lớn.",
+      "Nội dung nêu rõ tư tưởng đạo đức Hồ Chí Minh được hình thành từ ba nguồn gốc lớn.",
     difficulty: "easy",
   },
   {
@@ -33,7 +33,7 @@ export const quizQuestions: QuizQuestion[] = [
   },
   {
     id: "q03",
-    question: "Theo PDF, đạo đức giữ vị trí nào đối với người cách mạng?",
+    question: "Theo nội dung, đạo đức giữ vị trí nào đối với người cách mạng?",
     options: [
       "Là phần phụ thuộc vào địa vị",
       "Là gốc rễ và nền tảng",
@@ -61,7 +61,7 @@ export const quizQuestions: QuizQuestion[] = [
   },
   {
     id: "q05",
-    question: "Câu nói nào trong PDF thể hiện quan hệ giữa tài và đức?",
+    question: "Câu nói nào trong nội dung thể hiện quan hệ giữa tài và đức?",
     options: [
       "Tài năng là tất cả",
       "Có tài mà không có đức là người vô dụng; có đức mà không có tài thì làm việc gì cũng khó",
@@ -70,7 +70,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     correctAnswerIndex: 1,
     explanation:
-      "PDF trích câu nói nhấn mạnh người cách mạng phải rèn cả đức và tài.",
+      "Nội dung trích câu nói nhấn mạnh người cách mạng phải rèn cả đức và tài.",
     difficulty: "medium",
   },
   {
@@ -98,12 +98,12 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     correctAnswerIndex: 2,
     explanation:
-      "PDF giải thích liêm là trong sạch, không tham lam, không lấy của công làm của tư.",
+      "Nội dung giải thích liêm là trong sạch, không tham lam, không lấy của công làm của tư.",
     difficulty: "easy",
   },
   {
     id: "q08",
-    question: "'Chí công vô tư' trong PDF được hiểu là gì?",
+    question: "'Chí công vô tư' trong nội dung được hiểu là gì?",
     options: [
       "Lo trước thiên hạ, vui sau thiên hạ",
       "Ưu tiên lợi ích cá nhân",
@@ -112,7 +112,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     correctAnswerIndex: 0,
     explanation:
-      "PDF nêu chí công vô tư là lo trước thiên hạ, vui sau thiên hạ, không để lợi ích cá nhân ảnh hưởng lợi ích chung.",
+      "Nội dung nêu chí công vô tư là lo trước thiên hạ, vui sau thiên hạ, không để lợi ích cá nhân ảnh hưởng lợi ích chung.",
     difficulty: "medium",
   },
   {
@@ -126,7 +126,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     correctAnswerIndex: 1,
     explanation:
-      "PDF nhấn mạnh tình yêu thương rộng lớn phải được biểu hiện qua hành động cụ thể, không chỉ là lời nói suông.",
+      "Nội dung nhấn mạnh tình yêu thương rộng lớn phải được biểu hiện qua hành động cụ thể, không chỉ là lời nói suông.",
     difficulty: "easy",
   },
   {
@@ -140,7 +140,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     correctAnswerIndex: 0,
     explanation:
-      "PDF nêu tinh thần quốc tế trong sáng gắn với đoàn kết quốc tế và chủ nghĩa quốc tế vô sản.",
+      "Nội dung nêu tinh thần quốc tế trong sáng gắn với đoàn kết quốc tế và chủ nghĩa quốc tế vô sản.",
     difficulty: "medium",
   },
   {
@@ -154,7 +154,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     correctAnswerIndex: 0,
     explanation:
-      "PDF xác định nói đi đôi với làm, nêu gương đạo đức là nguyên tắc hàng đầu và xuyên suốt.",
+      "Nội dung xác định nói đi đôi với làm, nêu gương đạo đức là nguyên tắc hàng đầu và xuyên suốt.",
     difficulty: "easy",
   },
   {
@@ -163,16 +163,16 @@ export const quizQuestions: QuizQuestion[] = [
     options: ["Động lực phát triển", "Giặc nội xâm", "Mục tiêu rèn luyện", "Biểu hiện của sáng tạo"],
     correctAnswerIndex: 1,
     explanation:
-      "Trong phần xây đi đôi với chống, PDF nêu Hồ Chí Minh coi chủ nghĩa cá nhân là giặc nội xâm.",
+      "Trong phần xây đi đôi với chống, nội dung nêu Hồ Chí Minh coi chủ nghĩa cá nhân là giặc nội xâm.",
     difficulty: "medium",
   },
   {
     id: "q13",
-    question: "Tu dưỡng đạo đức theo PDF là công việc trong bao lâu?",
+    question: "Tu dưỡng đạo đức theo nội dung là công việc trong bao lâu?",
     options: ["Một học kỳ", "Một năm", "Cả đời người", "Chỉ khi còn trẻ"],
     correctAnswerIndex: 2,
     explanation:
-      "PDF nêu rèn luyện đạo đức là công việc của cả một đời người, không bao giờ ngừng.",
+      "Nội dung nêu rèn luyện đạo đức là công việc của cả một đời người, không bao giờ ngừng.",
     difficulty: "easy",
   },
   {
@@ -186,12 +186,12 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     correctAnswerIndex: 1,
     explanation:
-      "PDF nêu phê bình phải thẳng thắn, chân thành, xuất phát từ tinh thần xây dựng.",
+      "Nội dung nêu phê bình phải thẳng thắn, chân thành, xuất phát từ tinh thần xây dựng.",
     difficulty: "medium",
   },
   {
     id: "q15",
-    question: "Đối tượng ưu tiên trong giáo dục đạo đức theo PDF là ai?",
+    question: "Đối tượng ưu tiên trong giáo dục đạo đức theo nội dung là ai?",
     options: [
       "Thế hệ trẻ, đội ngũ kế cận",
       "Chỉ cán bộ cấp cao",
@@ -200,12 +200,12 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     correctAnswerIndex: 0,
     explanation:
-      "PDF nhấn mạnh giáo dục đạo đức cho thanh niên, thiếu niên, nhi đồng - đội ngũ kế cận.",
+      "Nội dung nhấn mạnh giáo dục đạo đức cho thanh niên, thiếu niên, nhi đồng - đội ngũ kế cận.",
     difficulty: "easy",
   },
   {
     id: "q16",
-    question: "Nội dung cốt lõi của giáo dục đạo đức trong PDF là gì?",
+    question: "Nội dung cốt lõi của giáo dục đạo đức trong nội dung là gì?",
     options: [
       "Bồi dưỡng lòng yêu nước, tinh thần dân tộc và lý tưởng cộng sản",
       "Chỉ rèn luyện thể lực",
@@ -214,7 +214,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     correctAnswerIndex: 0,
     explanation:
-      "PDF nêu giáo dục lý tưởng và lòng yêu nước là nội dung cốt lõi của giáo dục đạo đức.",
+      "Nội dung nêu giáo dục lý tưởng và lòng yêu nước là nội dung cốt lõi của giáo dục đạo đức.",
     difficulty: "medium",
   },
   {
@@ -228,7 +228,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     correctAnswerIndex: 0,
     explanation:
-      "PDF nêu cần xây dựng môi trường đạo đức lành mạnh trong gia đình, nhà trường, cơ quan và xã hội.",
+      "Nội dung nêu cần xây dựng môi trường đạo đức lành mạnh trong gia đình, nhà trường, cơ quan và xã hội.",
     difficulty: "easy",
   },
   {
@@ -242,7 +242,7 @@ export const quizQuestions: QuizQuestion[] = [
     ],
     correctAnswerIndex: 0,
     explanation:
-      "PDF nêu tư tưởng đạo đức Hồ Chí Minh là nền tảng tư tưởng và đạo đức của Đảng Cộng sản Việt Nam.",
+      "Nội dung nêu tư tưởng đạo đức Hồ Chí Minh là nền tảng tư tưởng và đạo đức của Đảng Cộng sản Việt Nam.",
     difficulty: "medium",
   },
 ];

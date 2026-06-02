@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { CLEAR_LEADERBOARD_CONFIRM, LEADERBOARD_REFRESH_EVENT } from "@/lib/leaderboardEvents";
-import { clearLeaderboard, fetchLeaderboard, ScoreRow, subscribeLeaderboard } from "@/lib/supabaseClient";
+import LeaderboardClearButton from "@/components/LeaderboardClearButton";
+import { LEADERBOARD_REFRESH_EVENT } from "@/lib/leaderboardEvents";
+import { fetchLeaderboard, type ScoreRow, subscribeLeaderboard } from "@/lib/supabaseClient";
 import { getResultLabel } from "@/lib/scoring";
 
 type LeaderboardProps = {
@@ -111,8 +112,6 @@ export default function Leaderboard({
   const [rows, setRows] = useState<ScoreRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [status, setStatus] = useState<string | null>(null);
-  const [clearError, setClearError] = useState<string | null>(null);
-  const [clearing, setClearing] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -177,28 +176,6 @@ export default function Leaderboard({
       .slice(0, limit);
   }, [currentPlayer, limit, rows]);
 
-  async function handleClearLeaderboard() {
-    if (clearing) {
-      return;
-    }
-
-    const confirmed = window.confirm(CLEAR_LEADERBOARD_CONFIRM);
-    if (!confirmed) {
-      return;
-    }
-
-    setClearError(null);
-    setClearing(true);
-    const result = await clearLeaderboard();
-    if (result.error) {
-      setClearError(result.error);
-    } else {
-      setRows([]);
-      window.dispatchEvent(new Event(LEADERBOARD_REFRESH_EVENT));
-    }
-    setClearing(false);
-  }
-
   if (status) {
     return (
       <div className="rounded-[1.5rem] border border-amber-300/30 bg-amber-300/10 p-6 text-center text-amber-100">
@@ -230,25 +207,18 @@ export default function Leaderboard({
             </button>
           ) : null}
           {clearEnabled ? (
-            <button
+            <LeaderboardClearButton
               className="rounded-full bg-rose-300 px-3 py-1.5 text-xs font-black text-slate-950 transition hover:bg-rose-200 disabled:cursor-not-allowed disabled:opacity-60"
-              disabled={clearing}
-              onClick={handleClearLeaderboard}
-              type="button"
-            >
-              {clearing ? "Đang xóa" : "Xóa data BXH"}
-            </button>
+              inputClassName="w-28 rounded-full border border-white/10 bg-slate-950/40 px-3 py-1.5 text-xs font-semibold text-white outline-none transition placeholder:text-slate-400 focus:border-cyan-300"
+              onCleared={() => setRows([])}
+              wrapperClassName="flex flex-wrap items-center justify-end gap-2"
+            />
           ) : null}
           <span className="rounded-full bg-emerald-300/15 px-3 py-1 text-xs font-bold text-emerald-100">
             {selectMode ? selectMode.label : "Realtime"}
           </span>
         </div>
       </div>
-      {clearError ? (
-        <div className="border-b border-rose-300/20 bg-rose-300/10 px-5 py-3 text-sm font-semibold text-rose-100">
-          {clearError}
-        </div>
-      ) : null}
 
       {loading ? (
         <div className="p-8 text-center text-slate-300">Đang tải leaderboard...</div>
