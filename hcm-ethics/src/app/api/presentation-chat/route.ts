@@ -24,6 +24,14 @@ type OpenAIResponse = {
   }>;
 };
 
+type OpenRouterResponse = {
+  choices?: Array<{
+    message?: {
+      content?: string;
+    };
+  }>;
+};
+
 const rateLimitStore = new Map<string, RateLimitEntry>();
 
 const presentationContext = `
@@ -97,9 +105,10 @@ export async function POST(request: Request) {
     );
   }
 
-  const apiKey = process.env.OPENAI_API_KEY?.trim();
+  const openRouterApiKey = process.env.OPENROUTER_API_KEY?.trim();
+  const openAiApiKey = process.env.OPENAI_API_KEY?.trim();
 
-  if (!apiKey) {
+  if (!openRouterApiKey && !openAiApiKey) {
     return jsonResponse(
       {
         answer: buildLocalAnswer(question),
@@ -110,7 +119,9 @@ export async function POST(request: Request) {
   }
 
   try {
-    const answer = await askOpenAI(question, apiKey);
+    const answer = openRouterApiKey
+      ? await askOpenRouter(question, openRouterApiKey, request)
+      : await askOpenAI(question, openAiApiKey ?? "");
 
     return jsonResponse(
       {
@@ -171,6 +182,53 @@ async function askOpenAI(question: string, apiKey: string): Promise<string> {
   return limitAnswer(answer);
 }
 
+async function askOpenRouter(question: string, apiKey: string, request: Request): Promise<string> {
+  const model = process.env.OPENROUTER_MODEL?.trim() || "openrouter/auto";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim() || request.headers.get("origin") || undefined;
+  const headers: Record<string, string> = {
+    Authorization: `Bearer ${apiKey}`,
+    "Content-Type": "application/json",
+    "X-OpenRouter-Title": "Caro Quiz Battle",
+  };
+
+  if (siteUrl) {
+    headers["HTTP-Referer"] = siteUrl;
+  }
+
+  const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+    body: JSON.stringify({
+      max_tokens: 260,
+      messages: [
+        {
+          content: `${securityInstructions}\n\nNội dung bài thuyết trình:\n${presentationContext}`,
+          role: "system",
+        },
+        {
+          content: question,
+          role: "user",
+        },
+      ],
+      model,
+      temperature: 0.2,
+    }),
+    headers,
+    method: "POST",
+  });
+
+  if (!response.ok) {
+    throw new Error(`OpenRouter request failed with ${response.status}: ${await readErrorBody(response)}`);
+  }
+
+  const data = (await response.json()) as OpenRouterResponse;
+  const answer = data.choices?.[0]?.message?.content?.trim();
+
+  if (!answer) {
+    throw new Error("OpenRouter returned an empty answer");
+  }
+
+  return limitAnswer(answer);
+}
+
 function extractOutputText(data: OpenAIResponse): string {
   if (typeof data.output_text === "string") {
     return data.output_text.trim();
@@ -183,6 +241,11 @@ function extractOutputText(data: OpenAIResponse): string {
       .filter((text): text is string => Boolean(text?.trim())) ?? [];
 
   return textParts.join("\n").trim();
+}
+
+async function readErrorBody(response: Response): Promise<string> {
+  const errorText = await response.text().catch(() => "");
+  return errorText.slice(0, 500);
 }
 
 function buildLocalAnswer(question: string): string {

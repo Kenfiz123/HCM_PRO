@@ -55,6 +55,8 @@ NEXT_PUBLIC_SITE_URL=http://localhost:3000
 NEXT_PUBLIC_GAME_URL=https://hcm-pro-black.vercel.app/game
 SUPABASE_SERVICE_ROLE_KEY=
 LEADERBOARD_CLEAR_PASSWORD=
+OPENROUTER_API_KEY=
+OPENROUTER_MODEL=openrouter/auto
 OPENAI_API_KEY=
 OPENAI_MODEL=gpt-4o-mini
 ```
@@ -63,6 +65,7 @@ Chỉ dùng anon key ở client. Không đưa `SUPABASE_SERVICE_ROLE_KEY` vào f
 `SUPABASE_SERVICE_ROLE_KEY` và `LEADERBOARD_CLEAR_PASSWORD` chỉ dùng ở server để xác thực nút `Xóa data BXH`; không thêm tiền tố `NEXT_PUBLIC_`.
 `NEXT_PUBLIC_SUPABASE_URL` nên là URL project gốc dạng `https://xxxx.supabase.co`, không cần thêm `/rest/v1`. App vẫn tự chuẩn hóa nếu lỡ nhập URL có `/rest/v1`.
 `NEXT_PUBLIC_GAME_URL` là link QR trên màn hình presenter; hiện đang trỏ tới `https://hcm-pro-black.vercel.app/game`.
+`OPENROUTER_API_KEY` chỉ chạy ở server qua `/api/presentation-chat`; nếu có key này, chatbot sẽ ưu tiên OpenRouter. `OPENROUTER_MODEL` mặc định là `openrouter/auto`.
 `OPENAI_API_KEY` chỉ chạy ở server qua `/api/presentation-chat`, không được thêm tiền tố `NEXT_PUBLIC_`. Nếu chưa cấu hình key, chatbot vẫn trả lời bằng fallback nội bộ theo nội dung bài.
 
 Nếu chưa cấu hình Supabase, game vẫn chơi được. Leaderboard sẽ hiển thị trạng thái `Chưa kết nối Supabase`.
@@ -102,6 +105,8 @@ npm run build
    - `NEXT_PUBLIC_GAME_URL` bằng `https://hcm-pro-black.vercel.app/game` để QR dẫn đúng trang chơi.
    - `SUPABASE_SERVICE_ROLE_KEY` để server gọi RPC xóa bảng xếp hạng.
    - `LEADERBOARD_CLEAR_PASSWORD` là pass cần nhập trước khi xóa data BXH.
+   - `OPENROUTER_API_KEY` để bật chatbot AI qua OpenRouter.
+   - `OPENROUTER_MODEL` tùy chọn, mặc định `openrouter/auto`.
    - `OPENAI_API_KEY` để bật chatbot AI cho trang thuyết trình.
    - `OPENAI_MODEL` tùy chọn, mặc định `gpt-4o-mini`.
 4. Deploy.
