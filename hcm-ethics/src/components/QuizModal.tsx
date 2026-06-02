@@ -73,7 +73,7 @@ export default function QuizModal({ question, onResolve }: QuizModalProps) {
         {answered ? (
           <div className="border-t border-white/10 p-5">
             <p className={isCorrect ? "font-semibold text-emerald-200" : "font-semibold text-rose-200"}>
-              {isCorrect ? "Chính xác: +30 điểm và nhận 1 kỹ năng." : "Sai rồi: -10 điểm, bot sẽ mạnh hơn lượt tới."}
+              {isCorrect ? "Chính xác: +30 điểm và được chọn 1 trong 3 lá bài." : "Sai rồi: mất 50% điểm hiện tại, bot sẽ mạnh hơn lượt tới."}
             </p>
             <p className="mt-2 text-sm leading-6 text-slate-300">{question.explanation}</p>
             <button
@@ -86,7 +86,7 @@ export default function QuizModal({ question, onResolve }: QuizModalProps) {
           </div>
         ) : (
           <div className="border-t border-white/10 px-5 py-4 text-sm text-slate-300">
-            Trả lời đúng để nhận lợi thế trong ván caro.
+            Trả lời đúng để mở 3 lá bài điểm số.
           </div>
         )}
       </div>

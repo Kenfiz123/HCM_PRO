@@ -7,9 +7,84 @@ import { getResultLabel } from "@/lib/scoring";
 type LeaderboardProps = {
   limit?: number;
   compact?: boolean;
+  captureEnabled?: boolean;
 };
 
-export default function Leaderboard({ limit = 10, compact = false }: LeaderboardProps) {
+function drawLeaderboardImage(rows: ScoreRow[], compact: boolean) {
+  const width = compact ? 900 : 1100;
+  const rowHeight = 78;
+  const height = 150 + Math.max(rows.length, 1) * rowHeight;
+  const canvas = document.createElement("canvas");
+  canvas.width = width;
+  canvas.height = height;
+
+  const ctx = canvas.getContext("2d");
+  if (!ctx) {
+    return;
+  }
+
+  const gradient = ctx.createLinearGradient(0, 0, width, height);
+  gradient.addColorStop(0, "#0f172a");
+  gradient.addColorStop(0.55, "#1e1b4b");
+  gradient.addColorStop(1, "#4c1d95");
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, width, height);
+
+  ctx.fillStyle = "rgba(255,255,255,0.07)";
+  for (let x = 0; x < width; x += 44) {
+    ctx.fillRect(x, 0, 1, height);
+  }
+  for (let y = 0; y < height; y += 44) {
+    ctx.fillRect(0, y, width, 1);
+  }
+
+  ctx.fillStyle = "#ffffff";
+  ctx.font = "900 42px Arial";
+  ctx.fillText("Caro Quiz Battle - Leaderboard", 44, 62);
+  ctx.fillStyle = "#a5f3fc";
+  ctx.font = "700 20px Arial";
+  ctx.fillText(new Intl.DateTimeFormat("vi-VN", { dateStyle: "short", timeStyle: "medium" }).format(new Date()), 46, 96);
+
+  if (rows.length === 0) {
+    ctx.fillStyle = "#cbd5e1";
+    ctx.font = "700 28px Arial";
+    ctx.fillText("Chưa có điểm trên bảng xếp hạng", 46, 170);
+  }
+
+  rows.forEach((row, index) => {
+    const top = 126 + index * rowHeight;
+    ctx.fillStyle =
+      index === 0
+        ? "rgba(250, 204, 21, 0.22)"
+        : index === 1
+          ? "rgba(226, 232, 240, 0.14)"
+          : index === 2
+            ? "rgba(251, 146, 60, 0.16)"
+            : "rgba(255,255,255,0.08)";
+    ctx.beginPath();
+    ctx.roundRect(36, top, width - 72, 58, 18);
+    ctx.fill();
+
+    ctx.fillStyle = index < 3 ? "#fef3c7" : "#e2e8f0";
+    ctx.font = "900 28px Arial";
+    ctx.fillText(`#${index + 1}`, 62, top + 38);
+
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "800 28px Arial";
+    ctx.fillText(row.player_name.slice(0, 22), 140, top + 38);
+
+    ctx.fillStyle = "#67e8f9";
+    ctx.font = "900 30px Arial";
+    ctx.fillText(`${row.score} điểm`, width - 270, top + 38);
+  });
+
+  const link = document.createElement("a");
+  link.download = `caro-leaderboard-${Date.now()}.png`;
+  link.href = canvas.toDataURL("image/png");
+  link.click();
+}
+
+export default function Leaderboard({ limit = 10, compact = false, captureEnabled = false }: LeaderboardProps) {
   const [rows, setRows] = useState<ScoreRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [status, setStatus] = useState<string | null>(null);
@@ -52,19 +127,54 @@ export default function Leaderboard({ limit = 10, compact = false }: Leaderboard
 
   return (
     <div className="overflow-hidden rounded-[1.5rem] border border-white/10 bg-white/[0.06] shadow-2xl shadow-fuchsia-900/20 backdrop-blur">
-      <div className="flex items-center justify-between border-b border-white/10 px-5 py-4">
+      <div className="flex items-center justify-between gap-3 border-b border-white/10 px-5 py-4">
         <h2 className={compact ? "text-xl font-black text-white" : "text-2xl font-black text-white"}>
           Bảng xếp hạng
         </h2>
-        <span className="rounded-full bg-emerald-300/15 px-3 py-1 text-xs font-bold text-emerald-100">
-          Realtime
-        </span>
+        <div className="flex items-center gap-2">
+          {captureEnabled ? (
+            <button
+              className="rounded-full bg-cyan-300 px-3 py-1.5 text-xs font-black text-slate-950 transition hover:bg-cyan-200"
+              onClick={() => drawLeaderboardImage(rows, compact)}
+              type="button"
+            >
+              Chụp hình
+            </button>
+          ) : null}
+          <span className="rounded-full bg-emerald-300/15 px-3 py-1 text-xs font-bold text-emerald-100">
+            Realtime
+          </span>
+        </div>
       </div>
 
       {loading ? (
         <div className="p-8 text-center text-slate-300">Đang tải leaderboard...</div>
       ) : rows.length === 0 ? (
         <div className="p-8 text-center text-slate-300">Chưa có điểm. Hãy là người đầu tiên lên bảng.</div>
+      ) : compact ? (
+        <div className="space-y-3 p-4">
+          {rows.map((row, index) => (
+            <div
+              className={[
+                "flex items-center justify-between gap-3 rounded-2xl border px-4 py-3",
+                index === 0
+                  ? "border-yellow-300/30 bg-yellow-300/15 text-yellow-100"
+                  : index === 1
+                    ? "border-slate-200/20 bg-slate-200/10 text-slate-100"
+                    : index === 2
+                      ? "border-amber-400/25 bg-amber-500/15 text-amber-100"
+                      : "border-white/10 bg-white/[0.04] text-slate-200",
+              ].join(" ")}
+              key={row.id}
+            >
+              <div className="min-w-0">
+                <p className="text-xs font-black uppercase tracking-[0.16em] text-slate-400">#{index + 1}</p>
+                <p className="truncate text-sm font-black">{row.player_name}</p>
+              </div>
+              <p className="shrink-0 text-lg font-black text-cyan-100">{row.score}</p>
+            </div>
+          ))}
+        </div>
       ) : (
         <div className="overflow-x-auto">
           <table className="w-full min-w-[680px] text-left text-sm">
