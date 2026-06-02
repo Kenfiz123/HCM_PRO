@@ -42,6 +42,7 @@ File SQL cũng tạo các RPC:
 Client không cần quyền update/delete trực tiếp; các RPC server-side sẽ cập nhật điểm an toàn hơn.
 
 Nếu bấm `Xóa data BXH` và Supabase báo `DELETE requires a WHERE clause`, chạy file `supabase/fix-clear-leaderboard.sql` trong SQL Editor để cập nhật lại RPC `clear_leaderboard`.
+Nếu dùng thẻ `Cướp 30%/50%/70%/100%`, chạy file `supabase/fix-card-percent-effects.sql` trong SQL Editor để cập nhật RPC tính phần trăm.
 
 ## Thêm env
 
@@ -105,10 +106,12 @@ Nếu deploy từ root repo, `vercel.json` ở root đã trỏ build về worksp
 ## Gameplay
 
 - Người chơi là X, bot là O.
-- Bàn 9x9, thắng khi có 5 quân liên tiếp ngang, dọc hoặc chéo.
+- Bàn 15x15, thắng khi có 5 quân liên tiếp ngang, dọc hoặc chéo.
 - Sau mỗi 3 lượt người chơi, game mở quiz.
 - Trả lời đúng: +30 điểm và mở 3 lá bài úp mặt để chọn hiệu ứng điểm.
 - Lá Cướp điểm và Chia điểm yêu cầu bấm trực tiếp một người trên leaderboard realtime.
+- Lá Cướp điểm có mức 30%, 50%, 70%, 100%; lá Mất điểm cũng có mức 30%, 50%, 70%, 100%.
+- Lá Đóng băng có thể khóa sàn của bạn hoặc làm chậm bot trong 8 giây.
 - Trả lời sai: mất 50% điểm hiện tại và bot được ưu tiên nước mạnh hơn lượt kế tiếp.
 - Thắng bot: +100 điểm.
 - Hòa: +50 điểm.

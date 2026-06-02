@@ -175,10 +175,13 @@ $$;
 revoke all on function public.upsert_player_score(text, int, text, int, int, int) from public;
 grant execute on function public.upsert_player_score(text, int, text, int, int, int) to anon, authenticated;
 
+drop function if exists public.apply_score_card_target_effect(uuid, int, text);
+
 create or replace function public.apply_score_card_target_effect(
   p_target_score_id uuid,
   p_player_score int,
-  p_effect text
+  p_effect text,
+  p_percent int default 25
 )
 returns table (
   player_score int,
@@ -195,6 +198,7 @@ declare
   next_player_score int;
   next_target_score int;
   effect_delta int;
+  safe_percent int;
 begin
   if p_player_score is null or p_player_score < 0 then
     raise exception 'Invalid player score';
@@ -210,11 +214,13 @@ begin
     raise exception 'Target score not found';
   end if;
 
+  safe_percent := greatest(0, least(coalesce(p_percent, 25), 100));
+
   if p_effect = 'steal' then
-    effect_delta := least(current_target_score, greatest(1, ceil(current_target_score * 0.25)::int));
+    effect_delta := least(current_target_score, ceil(current_target_score * safe_percent / 100.0)::int);
     next_target_score := greatest(0, current_target_score - effect_delta);
     next_player_score := p_player_score + effect_delta;
-    message := 'Cướp ' || effect_delta || ' điểm từ đối thủ.';
+    message := 'Cướp ' || effect_delta || ' điểm (' || safe_percent || '%) từ đối thủ.';
   elsif p_effect = 'split' then
     next_player_score := ceil((p_player_score + current_target_score)::numeric / 2)::int;
     next_target_score := floor((p_player_score + current_target_score)::numeric / 2)::int;
@@ -237,8 +243,8 @@ begin
 end;
 $$;
 
-revoke all on function public.apply_score_card_target_effect(uuid, int, text) from public;
-grant execute on function public.apply_score_card_target_effect(uuid, int, text) to anon, authenticated;
+revoke all on function public.apply_score_card_target_effect(uuid, int, text, int) from public;
+grant execute on function public.apply_score_card_target_effect(uuid, int, text, int) to anon, authenticated;
 
 create or replace function public.clear_leaderboard()
 returns void

@@ -25,7 +25,16 @@ import { applyTargetCardEffect, ScoreInsert, ScoreRow, submitScore, TargetCardEf
 
 type Turn = "player" | "bot" | "round-end";
 type CardTone = "emerald" | "cyan" | "fuchsia" | "amber" | "rose" | "slate";
-type ScoreCardKind = "gain" | "steal" | "double" | "reduce" | "split" | "lose" | "gamble";
+type ScoreCardKind =
+  | "gain"
+  | "steal"
+  | "double"
+  | "reduce"
+  | "split"
+  | "lose"
+  | "gamble"
+  | "freezeSelf"
+  | "freezeOpponent";
 
 type ScoreCard = {
   id: string;
@@ -34,10 +43,12 @@ type ScoreCard = {
   description: string;
   kind: ScoreCardKind;
   tone: CardTone;
+  percent?: number;
   value?: number;
 };
 
 const CARD_REVEAL_MS = 850;
+const FREEZE_DURATION_MS = 8000;
 const SCORE_SYNC_DELAY_MS = 60;
 
 function resultFromWinner(winner: "X" | "O" | null): GameResult {
@@ -80,14 +91,15 @@ function makeCardDeck(): ScoreCard[] {
       tone: "cyan",
       value: 60,
     },
-    {
-      id: "steal",
-      title: "Cướp điểm",
-      badge: "Chọn người",
-      description: "Chọn một người trên leaderboard để cướp 25% điểm của họ.",
+    ...[30, 50, 70, 100].map<ScoreCard>((percent) => ({
+      id: `steal-${percent}`,
+      title: `Cướp ${percent}%`,
+      badge: `${percent}%`,
+      description: `Chọn một người trên leaderboard để cướp ${percent}% điểm của họ.`,
       kind: "steal",
+      percent,
       tone: "fuchsia",
-    },
+    })),
     {
       id: "double",
       title: "Nhân đôi",
@@ -113,14 +125,30 @@ function makeCardDeck(): ScoreCard[] {
       kind: "split",
       tone: "slate",
     },
-    {
-      id: "lose",
-      title: "Mất điểm",
-      badge: "-150",
-      description: "Mất 150 điểm khỏi quỹ hiện tại.",
+    ...[30, 50, 70, 100].map<ScoreCard>((percent) => ({
+      id: `lose-${percent}`,
+      title: `Mất ${percent}%`,
+      badge: `-${percent}%`,
+      description: `Mất ${percent}% quỹ điểm hiện tại.`,
       kind: "lose",
+      percent,
       tone: "rose",
-      value: 150,
+    })),
+    {
+      id: "freeze-self",
+      title: "Đóng băng mình",
+      badge: "8s",
+      description: "Sàn của bạn bị đóng băng 8 giây, không thể đặt quân trong thời gian này.",
+      kind: "freezeSelf",
+      tone: "slate",
+    },
+    {
+      id: "freeze-opponent",
+      title: "Đóng băng đối thủ",
+      badge: "8s",
+      description: "Đóng băng sàn của đối thủ 8 giây. Bot sẽ bị chậm lượt kế tiếp.",
+      kind: "freezeOpponent",
+      tone: "cyan",
     },
     {
       id: `gamble-${gambleValue}`,
@@ -153,7 +181,7 @@ function applyCardEffect(currentScore: number, card: ScoreCard): { nextScore: nu
   if (card.kind === "steal") {
     return {
       nextScore: currentScore,
-      message: "Chọn một người trên leaderboard để cướp điểm.",
+      message: `Chọn một người trên leaderboard để cướp ${card.percent ?? 30}% điểm.`,
     };
   }
 
@@ -168,6 +196,14 @@ function applyCardEffect(currentScore: number, card: ScoreCard): { nextScore: nu
     return {
       nextScore: currentScore,
       message: "Chọn một người trên leaderboard để chia điểm.",
+    };
+  }
+
+  if (card.kind === "lose" && card.percent) {
+    const lostScore = Math.ceil(currentScore * card.percent / 100);
+    return {
+      nextScore: currentScore - lostScore,
+      message: `${card.title}: mất ${lostScore} điểm.`,
     };
   }
 
@@ -202,6 +238,8 @@ export default function PlayPage() {
   const [cardRevealBusy, setCardRevealBusy] = useState(false);
   const [targetingCard, setTargetingCard] = useState<(ScoreCard & { kind: TargetCardEffect }) | null>(null);
   const [targetActionLoading, setTargetActionLoading] = useState(false);
+  const [playerFrozenUntil, setPlayerFrozenUntil] = useState<number | null>(null);
+  const [botFrozenUntil, setBotFrozenUntil] = useState<number | null>(null);
   const [cardMessage, setCardMessage] = useState<string | null>(null);
   const [askedQuestionIds, setAskedQuestionIds] = useState<string[]>([]);
   const [pendingBotAfterQuiz, setPendingBotAfterQuiz] = useState(false);
@@ -209,8 +247,12 @@ export default function PlayPage() {
   const scoreRef = useRef(0);
   const roundEndingRef = useRef(false);
   const nextRoundTimerRef = useRef<number | null>(null);
+  const botTurnTimerRef = useRef<number | null>(null);
   const liveSyncTimerRef = useRef<number | null>(null);
   const cardRevealTimerRef = useRef<number | null>(null);
+  const playerFreezeTimerRef = useRef<number | null>(null);
+  const botFreezeTimerRef = useRef<number | null>(null);
+  const botFrozenUntilRef = useRef(0);
   const pendingScorePayloadRef = useRef<ScoreInsert | null>(null);
   const scoreSyncInFlightRef = useRef(false);
 
@@ -228,6 +270,15 @@ export default function PlayPage() {
       }
       if (cardRevealTimerRef.current) {
         window.clearTimeout(cardRevealTimerRef.current);
+      }
+      if (botTurnTimerRef.current) {
+        window.clearTimeout(botTurnTimerRef.current);
+      }
+      if (playerFreezeTimerRef.current) {
+        window.clearTimeout(playerFreezeTimerRef.current);
+      }
+      if (botFreezeTimerRef.current) {
+        window.clearTimeout(botFreezeTimerRef.current);
       }
     };
     // Initial row sync only resets when a new player enters; score changes sync via setScoreValue.
@@ -321,11 +372,65 @@ export default function PlayPage() {
     }
   }
 
+  function clearBotTurnTimer() {
+    if (botTurnTimerRef.current) {
+      window.clearTimeout(botTurnTimerRef.current);
+      botTurnTimerRef.current = null;
+    }
+  }
+
+  function clearFreezeTimers() {
+    if (playerFreezeTimerRef.current) {
+      window.clearTimeout(playerFreezeTimerRef.current);
+      playerFreezeTimerRef.current = null;
+    }
+
+    if (botFreezeTimerRef.current) {
+      window.clearTimeout(botFreezeTimerRef.current);
+      botFreezeTimerRef.current = null;
+    }
+
+    botFrozenUntilRef.current = 0;
+    setPlayerFrozenUntil(null);
+    setBotFrozenUntil(null);
+  }
+
+  function freezePlayer() {
+    const until = Date.now() + FREEZE_DURATION_MS;
+    setPlayerFrozenUntil(until);
+
+    if (playerFreezeTimerRef.current) {
+      window.clearTimeout(playerFreezeTimerRef.current);
+    }
+
+    playerFreezeTimerRef.current = window.setTimeout(() => {
+      setPlayerFrozenUntil(null);
+      playerFreezeTimerRef.current = null;
+    }, FREEZE_DURATION_MS);
+  }
+
+  function freezeBot() {
+    const until = Date.now() + FREEZE_DURATION_MS;
+    botFrozenUntilRef.current = until;
+    setBotFrozenUntil(until);
+
+    if (botFreezeTimerRef.current) {
+      window.clearTimeout(botFreezeTimerRef.current);
+    }
+
+    botFreezeTimerRef.current = window.setTimeout(() => {
+      botFrozenUntilRef.current = 0;
+      setBotFrozenUntil(null);
+      botFreezeTimerRef.current = null;
+    }, FREEZE_DURATION_MS);
+  }
+
   function startNextRound() {
     if (cardRevealTimerRef.current) {
       window.clearTimeout(cardRevealTimerRef.current);
       cardRevealTimerRef.current = null;
     }
+    clearBotTurnTimer();
     roundEndingRef.current = false;
     setBoard(createEmptyBoard());
     setTurn("player");
@@ -348,6 +453,7 @@ export default function PlayPage() {
     if (roundEndingRef.current) {
       return;
     }
+    clearBotTurnTimer();
 
     const checked = checkWinner(nextBoard);
     const finalResult = checked.winner ? resultFromWinner(checked.winner) : "draw";
@@ -379,8 +485,11 @@ export default function PlayPage() {
     }
 
     setTurn("bot");
+    const freezeDelay = Math.max(0, botFrozenUntilRef.current - Date.now());
 
-    window.setTimeout(() => {
+    clearBotTurnTimer();
+    botTurnTimerRef.current = window.setTimeout(() => {
+      botTurnTimerRef.current = null;
       if (roundEndingRef.current) {
         return;
       }
@@ -406,7 +515,7 @@ export default function PlayPage() {
       }
 
       setTurn("player");
-    }, 450);
+    }, 450 + freezeDelay);
   }
 
   function maybeOpenQuiz(nextBoard: Board, nextPlayerMoveCount: number): boolean {
@@ -429,7 +538,7 @@ export default function PlayPage() {
   }
 
   function handleCellClick(row: number, col: number) {
-    if (turn !== "player" || roundResult || currentQuestion || cardChoices || targetingCard || board[row][col]) {
+    if (turn !== "player" || playerFrozenUntil || roundResult || currentQuestion || cardChoices || targetingCard || board[row][col]) {
       return;
     }
 
@@ -502,6 +611,26 @@ export default function PlayPage() {
       return;
     }
 
+    if (card.kind === "freezeSelf") {
+      freezePlayer();
+      setCardMessage("Đóng băng mình: sàn của bạn bị khóa 8 giây.");
+      setCardChoices(null);
+      setRevealedCardId(null);
+      setCardRevealBusy(false);
+      resumeAfterQuiz(false);
+      return;
+    }
+
+    if (card.kind === "freezeOpponent") {
+      freezeBot();
+      setCardMessage("Đóng băng đối thủ: bot bị chậm lượt kế tiếp 8 giây.");
+      setCardChoices(null);
+      setRevealedCardId(null);
+      setCardRevealBusy(false);
+      resumeAfterQuiz(false);
+      return;
+    }
+
     const effect = applyCardEffect(scoreRef.current, card);
     setCardMessage(effect.message);
     updateScore(() => effect.nextScore);
@@ -546,6 +675,7 @@ export default function PlayPage() {
       targetScoreId: row.id,
       playerScore: scoreRef.current,
       effect: targetingCard.kind,
+      percent: targetingCard.percent,
     });
 
     setTargetActionLoading(false);
@@ -563,6 +693,8 @@ export default function PlayPage() {
 
   function resetGame() {
     clearNextRoundTimer();
+    clearBotTurnTimer();
+    clearFreezeTimers();
     if (cardRevealTimerRef.current) {
       window.clearTimeout(cardRevealTimerRef.current);
       cardRevealTimerRef.current = null;
@@ -595,12 +727,18 @@ export default function PlayPage() {
     setSubmitStatus(null);
   }
 
+  const isPlayerFrozen = Boolean(playerFrozenUntil);
+  const isBotFrozen = Boolean(botFrozenUntil);
   const turnLabel =
-    turn === "round-end"
-      ? "Ván mới sắp bắt đầu"
-      : turn === "bot"
-        ? "Bot đang suy nghĩ..."
-        : "Lượt của bạn";
+    isPlayerFrozen && turn === "player"
+      ? "Sàn của bạn đang đóng băng"
+      : isBotFrozen && turn === "bot"
+        ? "Đối thủ đang bị đóng băng"
+        : turn === "round-end"
+          ? "Ván mới sắp bắt đầu"
+          : turn === "bot"
+            ? "Bot đang suy nghĩ..."
+            : "Lượt của bạn";
 
   return (
     <main className="game-shell min-h-screen px-4 py-5">
@@ -672,8 +810,11 @@ export default function PlayPage() {
               Boolean(roundResult) ||
               Boolean(currentQuestion) ||
               Boolean(cardChoices) ||
-              Boolean(targetingCard)
+              Boolean(targetingCard) ||
+              isPlayerFrozen
             }
+            freezeLabel={isPlayerFrozen ? "Sàn của bạn bị đóng băng 8s" : "Đối thủ bị đóng băng 8s"}
+            frozen={isPlayerFrozen || (isBotFrozen && turn === "bot")}
             onCellClick={handleCellClick}
             winnerState={winnerState}
           />
@@ -710,7 +851,7 @@ export default function PlayPage() {
                     label: targetActionLoading ? "Đang xử lý" : "Chọn đối thủ",
                     helper:
                       targetingCard.kind === "steal"
-                        ? "Bấm người muốn cướp 25% điểm."
+                        ? `Bấm người muốn cướp ${targetingCard.percent ?? 30}% điểm.`
                         : "Bấm người muốn chia đều điểm.",
                     disabledPlayerName: playerName,
                     onSelect: chooseTarget,
@@ -721,9 +862,10 @@ export default function PlayPage() {
 
           <div className="rounded-[1.5rem] border border-white/10 bg-slate-950/50 p-5 text-sm leading-6 text-slate-300 backdrop-blur">
             <h2 className="mb-3 text-lg font-black text-white">Luật nhanh</h2>
-            <p>Người chơi là X, bot là O. Ai có 5 quân liên tiếp theo ngang, dọc hoặc chéo sẽ thắng.</p>
+            <p>Bàn 15x15. Người chơi là X, bot là O. Ai có 5 quân liên tiếp theo ngang, dọc hoặc chéo sẽ thắng.</p>
             <p className="mt-3">Sau mỗi 3 lượt của bạn, game mở quiz. Đúng: +30 điểm và chọn 1 lá bài. Sai: mất 50% điểm.</p>
             <p className="mt-3">Lá Cướp điểm và Chia điểm sẽ yêu cầu chọn trực tiếp một người trên leaderboard.</p>
+            <p className="mt-3">Lá Đóng băng sẽ khóa sàn của bạn hoặc làm chậm bot trong 8 giây.</p>
             <p className="mt-3">Thắng ván sẽ cộng thưởng và tự sang ván mới, điểm không bị reset.</p>
           </div>
         </aside>
@@ -794,7 +936,7 @@ export default function PlayPage() {
           <p className="text-sm font-black uppercase tracking-[0.2em] text-cyan-200">{targetingCard.title}</p>
           <p className="mt-1 text-sm text-slate-200">
             {targetingCard.kind === "steal"
-              ? "Hãy bấm một đối thủ trên leaderboard để cướp 25% điểm của họ."
+              ? `Hãy bấm một đối thủ trên leaderboard để cướp ${targetingCard.percent ?? 30}% điểm của họ.`
               : "Hãy bấm một đối thủ trên leaderboard để chia đều tổng điểm của hai bên."}
           </p>
           <button

@@ -81,6 +81,7 @@ export async function applyTargetCardEffect(payload: {
   targetScoreId: string;
   playerScore: number;
   effect: TargetCardEffect;
+  percent?: number;
 }): Promise<{ result: TargetCardEffectResult | null; error: string | null }> {
   if (!supabase) {
     return { result: null, error: "Chưa kết nối Supabase" };
@@ -90,6 +91,7 @@ export async function applyTargetCardEffect(payload: {
     p_target_score_id: payload.targetScoreId,
     p_player_score: Math.max(0, Math.floor(payload.playerScore)),
     p_effect: payload.effect,
+    p_percent: payload.percent ?? null,
   });
 
   if (error) {
