@@ -7,7 +7,7 @@ export default function QRCodeJoin() {
 
   const joinUrl = useMemo(() => {
     const baseUrl = origin || "https://your-vercel-app.vercel.app";
-    return `${baseUrl.replace(/\/$/, "")}/`;
+    return `${baseUrl.replace(/\/$/, "")}/game`;
   }, [origin]);
 
   const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=360x360&margin=18&data=${encodeURIComponent(

@@ -59,10 +59,11 @@ Mở `http://localhost:3000`.
 
 Các route chính:
 
-- `/`: nhập tên và bắt đầu chơi
+- `/`: bài thuyết trình chính
+- `/game`: nhập tên và bắt đầu mini game
 - `/play`: caro quiz battle
 - `/leaderboard`: top 10 realtime
-- `/presenter`: QR code và top 5 realtime cho slide cuối
+- `/presenter`: QR code dẫn tới `/game` và top 5 realtime cho slide cuối
 
 ## Build
 
@@ -99,6 +100,7 @@ Nếu deploy từ root repo, `vercel.json` ở root đã trỏ build về worksp
 
 ```text
 src/app/page.tsx
+src/app/game/page.tsx
 src/app/play/page.tsx
 src/app/leaderboard/page.tsx
 src/app/presenter/page.tsx

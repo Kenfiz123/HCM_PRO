@@ -13,7 +13,7 @@ export default function LeaderboardPage() {
           <div className="flex gap-3">
             <Link
               className="rounded-2xl bg-cyan-300 px-5 py-3 font-black text-slate-950 transition hover:bg-cyan-200"
-              href="/"
+              href="/game"
             >
               Chơi ngay
             </Link>

@@ -1,105 +1,212 @@
-"use client";
-
+import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { FormEvent, useState } from "react";
 
-export default function HomePage() {
-  const router = useRouter();
-  const [playerName, setPlayerName] = useState(() =>
-    typeof window === "undefined" ? "" : (localStorage.getItem("caro-player-name") ?? ""),
-  );
+const foundations = [
+  {
+    title: "Truyền thống đạo đức dân tộc Việt Nam",
+    body: "Lòng yêu nước, nhân nghĩa, cần cù, đoàn kết và tinh thần lấy dân làm gốc.",
+  },
+  {
+    title: "Tinh hoa đạo đức nhân loại",
+    body: "Tiếp thu các giá trị tích cực từ Nho giáo, Phật giáo và đạo đức phương Tây tiến bộ.",
+  },
+  {
+    title: "Chủ nghĩa Mác - Lênin",
+    body: "Nền tảng của đạo đức cộng sản, tinh thần quốc tế vô sản và lý tưởng giải phóng con người.",
+  },
+];
 
-  function startGame(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const trimmedName = playerName.trim() || "Khách mời";
-    localStorage.setItem("caro-player-name", trimmedName);
-    router.push("/play");
-  }
+const qualities = [
+  "Trung với nước, hiếu với dân",
+  "Cần, kiệm, liêm, chính, chí công vô tư",
+  "Yêu thương con người",
+  "Tinh thần quốc tế trong sáng",
+];
 
+const principles = [
+  ["Nói đi đôi với làm", "Cán bộ, đảng viên phải nêu gương bằng hành động thực tế."],
+  ["Xây đi đôi với chống", "Xây dựng đạo đức mới gắn với đấu tranh chống chủ nghĩa cá nhân."],
+  ["Tu dưỡng suốt đời", "Rèn luyện đạo đức là việc làm thường xuyên, bền bỉ."],
+  ["Gắn cá nhân với tập thể", "Đặt lợi ích chung lên trên lợi ích cá nhân."],
+];
+
+export default function PresentationPage() {
   return (
-    <main className="game-shell flex min-h-screen items-center justify-center px-4 py-8">
-      <section className="grid w-full max-w-6xl items-center gap-8 lg:grid-cols-[1.05fr_0.95fr]">
-        <div className="space-y-6">
-          <div className="inline-flex rounded-full border border-cyan-300/30 bg-cyan-300/10 px-4 py-2 text-sm font-bold text-cyan-100 shadow-lg shadow-cyan-500/10">
-            Mini game cuối bài thuyết trình
-          </div>
-          <div>
-            <h1 className="neon-title text-5xl font-black leading-tight md:text-7xl">Caro Quiz Battle</h1>
-            <p className="mt-5 max-w-2xl text-lg leading-8 text-slate-200">
-              Đánh caro với bot, trả lời câu hỏi để nhận kỹ năng và leo bảng xếp hạng.
-            </p>
-          </div>
-
-          <form
-            className="max-w-xl rounded-[1.5rem] border border-white/10 bg-white/[0.07] p-5 shadow-2xl shadow-fuchsia-900/20 backdrop-blur"
-            onSubmit={startGame}
+    <main className="min-h-screen bg-[#fdf5e6] text-[#1a0a00]">
+      <nav className="fixed left-0 top-0 z-50 w-full bg-gradient-to-r from-[#8b0000] to-[#c8102e] px-4 py-3 shadow-lg">
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-2">
+          {[
+            ["Cơ sở", "#co-so"],
+            ["Vai trò", "#vai-tro"],
+            ["Phẩm chất", "#pham-chat"],
+            ["Nguyên tắc", "#nguyen-tac"],
+            ["Ý nghĩa", "#y-nghia"],
+          ].map(([label, href]) => (
+            <a
+              className="rounded-lg px-3 py-2 text-sm font-semibold text-white/85 transition hover:bg-white/10 hover:text-[#ffd700]"
+              href={href}
+              key={href}
+            >
+              {label}
+            </a>
+          ))}
+          <Link
+            className="rounded-lg bg-[#ffd700] px-4 py-2 text-sm font-black text-[#8b0000] transition hover:bg-[#fff0a0]"
+            href="/game"
           >
-            <label className="text-sm font-bold text-slate-200" htmlFor="player-name">
-              Tên người chơi
-            </label>
-            <input
-              autoComplete="name"
-              className="mt-3 w-full rounded-2xl border border-white/10 bg-slate-950/70 px-4 py-4 text-lg font-bold text-white outline-none transition placeholder:text-slate-500 focus:border-cyan-300 focus:ring-4 focus:ring-cyan-300/15"
-              id="player-name"
-              maxLength={28}
-              onChange={(event) => setPlayerName(event.target.value)}
-              placeholder="Nhập tên để lên top"
-              value={playerName}
-            />
-            <div className="mt-5 grid gap-3 sm:grid-cols-[1fr_auto]">
-              <button
-                className="rounded-2xl bg-cyan-300 px-6 py-4 text-base font-black text-slate-950 shadow-lg shadow-cyan-500/20 transition hover:-translate-y-0.5 hover:bg-cyan-200"
-                type="submit"
-              >
-                Bắt đầu chơi
-              </button>
-              <Link
-                className="rounded-2xl border border-white/10 px-6 py-4 text-center font-bold text-white transition hover:-translate-y-0.5 hover:border-fuchsia-300 hover:bg-fuchsia-300/10"
-                href="/leaderboard"
-              >
-                Bảng xếp hạng
-              </Link>
-            </div>
-          </form>
+            Chơi mini game
+          </Link>
         </div>
+      </nav>
 
-        <div className="float-card rounded-[2rem] border border-white/10 bg-slate-950/60 p-5 shadow-2xl shadow-cyan-900/20 backdrop-blur">
-          <div className="grid grid-cols-3 gap-3">
-            {Array.from({ length: 9 }).map((_, index) => (
-              <div
-                className={[
-                  "aspect-square rounded-2xl border border-white/10 bg-white/[0.06] text-center text-4xl font-black leading-[1.9]",
-                  index === 0 || index === 4 || index === 8
-                    ? "text-cyan-200 shadow-lg shadow-cyan-500/10"
-                    : index === 2 || index === 5
-                      ? "text-fuchsia-200 shadow-lg shadow-fuchsia-500/10"
-                      : "text-slate-700",
-                ].join(" ")}
-                key={index}
-              >
-                {index === 0 || index === 4 || index === 8 ? "X" : index === 2 || index === 5 ? "O" : ""}
+      <section className="relative flex min-h-[88vh] items-center overflow-hidden bg-[url('/vietnam-bg.png')] bg-cover bg-center px-5 pb-16 pt-28 text-white">
+        <div className="absolute inset-0 bg-gradient-to-br from-[#8b0000]/95 via-[#c8102e]/85 to-[#7f001f]/95" />
+        <div className="relative z-10 mx-auto flex max-w-5xl flex-col items-center text-center">
+          <span className="mb-7 text-6xl text-[#ffd700] drop-shadow-[0_0_18px_rgba(255,215,0,0.75)]">★</span>
+          <h1 className="text-4xl font-black leading-tight text-[#fff0a0] drop-shadow-lg md:text-6xl">
+            TƯ TƯỞNG ĐẠO ĐỨC
+            <br />
+            HỒ CHÍ MINH
+          </h1>
+          <p className="mt-5 max-w-3xl text-lg leading-8 text-white/90">
+            Nền tảng tinh thần, sức mạnh nội sinh và kim chỉ nam cho sự nghiệp cách mạng Việt Nam,
+            kết tinh từ tinh hoa văn hóa dân tộc và nhân loại.
+          </p>
+          <div className="mt-10 rounded-full bg-gradient-to-br from-[#ffd700] to-[#c8a200] p-3 shadow-2xl shadow-black/40">
+            <Image
+              alt="Chân dung Chủ tịch Hồ Chí Minh"
+              className="rounded-full border-4 border-white object-cover"
+              height={230}
+              priority
+              src="/hcm-portrait.png"
+              width={230}
+            />
+          </div>
+        </div>
+      </section>
+
+      <section className="px-5 py-20" id="co-so">
+        <div className="mx-auto max-w-6xl">
+          <SectionTitle
+            subtitle="Những cội nguồn và nét đặc trưng cốt lõi của tư tưởng đạo đức Hồ Chí Minh"
+            title="Cơ Sở Hình Thành & Đặc Điểm"
+          />
+          <div className="grid gap-5 md:grid-cols-3">
+            {foundations.map((item) => (
+              <article className="rounded-2xl border border-[#c8102e]/10 bg-white p-6 shadow-lg shadow-[#c8102e]/5" key={item.title}>
+                <h3 className="text-xl font-black text-[#8b0000]">{item.title}</h3>
+                <p className="mt-3 leading-7 text-[#3d1f00]">{item.body}</p>
+              </article>
+            ))}
+          </div>
+          <div className="mt-8 rounded-2xl border border-[#ffd700]/50 bg-white p-6 shadow-lg">
+            <h3 className="text-xl font-black text-[#8b0000]">Đặc điểm</h3>
+            <ul className="mt-4 grid gap-3 text-[#3d1f00] md:grid-cols-2">
+              <li>Kết hợp hài hòa giữa lý luận và thực tiễn, giữa nói và làm.</li>
+              <li>Mang đậm tính dân tộc và tính thời đại.</li>
+              <li>Coi đạo đức là gốc rễ, nền tảng của người cách mạng.</li>
+              <li>Nhấn mạnh tu dưỡng đạo đức là việc làm suốt đời.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-[#fff8ee] px-5 py-20" id="vai-tro">
+        <div className="mx-auto max-w-6xl">
+          <SectionTitle subtitle="Tầm quan trọng mang tính nền tảng và quyết định" title="Vai Trò Của Đạo Đức" />
+          <div className="grid gap-5 md:grid-cols-2">
+            {[
+              "Đạo đức là gốc của người cách mạng, là nền tảng để hoàn thành sứ mệnh cách mạng.",
+              "Đạo đức quyết định sự thành bại của người cán bộ và sự nghiệp cách mạng.",
+              "Đạo đức cách mạng là đạo đức mới: vì Đảng, vì Tổ quốc, vì nhân dân.",
+              "Đức và tài bổ sung cho nhau, trong đó đức là gốc và tài là biểu hiện trong hành động.",
+            ].map((item, index) => (
+              <article className="rounded-2xl bg-white p-6 shadow-lg" key={item}>
+                <span className="rounded-full bg-gradient-to-r from-[#ffd700] to-[#c8a200] px-3 py-1 text-xs font-black text-[#8b0000]">
+                  Vai trò {index + 1}
+                </span>
+                <p className="mt-4 leading-7 text-[#3d1f00]">{item}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="px-5 py-20" id="pham-chat">
+        <div className="mx-auto max-w-6xl">
+          <SectionTitle subtitle="Bốn phẩm chất then chốt tạo nên nhân cách người cách mạng" title="Phẩm Chất Đạo Đức" />
+          <div className="grid gap-5 md:grid-cols-2">
+            {qualities.map((quality, index) => (
+              <article className="rounded-2xl border border-[#c8102e]/10 bg-white p-6 shadow-lg" key={quality}>
+                <div className="flex items-center gap-4">
+                  <span className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-[#c8102e] to-[#8b0000] font-black text-white">
+                    {index + 1}
+                  </span>
+                  <h3 className="text-xl font-black text-[#8b0000]">{quality}</h3>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-[#fff8ee] px-5 py-20" id="nguyen-tac">
+        <div className="mx-auto max-w-6xl">
+          <SectionTitle subtitle="Phương châm hành động định hướng sự rèn luyện" title="Nguyên Tắc Xây Dựng Đạo Đức" />
+          <div className="overflow-hidden rounded-2xl bg-white shadow-lg">
+            {principles.map(([title, body], index) => (
+              <div className="grid border-b border-[#c8102e]/10 p-5 md:grid-cols-[260px_1fr]" key={title}>
+                <strong className="text-[#8b0000]">
+                  {index + 1}. {title}
+                </strong>
+                <p className="text-[#3d1f00]">{body}</p>
               </div>
             ))}
           </div>
-          <div className="mt-5 rounded-2xl bg-gradient-to-r from-cyan-300/15 via-fuchsia-300/15 to-yellow-300/15 p-4">
-            <div className="grid grid-cols-3 gap-3 text-center">
-              <div>
-                <p className="text-2xl font-black text-cyan-100">9x9</p>
-                <p className="text-xs text-slate-300">Bàn caro</p>
-              </div>
-              <div>
-                <p className="text-2xl font-black text-fuchsia-100">18</p>
-                <p className="text-xs text-slate-300">Câu hỏi</p>
-              </div>
-              <div>
-                <p className="text-2xl font-black text-yellow-100">Live</p>
-                <p className="text-xs text-slate-300">Leaderboard</p>
-              </div>
-            </div>
+        </div>
+      </section>
+
+      <section className="px-5 py-20" id="y-nghia">
+        <div className="mx-auto max-w-6xl">
+          <SectionTitle title="Ý Nghĩa Của Tư Tưởng Đạo Đức Hồ Chí Minh" />
+          <div className="grid gap-5 md:grid-cols-3">
+            {[
+              ["Đối với cách mạng", "Là nền tảng tư tưởng và đạo đức của Đảng, soi đường cho xây dựng đất nước."],
+              ["Giá trị thời đại", "Kết tinh những giá trị đạo đức nhân loại, thống nhất lý tưởng với lối sống."],
+              ["Đối với thế hệ trẻ", "Lấy đạo đức làm nền tảng trong học tập, nghề nghiệp và cuộc sống."],
+            ].map(([title, body]) => (
+              <article className="rounded-2xl bg-white p-6 shadow-lg" key={title}>
+                <h3 className="text-xl font-black text-[#8b0000]">{title}</h3>
+                <p className="mt-3 leading-7 text-[#3d1f00]">{body}</p>
+              </article>
+            ))}
+          </div>
+
+          <div className="mt-10 rounded-3xl bg-gradient-to-r from-[#8b0000] to-[#c8102e] p-8 text-center text-white shadow-2xl">
+            <p className="text-sm font-bold uppercase tracking-[0.22em] text-[#fff0a0]">Cuối bài thuyết trình</p>
+            <h2 className="mt-2 text-3xl font-black">Caro Quiz Battle</h2>
+            <p className="mx-auto mt-3 max-w-2xl text-white/85">
+              Sau khi xem bài, người nghe có thể bấm vào mini game để ôn lại nội dung qua câu hỏi và bảng xếp hạng.
+            </p>
+            <Link
+              className="mt-6 inline-flex rounded-2xl bg-[#ffd700] px-7 py-4 font-black text-[#8b0000] transition hover:bg-[#fff0a0]"
+              href="/game"
+            >
+              Mở mini game
+            </Link>
           </div>
         </div>
       </section>
     </main>
+  );
+}
+
+function SectionTitle({ title, subtitle }: { title: string; subtitle?: string }) {
+  return (
+    <div className="mb-10 text-center">
+      <h2 className="text-3xl font-black text-[#8b0000] md:text-4xl">{title}</h2>
+      <div className="mx-auto mt-3 h-1 w-24 rounded-full bg-gradient-to-r from-[#c8102e] to-[#ffd700]" />
+      {subtitle ? <p className="mx-auto mt-4 max-w-3xl text-[#6b4226]">{subtitle}</p> : null}
+    </div>
   );
 }

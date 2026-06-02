@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Caro Quiz Battle",
-  description: "Đánh caro với bot, trả lời quiz và leo bảng xếp hạng realtime.",
+  title: "Tư tưởng đạo đức Hồ Chí Minh",
+  description: "Bài thuyết trình về tư tưởng đạo đức Hồ Chí Minh kèm mini game Caro Quiz Battle cuối bài.",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
