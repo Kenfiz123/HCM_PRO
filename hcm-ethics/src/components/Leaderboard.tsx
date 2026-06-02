@@ -133,7 +133,9 @@ export default function Leaderboard({
       return;
     }
 
-    const confirmed = window.confirm("Xóa toàn bộ bảng xếp hạng hiện tại?");
+    const confirmed = window.confirm(
+      "Chỉ xóa data bảng xếp hạng. Điểm sẽ bị xóa khỏi leaderboard realtime hiện tại. Bạn chắc chắn muốn xóa?",
+    );
     if (!confirmed) {
       return;
     }
@@ -161,14 +163,14 @@ export default function Leaderboard({
 
   return (
     <div className="overflow-hidden rounded-[1.5rem] border border-white/10 bg-white/[0.06] shadow-2xl shadow-fuchsia-900/20 backdrop-blur">
-      <div className="flex items-center justify-between gap-3 border-b border-white/10 px-5 py-4">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 px-5 py-4">
         <div>
           <h2 className={compact ? "text-xl font-black text-white" : "text-2xl font-black text-white"}>
             Bảng xếp hạng
           </h2>
           {selectMode ? <p className="mt-1 text-xs font-semibold text-cyan-100">{selectMode.helper}</p> : null}
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center justify-end gap-2">
           {captureEnabled ? (
             <button
               className="rounded-full bg-cyan-300 px-3 py-1.5 text-xs font-black text-slate-950 transition hover:bg-cyan-200"
@@ -185,7 +187,7 @@ export default function Leaderboard({
               onClick={handleClearLeaderboard}
               type="button"
             >
-              {clearing ? "Đang xóa" : "Xóa bảng"}
+              {clearing ? "Đang xóa" : "Xóa data BXH"}
             </button>
           ) : null}
           <span className="rounded-full bg-emerald-300/15 px-3 py-1 text-xs font-bold text-emerald-100">

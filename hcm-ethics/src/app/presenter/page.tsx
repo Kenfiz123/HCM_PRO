@@ -17,7 +17,7 @@ export default function PresenterPage() {
         </section>
 
         <section>
-          <Leaderboard compact limit={5} />
+          <Leaderboard captureEnabled clearEnabled compact limit={5} />
         </section>
       </div>
     </main>
