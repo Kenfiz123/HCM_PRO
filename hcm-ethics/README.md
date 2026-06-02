@@ -43,6 +43,7 @@ NEXT_PUBLIC_SITE_URL=http://localhost:3000
 ```
 
 Chỉ dùng anon key ở client. Không đưa `SUPABASE_SERVICE_ROLE_KEY` vào frontend.
+`NEXT_PUBLIC_SUPABASE_URL` nên là URL project gốc dạng `https://xxxx.supabase.co`, không cần thêm `/rest/v1`. App vẫn tự chuẩn hóa nếu lỡ nhập URL có `/rest/v1`.
 
 Nếu chưa cấu hình Supabase, game vẫn chơi được. Leaderboard sẽ hiển thị trạng thái `Chưa kết nối Supabase`.
 
@@ -78,6 +79,8 @@ npm run build
    - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
    - `NEXT_PUBLIC_SITE_URL` bằng URL Vercel public.
 4. Deploy.
+
+Nếu deploy từ root repo, `vercel.json` ở root đã trỏ build về workspace `hcm-ethics`. Nếu chọn root directory là `hcm-ethics` trong Vercel, Vercel sẽ dùng `hcm-ethics/vercel.json`.
 
 ## Gameplay
 

@@ -1,68 +1,296 @@
-import {
-  adjacencyScore,
-  Board,
-  checkWinner,
-  cloneBoard,
-  getAvailableMoves,
-  getLineScore,
-  Move,
-} from "@/lib/gameLogic";
+import { BOARD_SIZE, Board, Mark, Move, WIN_LENGTH, getAvailableMoves, isInside } from "@/lib/gameLogic";
 
 type BotOptions = {
   enhanced?: boolean;
 };
 
-function findImmediateMove(board: Board, mark: "X" | "O"): Move | null {
-  for (const move of getAvailableMoves(board)) {
-    const next = cloneBoard(board);
-    next[move.row][move.col] = mark;
-    if (checkWinner(next).winner === mark) {
-      return move;
-    }
-  }
+type DirectionEvaluation = {
+  consecutive: number;
+  openEnds: number;
+  score: number;
+};
 
-  return null;
-}
+type ScoreWeights = {
+  win: number;
+  four: number;
+  openThree: number;
+  openTwo: number;
+  semiOpenThree: number;
+  semiOpenTwo: number;
+};
 
-function scoreBotMove(board: Board, move: Move, enhanced: boolean): number {
-  const botBoard = cloneBoard(board);
-  botBoard[move.row][move.col] = "O";
+const BOT_SYMBOL: Mark = "O";
+const PLAYER_SYMBOL: Mark = "X";
+const CANDIDATE_RADIUS = 2;
 
-  const playerBoard = cloneBoard(board);
-  playerBoard[move.row][move.col] = "X";
+const DIRECTIONS = [
+  { dx: 0, dy: 1 },
+  { dx: 1, dy: 0 },
+  { dx: 1, dy: 1 },
+  { dx: 1, dy: -1 },
+];
 
-  return (
-    getLineScore(botBoard, move, "O") * (enhanced ? 5 : 4) +
-    getLineScore(playerBoard, move, "X") * (enhanced ? 4 : 2) +
-    adjacencyScore(board, move)
-  );
-}
+const ATTACK_WEIGHTS: ScoreWeights = {
+  win: 1_000_000,
+  four: 100_000,
+  openThree: 30_000,
+  openTwo: 5_000,
+  semiOpenThree: 8_000,
+  semiOpenTwo: 1_200,
+};
+
+const DEFENSE_WEIGHTS: ScoreWeights = {
+  win: 900_000,
+  four: 90_000,
+  openThree: 25_000,
+  openTwo: 3_000,
+  semiOpenThree: 7_000,
+  semiOpenTwo: 900,
+};
 
 export function makeBotMove(board: Board, options: BotOptions = {}): Move | null {
-  const available = getAvailableMoves(board);
-  if (available.length === 0) {
+  return findBestMoveWithOptions(board, BOT_SYMBOL, PLAYER_SYMBOL, options);
+}
+
+export function findBestMove(board: Board, botSymbol: Mark, playerSymbol: Mark): Move | null {
+  return findBestMoveWithOptions(board, botSymbol, playerSymbol);
+}
+
+function findBestMoveWithOptions(
+  board: Board,
+  botSymbol: Mark,
+  playerSymbol: Mark,
+  options: BotOptions = {},
+): Move | null {
+  const candidates = getCandidateMoves(board);
+  if (candidates.length === 0) {
     return null;
   }
 
-  const winningMove = findImmediateMove(board, "O");
+  const winningMove = findImmediateMove(board, candidates, botSymbol);
   if (winningMove) {
     return winningMove;
   }
 
-  const blockingMove = findImmediateMove(board, "X");
+  const blockingMove = findImmediateMove(board, candidates, playerSymbol);
   if (blockingMove) {
     return blockingMove;
   }
 
-  const enhanced = Boolean(options.enhanced);
-  const scored = available.map((move) => ({
-    move,
-    score: scoreBotMove(board, move, enhanced),
-  }));
+  const defenseMultiplier = options.enhanced ? 1.18 : 1;
+  let bestMove: Move | null = null;
+  let bestScore = Number.NEGATIVE_INFINITY;
 
-  scored.sort((a, b) => b.score - a.score);
-  const topScore = scored[0]?.score ?? 0;
-  const bestMoves = scored.filter((item) => item.score >= topScore - (enhanced ? 2 : 6));
+  for (const move of candidates) {
+    const attackScore = scorePattern(board, move.row, move.col, botSymbol, ATTACK_WEIGHTS);
+    const defenseScore = scorePattern(board, move.row, move.col, playerSymbol, DEFENSE_WEIGHTS) * defenseMultiplier;
+    const positionalScore = getCenterScore(move.row, move.col) + getNeighborScore(board, move.row, move.col);
+    const totalScore = attackScore + defenseScore + positionalScore;
 
-  return bestMoves[Math.floor(Math.random() * bestMoves.length)]?.move ?? available[0];
+    if (totalScore > bestScore) {
+      bestScore = totalScore;
+      bestMove = move;
+    }
+  }
+
+  return bestMove;
+}
+
+export function scoreMove(board: Board, row: number, col: number, symbol: Mark): number {
+  if (!isInside(row, col) || board[row][col] !== null) {
+    return Number.NEGATIVE_INFINITY;
+  }
+
+  return (
+    scorePattern(board, row, col, symbol, ATTACK_WEIGHTS) +
+    getCenterScore(row, col) +
+    getNeighborScore(board, row, col)
+  );
+}
+
+export function evaluateDirection(
+  board: Board,
+  row: number,
+  col: number,
+  dx: number,
+  dy: number,
+  symbol: Mark,
+): DirectionEvaluation {
+  const forwardCount = countConsecutive(board, row, col, dx, dy, symbol);
+  const backwardCount = countConsecutive(board, row, col, -dx, -dy, symbol);
+  const consecutive = 1 + forwardCount + backwardCount;
+
+  const forwardEndRow = row + dx * (forwardCount + 1);
+  const forwardEndCol = col + dy * (forwardCount + 1);
+  const backwardEndRow = row - dx * (backwardCount + 1);
+  const backwardEndCol = col - dy * (backwardCount + 1);
+  const openEnds =
+    Number(isOpenEnd(board, forwardEndRow, forwardEndCol)) +
+    Number(isOpenEnd(board, backwardEndRow, backwardEndCol));
+
+  return {
+    consecutive,
+    openEnds,
+    score: getDirectionPatternScore(consecutive, openEnds, ATTACK_WEIGHTS),
+  };
+}
+
+export function countConsecutive(
+  board: Board,
+  row: number,
+  col: number,
+  dx: number,
+  dy: number,
+  symbol: Mark,
+): number {
+  let count = 0;
+  let nextRow = row + dx;
+  let nextCol = col + dy;
+
+  while (isInside(nextRow, nextCol) && board[nextRow][nextCol] === symbol) {
+    count += 1;
+    nextRow += dx;
+    nextCol += dy;
+  }
+
+  return count;
+}
+
+export function isOpenEnd(board: Board, row: number, col: number): boolean {
+  return isInside(row, col) && board[row][col] === null;
+}
+
+export function getCandidateMoves(board: Board): Move[] {
+  const availableMoves = getAvailableMoves(board);
+  if (availableMoves.length === 0) {
+    return [];
+  }
+
+  const occupiedMoves: Move[] = [];
+  for (let row = 0; row < BOARD_SIZE; row += 1) {
+    for (let col = 0; col < BOARD_SIZE; col += 1) {
+      if (board[row][col]) {
+        occupiedMoves.push({ row, col });
+      }
+    }
+  }
+
+  if (occupiedMoves.length === 0) {
+    const center = Math.floor(BOARD_SIZE / 2);
+    return [{ row: center, col: center }];
+  }
+
+  const candidateKeys = new Set<string>();
+  const candidates: Move[] = [];
+
+  for (const occupied of occupiedMoves) {
+    for (let row = occupied.row - CANDIDATE_RADIUS; row <= occupied.row + CANDIDATE_RADIUS; row += 1) {
+      for (let col = occupied.col - CANDIDATE_RADIUS; col <= occupied.col + CANDIDATE_RADIUS; col += 1) {
+        if (!isInside(row, col) || board[row][col] !== null) {
+          continue;
+        }
+
+        const key = `${row}:${col}`;
+        if (!candidateKeys.has(key)) {
+          candidateKeys.add(key);
+          candidates.push({ row, col });
+        }
+      }
+    }
+  }
+
+  const scopedCandidates = candidates.length > 0 ? candidates : availableMoves;
+  return scopedCandidates.sort(compareMovesByBoardPressure(board));
+}
+
+function findImmediateMove(board: Board, candidates: Move[], symbol: Mark): Move | null {
+  return candidates.find((move) => wouldWin(board, move.row, move.col, symbol)) ?? null;
+}
+
+function wouldWin(board: Board, row: number, col: number, symbol: Mark): boolean {
+  return DIRECTIONS.some((direction) => {
+    const evaluation = evaluateDirection(board, row, col, direction.dx, direction.dy, symbol);
+    return evaluation.consecutive >= WIN_LENGTH;
+  });
+}
+
+function scorePattern(board: Board, row: number, col: number, symbol: Mark, weights: ScoreWeights): number {
+  if (!isInside(row, col) || board[row][col] !== null) {
+    return Number.NEGATIVE_INFINITY;
+  }
+
+  return DIRECTIONS.reduce((total, direction) => {
+    const evaluation = evaluateDirection(board, row, col, direction.dx, direction.dy, symbol);
+    return total + getDirectionPatternScore(evaluation.consecutive, evaluation.openEnds, weights);
+  }, 0);
+}
+
+function getDirectionPatternScore(consecutive: number, openEnds: number, weights: ScoreWeights): number {
+  if (consecutive >= WIN_LENGTH) {
+    return weights.win;
+  }
+
+  if (consecutive >= 4 && openEnds > 0) {
+    return weights.four;
+  }
+
+  if (consecutive === 3 && openEnds === 2) {
+    return weights.openThree;
+  }
+
+  if (consecutive === 3 && openEnds === 1) {
+    return weights.semiOpenThree;
+  }
+
+  if (consecutive === 2 && openEnds === 2) {
+    return weights.openTwo;
+  }
+
+  if (consecutive === 2 && openEnds === 1) {
+    return weights.semiOpenTwo;
+  }
+
+  return 0;
+}
+
+function getCenterScore(row: number, col: number): number {
+  const center = (BOARD_SIZE - 1) / 2;
+  const distance = Math.abs(row - center) + Math.abs(col - center);
+  return Math.max(0, Math.round(500 - distance * 70));
+}
+
+function getNeighborScore(board: Board, row: number, col: number): number {
+  let hasNeighbor = false;
+  let densityScore = 0;
+
+  for (let nextRow = row - CANDIDATE_RADIUS; nextRow <= row + CANDIDATE_RADIUS; nextRow += 1) {
+    for (let nextCol = col - CANDIDATE_RADIUS; nextCol <= col + CANDIDATE_RADIUS; nextCol += 1) {
+      if ((nextRow === row && nextCol === col) || !isInside(nextRow, nextCol) || !board[nextRow][nextCol]) {
+        continue;
+      }
+
+      hasNeighbor = true;
+      const distance = Math.max(Math.abs(nextRow - row), Math.abs(nextCol - col));
+      densityScore += distance === 1 ? 45 : 18;
+    }
+  }
+
+  return (hasNeighbor ? 300 : 0) + Math.min(densityScore, 260);
+}
+
+function compareMovesByBoardPressure(board: Board): (a: Move, b: Move) => number {
+  return (a, b) => {
+    const scoreA = getCenterScore(a.row, a.col) + getNeighborScore(board, a.row, a.col);
+    const scoreB = getCenterScore(b.row, b.col) + getNeighborScore(board, b.row, b.col);
+
+    if (scoreA !== scoreB) {
+      return scoreB - scoreA;
+    }
+
+    if (a.row !== b.row) {
+      return a.row - b.row;
+    }
+
+    return a.col - b.col;
+  };
 }

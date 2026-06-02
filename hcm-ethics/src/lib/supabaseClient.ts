@@ -1,13 +1,25 @@
 import { createClient, RealtimeChannel } from "@supabase/supabase-js";
 import { GameResult } from "@/lib/gameLogic";
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+function normalizeSupabaseUrl(url: string | undefined): string | null {
+  if (!url) {
+    return null;
+  }
+
+  const trimmedUrl = url.trim().replace(/\/+$/, "");
+  const restEndpointSuffix = "/rest/v1";
+  return trimmedUrl.endsWith(restEndpointSuffix)
+    ? trimmedUrl.slice(0, -restEndpointSuffix.length)
+    : trimmedUrl;
+}
+
+const supabaseUrl = normalizeSupabaseUrl(process.env.NEXT_PUBLIC_SUPABASE_URL);
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.trim();
 
 export const isSupabaseConfigured = Boolean(supabaseUrl && supabaseAnonKey);
 
-export const supabase = isSupabaseConfigured
-  ? createClient(supabaseUrl as string, supabaseAnonKey as string)
+export const supabase = supabaseUrl && supabaseAnonKey
+  ? createClient(supabaseUrl, supabaseAnonKey)
   : null;
 
 export type ScoreRow = {

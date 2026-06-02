@@ -37,4 +37,9 @@ with check (
 create index if not exists scores_leaderboard_idx
 on public.scores (score desc, created_at asc);
 
-alter publication supabase_realtime add table public.scores;
+do $$
+begin
+  alter publication supabase_realtime add table public.scores;
+exception
+  when duplicate_object then null;
+end $$;
