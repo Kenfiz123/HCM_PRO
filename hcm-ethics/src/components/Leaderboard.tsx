@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { CLEAR_LEADERBOARD_CONFIRM, LEADERBOARD_REFRESH_EVENT } from "@/lib/leaderboardEvents";
 import { clearLeaderboard, fetchLeaderboard, ScoreRow, subscribeLeaderboard } from "@/lib/supabaseClient";
 import { getResultLabel } from "@/lib/scoring";
@@ -10,6 +10,14 @@ type LeaderboardProps = {
   compact?: boolean;
   captureEnabled?: boolean;
   clearEnabled?: boolean;
+  currentPlayer?: {
+    playerName: string;
+    score: number;
+    result?: ScoreRow["result"];
+    correctAnswers?: number;
+    wrongAnswers?: number;
+    totalMoves?: number;
+  };
   selectMode?: {
     label: string;
     helper: string;
@@ -97,6 +105,7 @@ export default function Leaderboard({
   compact = false,
   captureEnabled = false,
   clearEnabled = false,
+  currentPlayer,
   selectMode = null,
 }: LeaderboardProps) {
   const [rows, setRows] = useState<ScoreRow[]>([]);
@@ -131,6 +140,42 @@ export default function Leaderboard({
       unsubscribe?.();
     };
   }, [limit]);
+
+  const displayRows = useMemo(() => {
+    const localPlayer = currentPlayer;
+    const playerName = localPlayer?.playerName.trim();
+    if (!localPlayer || !playerName) {
+      return rows;
+    }
+
+    const normalizedPlayerName = playerName.toLowerCase();
+    const rowIndex = rows.findIndex((row) => row.player_name.trim().toLowerCase() === normalizedPlayerName);
+    const existingRow = rowIndex >= 0 ? rows[rowIndex] : null;
+    const localRow: ScoreRow = {
+      id: existingRow?.id ?? `local-${normalizedPlayerName}`,
+      player_name: playerName,
+      score: Math.max(0, Math.floor(localPlayer.score)),
+      result: localPlayer.result ?? existingRow?.result ?? "draw",
+      correct_answers: localPlayer.correctAnswers ?? existingRow?.correct_answers ?? 0,
+      wrong_answers: localPlayer.wrongAnswers ?? existingRow?.wrong_answers ?? 0,
+      total_moves: localPlayer.totalMoves ?? existingRow?.total_moves ?? 0,
+      created_at: existingRow?.created_at ?? new Date().toISOString(),
+    };
+
+    const mergedRows = rowIndex >= 0
+      ? rows.map((row, index) => (index === rowIndex ? localRow : row))
+      : [...rows, localRow];
+
+    return mergedRows
+      .sort((firstRow, secondRow) => {
+        if (secondRow.score !== firstRow.score) {
+          return secondRow.score - firstRow.score;
+        }
+
+        return new Date(firstRow.created_at).getTime() - new Date(secondRow.created_at).getTime();
+      })
+      .slice(0, limit);
+  }, [currentPlayer, limit, rows]);
 
   async function handleClearLeaderboard() {
     if (clearing) {
@@ -178,7 +223,7 @@ export default function Leaderboard({
           {captureEnabled ? (
             <button
               className="rounded-full bg-cyan-300 px-3 py-1.5 text-xs font-black text-slate-950 transition hover:bg-cyan-200"
-              onClick={() => drawLeaderboardImage(rows, compact)}
+              onClick={() => drawLeaderboardImage(displayRows, compact)}
               type="button"
             >
               Chụp hình
@@ -207,11 +252,11 @@ export default function Leaderboard({
 
       {loading ? (
         <div className="p-8 text-center text-slate-300">Đang tải leaderboard...</div>
-      ) : rows.length === 0 ? (
+      ) : displayRows.length === 0 ? (
         <div className="p-8 text-center text-slate-300">Chưa có điểm. Hãy là người đầu tiên lên bảng.</div>
       ) : compact ? (
         <div className="space-y-3 p-4">
-          {rows.map((row, index) => {
+          {displayRows.map((row, index) => {
             const disabled = Boolean(selectMode?.disabledPlayerName && row.player_name === selectMode.disabledPlayerName);
             const className = [
               "flex w-full items-center justify-between gap-3 rounded-2xl border px-4 py-3 text-left transition",
@@ -267,7 +312,7 @@ export default function Leaderboard({
               </tr>
             </thead>
             <tbody>
-              {rows.map((row, index) => {
+              {displayRows.map((row, index) => {
                 const rankClass =
                   index === 0
                     ? "bg-yellow-300/15 text-yellow-100"

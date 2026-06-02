@@ -19,8 +19,9 @@ import {
   shouldShowQuiz,
   WinnerState,
 } from "@/lib/gameLogic";
+import { LEADERBOARD_REFRESH_EVENT } from "@/lib/leaderboardEvents";
 import { getResultLabel } from "@/lib/scoring";
-import { applyTargetCardEffect, ScoreRow, submitScore, TargetCardEffect } from "@/lib/supabaseClient";
+import { applyTargetCardEffect, ScoreInsert, ScoreRow, submitScore, TargetCardEffect } from "@/lib/supabaseClient";
 
 type Turn = "player" | "bot" | "round-end";
 type CardTone = "emerald" | "cyan" | "fuchsia" | "amber" | "rose" | "slate";
@@ -36,7 +37,8 @@ type ScoreCard = {
   value?: number;
 };
 
-const CARD_REVEAL_MS = 2600;
+const CARD_REVEAL_MS = 850;
+const SCORE_SYNC_DELAY_MS = 60;
 
 function resultFromWinner(winner: "X" | "O" | null): GameResult {
   if (winner === "X") {
@@ -209,15 +211,15 @@ export default function PlayPage() {
   const nextRoundTimerRef = useRef<number | null>(null);
   const liveSyncTimerRef = useRef<number | null>(null);
   const cardRevealTimerRef = useRef<number | null>(null);
+  const pendingScorePayloadRef = useRef<ScoreInsert | null>(null);
+  const scoreSyncInFlightRef = useRef(false);
 
   useEffect(() => {
-    void submitScore({
-      player_name: playerName,
-      score: 0,
+    queueLiveScoreSync(0, {
       result: "draw",
-      correct_answers: 0,
-      wrong_answers: 0,
-      total_moves: 0,
+      correctAnswers: 0,
+      wrongAnswers: 0,
+      moves: 0,
     });
 
     return () => {
@@ -228,7 +230,35 @@ export default function PlayPage() {
         window.clearTimeout(cardRevealTimerRef.current);
       }
     };
+    // Initial row sync only resets when a new player enters; score changes sync via setScoreValue.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [playerName]);
+
+  async function flushScoreSync() {
+    if (scoreSyncInFlightRef.current) {
+      return;
+    }
+
+    const payload = pendingScorePayloadRef.current;
+    if (!payload) {
+      return;
+    }
+
+    pendingScorePayloadRef.current = null;
+    scoreSyncInFlightRef.current = true;
+    const result = await submitScore(payload);
+    scoreSyncInFlightRef.current = false;
+
+    if (result.error) {
+      setSubmitStatus(result.error);
+    } else {
+      window.dispatchEvent(new Event(LEADERBOARD_REFRESH_EVENT));
+    }
+
+    if (pendingScorePayloadRef.current) {
+      void flushScoreSync();
+    }
+  }
 
   function queueLiveScoreSync(
     nextScore: number,
@@ -239,20 +269,22 @@ export default function PlayPage() {
       moves?: number;
     } = {},
   ) {
+    pendingScorePayloadRef.current = {
+      player_name: playerName,
+      score: nextScore,
+      result: stats.result ?? roundResult ?? "draw",
+      correct_answers: stats.correctAnswers ?? correctAnswers,
+      wrong_answers: stats.wrongAnswers ?? wrongAnswers,
+      total_moves: stats.moves ?? totalMoves,
+    };
+
     if (liveSyncTimerRef.current) {
       window.clearTimeout(liveSyncTimerRef.current);
     }
 
     liveSyncTimerRef.current = window.setTimeout(() => {
-      void submitScore({
-        player_name: playerName,
-        score: nextScore,
-        result: stats.result ?? roundResult ?? "draw",
-        correct_answers: stats.correctAnswers ?? correctAnswers,
-        wrong_answers: stats.wrongAnswers ?? wrongAnswers,
-        total_moves: stats.moves ?? totalMoves,
-      });
-    }, 180);
+      void flushScoreSync();
+    }, SCORE_SYNC_DELAY_MS);
   }
 
   function setScoreValue(
@@ -486,7 +518,7 @@ export default function PlayPage() {
 
     setRevealedCardId(card.id);
     setCardRevealBusy(true);
-    setCardMessage(`Đã lật lá "${card.title}". Đọc hiệu ứng, lá sẽ tự áp dụng sau vài giây.`);
+    setCardMessage(`Đã lật lá "${card.title}". Hiệu ứng sẽ áp dụng ngay.`);
 
     if (cardRevealTimerRef.current) {
       window.clearTimeout(cardRevealTimerRef.current);
@@ -523,7 +555,6 @@ export default function PlayPage() {
       return;
     }
 
-    scoreRef.current = result.player_score;
     setScoreValue(result.player_score);
     setCardMessage(`${result.message} Điểm của bạn hiện là ${result.player_score}.`);
     setTargetingCard(null);
@@ -536,13 +567,17 @@ export default function PlayPage() {
       window.clearTimeout(cardRevealTimerRef.current);
       cardRevealTimerRef.current = null;
     }
-    scoreRef.current = 0;
     roundEndingRef.current = false;
     setBoard(createEmptyBoard());
     setTurn("player");
     setWinnerState({ winner: null, line: [] });
     setRoundResult(null);
-    setScore(0);
+    setScoreValue(0, {
+      result: "draw",
+      correctAnswers: 0,
+      wrongAnswers: 0,
+      moves: 0,
+    });
     setCorrectAnswers(0);
     setWrongAnswers(0);
     setPlayerMoveCount(0);
@@ -660,6 +695,14 @@ export default function PlayPage() {
             captureEnabled
             clearEnabled
             compact
+            currentPlayer={{
+              playerName,
+              score,
+              result: roundResult ?? "draw",
+              correctAnswers,
+              wrongAnswers,
+              totalMoves,
+            }}
             limit={5}
             selectMode={
               targetingCard
