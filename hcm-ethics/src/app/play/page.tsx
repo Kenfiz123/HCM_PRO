@@ -36,6 +36,8 @@ type ScoreCard = {
   value?: number;
 };
 
+const CARD_REVEAL_MS = 2600;
+
 function resultFromWinner(winner: "X" | "O" | null): GameResult {
   if (winner === "X") {
     return "win";
@@ -194,6 +196,8 @@ export default function PlayPage() {
   const [enhancedBotNext, setEnhancedBotNext] = useState(false);
   const [currentQuestion, setCurrentQuestion] = useState<QuizQuestion | null>(null);
   const [cardChoices, setCardChoices] = useState<ScoreCard[] | null>(null);
+  const [revealedCardId, setRevealedCardId] = useState<string | null>(null);
+  const [cardRevealBusy, setCardRevealBusy] = useState(false);
   const [targetingCard, setTargetingCard] = useState<(ScoreCard & { kind: TargetCardEffect }) | null>(null);
   const [targetActionLoading, setTargetActionLoading] = useState(false);
   const [cardMessage, setCardMessage] = useState<string | null>(null);
@@ -204,6 +208,7 @@ export default function PlayPage() {
   const roundEndingRef = useRef(false);
   const nextRoundTimerRef = useRef<number | null>(null);
   const liveSyncTimerRef = useRef<number | null>(null);
+  const cardRevealTimerRef = useRef<number | null>(null);
 
   useEffect(() => {
     void submitScore({
@@ -218,6 +223,9 @@ export default function PlayPage() {
     return () => {
       if (liveSyncTimerRef.current) {
         window.clearTimeout(liveSyncTimerRef.current);
+      }
+      if (cardRevealTimerRef.current) {
+        window.clearTimeout(cardRevealTimerRef.current);
       }
     };
   }, [playerName]);
@@ -282,6 +290,10 @@ export default function PlayPage() {
   }
 
   function startNextRound() {
+    if (cardRevealTimerRef.current) {
+      window.clearTimeout(cardRevealTimerRef.current);
+      cardRevealTimerRef.current = null;
+    }
     roundEndingRef.current = false;
     setBoard(createEmptyBoard());
     setTurn("player");
@@ -292,6 +304,8 @@ export default function PlayPage() {
     setEnhancedBotNext(false);
     setCurrentQuestion(null);
     setCardChoices(null);
+    setRevealedCardId(null);
+    setCardRevealBusy(false);
     setTargetingCard(null);
     setTargetActionLoading(false);
     setPendingBotAfterQuiz(false);
@@ -446,9 +460,11 @@ export default function PlayPage() {
     resumeAfterQuiz(true);
   }
 
-  function chooseCard(card: ScoreCard) {
+  function applyChosenCard(card: ScoreCard) {
     if (isTargetCard(card)) {
       setCardChoices(null);
+      setRevealedCardId(null);
+      setCardRevealBusy(false);
       setTargetingCard(card);
       setCardMessage(`${card.title}: chọn một người trên bảng xếp hạng bên phải để áp dụng.`);
       return;
@@ -458,7 +474,27 @@ export default function PlayPage() {
     setCardMessage(effect.message);
     updateScore(() => effect.nextScore);
     setCardChoices(null);
+    setRevealedCardId(null);
+    setCardRevealBusy(false);
     resumeAfterQuiz(false);
+  }
+
+  function chooseCard(card: ScoreCard) {
+    if (cardRevealBusy) {
+      return;
+    }
+
+    setRevealedCardId(card.id);
+    setCardRevealBusy(true);
+    setCardMessage(`Đã lật lá "${card.title}". Đọc hiệu ứng, lá sẽ tự áp dụng sau vài giây.`);
+
+    if (cardRevealTimerRef.current) {
+      window.clearTimeout(cardRevealTimerRef.current);
+    }
+
+    cardRevealTimerRef.current = window.setTimeout(() => {
+      applyChosenCard(card);
+    }, CARD_REVEAL_MS);
   }
 
   async function chooseTarget(row: ScoreRow) {
@@ -496,6 +532,10 @@ export default function PlayPage() {
 
   function resetGame() {
     clearNextRoundTimer();
+    if (cardRevealTimerRef.current) {
+      window.clearTimeout(cardRevealTimerRef.current);
+      cardRevealTimerRef.current = null;
+    }
     scoreRef.current = 0;
     roundEndingRef.current = false;
     setBoard(createEmptyBoard());
@@ -510,6 +550,8 @@ export default function PlayPage() {
     setEnhancedBotNext(false);
     setCurrentQuestion(null);
     setCardChoices(null);
+    setRevealedCardId(null);
+    setCardRevealBusy(false);
     setTargetingCard(null);
     setTargetActionLoading(false);
     setCardMessage(null);
@@ -616,6 +658,7 @@ export default function PlayPage() {
         <aside className="order-3 space-y-4">
           <Leaderboard
             captureEnabled
+            clearEnabled
             compact
             limit={5}
             selectMode={
@@ -654,21 +697,48 @@ export default function PlayPage() {
             <div className="grid gap-4 md:grid-cols-3">
               {cardChoices.map((card) => (
                 <button
-                  className="min-h-56 rounded-[1.5rem] border border-cyan-300/30 bg-gradient-to-br from-slate-900 via-indigo-950 to-fuchsia-950 p-5 text-center transition hover:-translate-y-1 hover:border-cyan-200 hover:shadow-2xl hover:shadow-cyan-500/20"
+                  className={[
+                    "min-h-56 rounded-[1.5rem] border p-5 text-center transition",
+                    revealedCardId === card.id
+                      ? "border-yellow-200 bg-gradient-to-br from-yellow-300/20 via-fuchsia-500/20 to-cyan-300/20 shadow-2xl shadow-yellow-400/20"
+                      : "border-cyan-300/30 bg-gradient-to-br from-slate-900 via-indigo-950 to-fuchsia-950 hover:-translate-y-1 hover:border-cyan-200 hover:shadow-2xl hover:shadow-cyan-500/20",
+                    cardRevealBusy && revealedCardId !== card.id ? "cursor-not-allowed opacity-45" : "",
+                  ].join(" ")}
+                  disabled={cardRevealBusy}
                   key={card.id}
                   onClick={() => chooseCard(card)}
                   type="button"
                 >
-                  <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full border border-cyan-200/40 bg-cyan-200/10 text-5xl font-black text-cyan-100">
-                    ?
-                  </div>
-                  <h3 className="mt-8 text-2xl font-black text-white">Lá bài bí mật</h3>
-                  <p className="mt-4 text-sm font-semibold leading-6 text-slate-300">
-                    Nội dung đang úp. Chọn lá này để lật và áp dụng hiệu ứng.
-                  </p>
-                  <div className="mt-8 rounded-full bg-white/10 px-4 py-2 text-xs font-black uppercase tracking-[0.18em] text-cyan-100">
-                    Chọn lá
-                  </div>
+                  {revealedCardId === card.id ? (
+                    <>
+                      <div className="flex items-center justify-between gap-3">
+                        <span className="rounded-full bg-white/15 px-3 py-1 text-xs font-black uppercase tracking-[0.16em] text-white">
+                          Đã lật
+                        </span>
+                        <span className="rounded-full bg-slate-950/40 px-3 py-1 text-lg font-black text-white">
+                          {card.badge}
+                        </span>
+                      </div>
+                      <h3 className="mt-8 text-2xl font-black text-white">{card.title}</h3>
+                      <p className="mt-4 text-sm font-semibold leading-6 text-slate-100">{card.description}</p>
+                      <div className="mt-6 rounded-full bg-yellow-200/20 px-4 py-2 text-xs font-black uppercase tracking-[0.16em] text-yellow-100">
+                        Đang áp dụng...
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full border border-cyan-200/40 bg-cyan-200/10 text-5xl font-black text-cyan-100">
+                        ?
+                      </div>
+                      <h3 className="mt-8 text-2xl font-black text-white">Lá bài bí mật</h3>
+                      <p className="mt-4 text-sm font-semibold leading-6 text-slate-300">
+                        Nội dung đang úp. Chọn lá này để lật và đọc hiệu ứng.
+                      </p>
+                      <div className="mt-8 rounded-full bg-white/10 px-4 py-2 text-xs font-black uppercase tracking-[0.18em] text-cyan-100">
+                        Chọn lá
+                      </div>
+                    </>
+                  )}
                 </button>
               ))}
             </div>

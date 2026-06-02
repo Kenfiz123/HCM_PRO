@@ -37,6 +37,7 @@ File SQL cũng tạo các RPC:
 - `get_leaderboard`: lấy bảng xếp hạng realtime và gom mỗi tên người chơi thành một hạng duy nhất.
 - `upsert_player_score`: cập nhật điểm realtime của người chơi trong lúc đang chơi, không tạo nhiều dòng trùng tên.
 - `apply_score_card_target_effect`: xử lý lá Cướp điểm và Chia điểm với đối thủ được chọn trên leaderboard.
+- `clear_leaderboard`: xóa toàn bộ bảng xếp hạng khi người thuyết trình cần reset game.
 
 Client không cần quyền update/delete trực tiếp; các RPC server-side sẽ cập nhật điểm an toàn hơn.
 

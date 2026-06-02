@@ -1,13 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { fetchLeaderboard, ScoreRow, subscribeLeaderboard } from "@/lib/supabaseClient";
+import { clearLeaderboard, fetchLeaderboard, ScoreRow, subscribeLeaderboard } from "@/lib/supabaseClient";
 import { getResultLabel } from "@/lib/scoring";
 
 type LeaderboardProps = {
   limit?: number;
   compact?: boolean;
   captureEnabled?: boolean;
+  clearEnabled?: boolean;
   selectMode?: {
     label: string;
     helper: string;
@@ -94,11 +95,13 @@ export default function Leaderboard({
   limit = 10,
   compact = false,
   captureEnabled = false,
+  clearEnabled = false,
   selectMode = null,
 }: LeaderboardProps) {
   const [rows, setRows] = useState<ScoreRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [status, setStatus] = useState<string | null>(null);
+  const [clearing, setClearing] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -124,6 +127,26 @@ export default function Leaderboard({
       unsubscribe?.();
     };
   }, [limit]);
+
+  async function handleClearLeaderboard() {
+    if (clearing) {
+      return;
+    }
+
+    const confirmed = window.confirm("Xóa toàn bộ bảng xếp hạng hiện tại?");
+    if (!confirmed) {
+      return;
+    }
+
+    setClearing(true);
+    const result = await clearLeaderboard();
+    if (result.error) {
+      setStatus(result.error);
+    } else {
+      setRows([]);
+    }
+    setClearing(false);
+  }
 
   if (status) {
     return (
@@ -153,6 +176,16 @@ export default function Leaderboard({
               type="button"
             >
               Chụp hình
+            </button>
+          ) : null}
+          {clearEnabled ? (
+            <button
+              className="rounded-full bg-rose-300 px-3 py-1.5 text-xs font-black text-slate-950 transition hover:bg-rose-200 disabled:cursor-not-allowed disabled:opacity-60"
+              disabled={clearing}
+              onClick={handleClearLeaderboard}
+              type="button"
+            >
+              {clearing ? "Đang xóa" : "Xóa bảng"}
             </button>
           ) : null}
           <span className="rounded-full bg-emerald-300/15 px-3 py-1 text-xs font-bold text-emerald-100">

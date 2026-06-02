@@ -240,6 +240,20 @@ $$;
 revoke all on function public.apply_score_card_target_effect(uuid, int, text) from public;
 grant execute on function public.apply_score_card_target_effect(uuid, int, text) to anon, authenticated;
 
+create or replace function public.clear_leaderboard()
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  delete from public.scores;
+end;
+$$;
+
+revoke all on function public.clear_leaderboard() from public;
+grant execute on function public.clear_leaderboard() to anon, authenticated;
+
 do $$
 begin
   alter publication supabase_realtime add table public.scores;

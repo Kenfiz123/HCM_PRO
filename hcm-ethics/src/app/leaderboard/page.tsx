@@ -25,7 +25,7 @@ export default function LeaderboardPage() {
             </Link>
           </div>
         </div>
-        <Leaderboard limit={10} />
+        <Leaderboard captureEnabled clearEnabled limit={10} />
       </div>
     </main>
   );

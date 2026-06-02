@@ -100,6 +100,15 @@ export async function applyTargetCardEffect(payload: {
   return { result: (firstRow ?? null) as TargetCardEffectResult | null, error: null };
 }
 
+export async function clearLeaderboard(): Promise<{ error: string | null }> {
+  if (!supabase) {
+    return { error: "Chưa kết nối Supabase" };
+  }
+
+  const { error } = await supabase.rpc("clear_leaderboard");
+  return { error: error?.message ?? null };
+}
+
 export function subscribeLeaderboard(onChange: () => void): (() => void) | null {
   if (!supabase) {
     return null;
