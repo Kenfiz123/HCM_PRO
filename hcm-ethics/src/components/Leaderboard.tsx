@@ -8,6 +8,12 @@ type LeaderboardProps = {
   limit?: number;
   compact?: boolean;
   captureEnabled?: boolean;
+  selectMode?: {
+    label: string;
+    helper: string;
+    disabledPlayerName?: string;
+    onSelect: (row: ScoreRow) => void;
+  } | null;
 };
 
 function drawLeaderboardImage(rows: ScoreRow[], compact: boolean) {
@@ -84,7 +90,12 @@ function drawLeaderboardImage(rows: ScoreRow[], compact: boolean) {
   link.click();
 }
 
-export default function Leaderboard({ limit = 10, compact = false, captureEnabled = false }: LeaderboardProps) {
+export default function Leaderboard({
+  limit = 10,
+  compact = false,
+  captureEnabled = false,
+  selectMode = null,
+}: LeaderboardProps) {
   const [rows, setRows] = useState<ScoreRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [status, setStatus] = useState<string | null>(null);
@@ -128,9 +139,12 @@ export default function Leaderboard({ limit = 10, compact = false, captureEnable
   return (
     <div className="overflow-hidden rounded-[1.5rem] border border-white/10 bg-white/[0.06] shadow-2xl shadow-fuchsia-900/20 backdrop-blur">
       <div className="flex items-center justify-between gap-3 border-b border-white/10 px-5 py-4">
-        <h2 className={compact ? "text-xl font-black text-white" : "text-2xl font-black text-white"}>
-          Bảng xếp hạng
-        </h2>
+        <div>
+          <h2 className={compact ? "text-xl font-black text-white" : "text-2xl font-black text-white"}>
+            Bảng xếp hạng
+          </h2>
+          {selectMode ? <p className="mt-1 text-xs font-semibold text-cyan-100">{selectMode.helper}</p> : null}
+        </div>
         <div className="flex items-center gap-2">
           {captureEnabled ? (
             <button
@@ -142,7 +156,7 @@ export default function Leaderboard({ limit = 10, compact = false, captureEnable
             </button>
           ) : null}
           <span className="rounded-full bg-emerald-300/15 px-3 py-1 text-xs font-bold text-emerald-100">
-            Realtime
+            {selectMode ? selectMode.label : "Realtime"}
           </span>
         </div>
       </div>
@@ -153,27 +167,47 @@ export default function Leaderboard({ limit = 10, compact = false, captureEnable
         <div className="p-8 text-center text-slate-300">Chưa có điểm. Hãy là người đầu tiên lên bảng.</div>
       ) : compact ? (
         <div className="space-y-3 p-4">
-          {rows.map((row, index) => (
-            <div
-              className={[
-                "flex items-center justify-between gap-3 rounded-2xl border px-4 py-3",
-                index === 0
-                  ? "border-yellow-300/30 bg-yellow-300/15 text-yellow-100"
-                  : index === 1
-                    ? "border-slate-200/20 bg-slate-200/10 text-slate-100"
-                    : index === 2
-                      ? "border-amber-400/25 bg-amber-500/15 text-amber-100"
-                      : "border-white/10 bg-white/[0.04] text-slate-200",
-              ].join(" ")}
-              key={row.id}
-            >
-              <div className="min-w-0">
-                <p className="text-xs font-black uppercase tracking-[0.16em] text-slate-400">#{index + 1}</p>
-                <p className="truncate text-sm font-black">{row.player_name}</p>
+          {rows.map((row, index) => {
+            const disabled = Boolean(selectMode?.disabledPlayerName && row.player_name === selectMode.disabledPlayerName);
+            const className = [
+              "flex w-full items-center justify-between gap-3 rounded-2xl border px-4 py-3 text-left transition",
+              selectMode && !disabled ? "hover:-translate-y-0.5 hover:border-cyan-300 hover:bg-cyan-300/15" : "",
+              disabled ? "cursor-not-allowed opacity-45" : "",
+              index === 0
+                ? "border-yellow-300/30 bg-yellow-300/15 text-yellow-100"
+                : index === 1
+                  ? "border-slate-200/20 bg-slate-200/10 text-slate-100"
+                  : index === 2
+                    ? "border-amber-400/25 bg-amber-500/15 text-amber-100"
+                    : "border-white/10 bg-white/[0.04] text-slate-200",
+            ].join(" ");
+
+            const content = (
+              <>
+                <div className="min-w-0">
+                  <p className="text-xs font-black uppercase tracking-[0.16em] text-slate-400">#{index + 1}</p>
+                  <p className="truncate text-sm font-black">{row.player_name}</p>
+                </div>
+                <p className="shrink-0 text-lg font-black text-cyan-100">{row.score}</p>
+              </>
+            );
+
+            return selectMode ? (
+              <button
+                className={className}
+                disabled={disabled}
+                key={row.id}
+                onClick={() => selectMode.onSelect(row)}
+                type="button"
+              >
+                {content}
+              </button>
+            ) : (
+              <div className={className} key={row.id}>
+                {content}
               </div>
-              <p className="shrink-0 text-lg font-black text-cyan-100">{row.score}</p>
-            </div>
-          ))}
+            );
+          })}
         </div>
       ) : (
         <div className="overflow-x-auto">

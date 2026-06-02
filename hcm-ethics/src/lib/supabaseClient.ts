@@ -34,6 +34,14 @@ export type ScoreRow = {
 };
 
 export type ScoreInsert = Omit<ScoreRow, "id" | "created_at">;
+export type TargetCardEffect = "steal" | "split";
+
+export type TargetCardEffectResult = {
+  player_score: number;
+  target_score: number;
+  delta: number;
+  message: string;
+};
 
 export async function fetchLeaderboard(limit = 10): Promise<{
   rows: ScoreRow[];
@@ -66,6 +74,29 @@ export async function submitScore(payload: ScoreInsert): Promise<{ error: string
   return { error: error?.message ?? null };
 }
 
+export async function applyTargetCardEffect(payload: {
+  targetScoreId: string;
+  playerScore: number;
+  effect: TargetCardEffect;
+}): Promise<{ result: TargetCardEffectResult | null; error: string | null }> {
+  if (!supabase) {
+    return { result: null, error: "Chưa kết nối Supabase" };
+  }
+
+  const { data, error } = await supabase.rpc("apply_score_card_target_effect", {
+    p_target_score_id: payload.targetScoreId,
+    p_player_score: Math.max(0, Math.floor(payload.playerScore)),
+    p_effect: payload.effect,
+  });
+
+  if (error) {
+    return { result: null, error: error.message };
+  }
+
+  const firstRow = Array.isArray(data) ? data[0] : data;
+  return { result: (firstRow ?? null) as TargetCardEffectResult | null, error: null };
+}
+
 export function subscribeLeaderboard(onChange: () => void): (() => void) | null {
   if (!supabase) {
     return null;
@@ -75,7 +106,7 @@ export function subscribeLeaderboard(onChange: () => void): (() => void) | null 
     .channel("scores-realtime")
     .on(
       "postgres_changes",
-      { event: "INSERT", schema: "public", table: "scores" },
+      { event: "*", schema: "public", table: "scores" },
       () => onChange(),
     )
     .subscribe();

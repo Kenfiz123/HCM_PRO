@@ -1,6 +1,6 @@
 # Caro Quiz Battle
 
-Mini game cuối bài thuyết trình: người chơi nhập tên, đánh caro 9x9 với bot, trả lời quiz lấy từ nội dung PDF, nhận kỹ năng và cập nhật điểm lên leaderboard Supabase realtime.
+Mini game cuối bài thuyết trình: người chơi nhập tên, đánh caro 9x9 với bot, trả lời quiz lấy từ nội dung PDF, chọn thẻ bài điểm số và cập nhật điểm lên leaderboard Supabase realtime.
 
 ## Tech stack
 
@@ -31,6 +31,8 @@ npm install --workspace hcm-ethics
 2. Vào SQL Editor.
 3. Chạy toàn bộ nội dung trong `supabase/schema.sql`.
 4. Bảo đảm Realtime bật cho table `scores`. File SQL đã có dòng `alter publication supabase_realtime add table public.scores;`. Nếu Supabase báo table đã được thêm vào publication, có thể bỏ qua.
+
+File SQL cũng tạo RPC `apply_score_card_target_effect` cho lá bài Cướp điểm và Chia điểm. Client không cần quyền update/delete trực tiếp; RPC server-side sẽ cập nhật điểm đối thủ được chọn trên leaderboard.
 
 ## Thêm env
 
@@ -88,8 +90,9 @@ Nếu deploy từ root repo, `vercel.json` ở root đã trỏ build về worksp
 - Người chơi là X, bot là O.
 - Bàn 9x9, thắng khi có 5 quân liên tiếp ngang, dọc hoặc chéo.
 - Sau mỗi 3 lượt người chơi, game mở quiz.
-- Trả lời đúng: +30 điểm và nhận ngẫu nhiên 1 kỹ năng.
-- Trả lời sai: -10 điểm và bot được ưu tiên nước mạnh hơn lượt kế tiếp.
+- Trả lời đúng: +30 điểm và mở 3 lá bài để chọn hiệu ứng điểm.
+- Lá Cướp điểm và Chia điểm yêu cầu bấm trực tiếp một người trên leaderboard realtime.
+- Trả lời sai: mất 50% điểm hiện tại và bot được ưu tiên nước mạnh hơn lượt kế tiếp.
 - Thắng bot: +100 điểm.
 - Hòa: +50 điểm.
 - Thua: +20 điểm.

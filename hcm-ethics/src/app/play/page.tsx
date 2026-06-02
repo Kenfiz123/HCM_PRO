@@ -20,7 +20,7 @@ import {
   WinnerState,
 } from "@/lib/gameLogic";
 import { getResultLabel } from "@/lib/scoring";
-import { submitScore } from "@/lib/supabaseClient";
+import { applyTargetCardEffect, ScoreRow, submitScore, TargetCardEffect } from "@/lib/supabaseClient";
 
 type Turn = "player" | "bot" | "round-end";
 type CardTone = "emerald" | "cyan" | "fuchsia" | "amber" | "rose" | "slate";
@@ -88,8 +88,8 @@ function makeCardDeck(): ScoreCard[] {
     {
       id: "steal",
       title: "Cướp điểm",
-      badge: "+25%",
-      description: "Cướp điểm từ bot: cộng 25% quỹ điểm hiện tại.",
+      badge: "Chọn người",
+      description: "Chọn một người trên leaderboard để cướp 25% điểm của họ.",
       kind: "steal",
       tone: "fuchsia",
     },
@@ -113,8 +113,8 @@ function makeCardDeck(): ScoreCard[] {
     {
       id: "split",
       title: "Chia điểm",
-      badge: "/2",
-      description: "Quỹ điểm bị chia đôi.",
+      badge: "Chọn người",
+      description: "Chọn một người trên leaderboard để chia đều tổng điểm của hai bên.",
       kind: "split",
       tone: "slate",
     },
@@ -156,10 +156,9 @@ function applyCardEffect(currentScore: number, card: ScoreCard): { nextScore: nu
   }
 
   if (card.kind === "steal") {
-    const stolen = Math.max(80, Math.round(currentScore * 0.25));
     return {
-      nextScore: currentScore + stolen,
-      message: `Cướp điểm thành công: +${stolen} điểm.`,
+      nextScore: currentScore,
+      message: "Chọn một người trên leaderboard để cướp điểm.",
     };
   }
 
@@ -172,8 +171,8 @@ function applyCardEffect(currentScore: number, card: ScoreCard): { nextScore: nu
 
   if (card.kind === "split") {
     return {
-      nextScore: Math.floor(currentScore / 2),
-      message: "Quỹ điểm bị chia đôi.",
+      nextScore: currentScore,
+      message: "Chọn một người trên leaderboard để chia điểm.",
     };
   }
 
@@ -182,6 +181,10 @@ function applyCardEffect(currentScore: number, card: ScoreCard): { nextScore: nu
     nextScore: currentScore + delta,
     message: delta >= 0 ? `${card.title}: +${delta} điểm.` : `${card.title}: ${delta} điểm.`,
   };
+}
+
+function isTargetCard(card: ScoreCard): card is ScoreCard & { kind: TargetCardEffect } {
+  return card.kind === "steal" || card.kind === "split";
 }
 
 export default function PlayPage() {
@@ -200,6 +203,8 @@ export default function PlayPage() {
   const [enhancedBotNext, setEnhancedBotNext] = useState(false);
   const [currentQuestion, setCurrentQuestion] = useState<QuizQuestion | null>(null);
   const [cardChoices, setCardChoices] = useState<ScoreCard[] | null>(null);
+  const [targetingCard, setTargetingCard] = useState<(ScoreCard & { kind: TargetCardEffect }) | null>(null);
+  const [targetActionLoading, setTargetActionLoading] = useState(false);
   const [cardMessage, setCardMessage] = useState<string | null>(null);
   const [askedQuestionIds, setAskedQuestionIds] = useState<string[]>([]);
   const [pendingBotAfterQuiz, setPendingBotAfterQuiz] = useState(false);
@@ -234,6 +239,8 @@ export default function PlayPage() {
     setEnhancedBotNext(false);
     setCurrentQuestion(null);
     setCardChoices(null);
+    setTargetingCard(null);
+    setTargetActionLoading(false);
     setPendingBotAfterQuiz(false);
     setSubmitStatus(null);
   }
@@ -330,7 +337,7 @@ export default function PlayPage() {
   }
 
   function handleCellClick(row: number, col: number) {
-    if (turn !== "player" || roundResult || currentQuestion || cardChoices || board[row][col]) {
+    if (turn !== "player" || roundResult || currentQuestion || cardChoices || targetingCard || board[row][col]) {
       return;
     }
 
@@ -386,10 +393,50 @@ export default function PlayPage() {
   }
 
   function chooseCard(card: ScoreCard) {
+    if (isTargetCard(card)) {
+      setCardChoices(null);
+      setTargetingCard(card);
+      setCardMessage(`${card.title}: chọn một người trên bảng xếp hạng bên phải để áp dụng.`);
+      return;
+    }
+
     const effect = applyCardEffect(scoreRef.current, card);
     setCardMessage(effect.message);
     updateScore(() => effect.nextScore);
     setCardChoices(null);
+    resumeAfterQuiz(false);
+  }
+
+  async function chooseTarget(row: ScoreRow) {
+    if (!targetingCard || targetActionLoading) {
+      return;
+    }
+
+    if (row.player_name === playerName) {
+      setCardMessage("Không thể chọn chính mình trên leaderboard. Hãy chọn một đối thủ khác.");
+      return;
+    }
+
+    setTargetActionLoading(true);
+    setCardMessage(`Đang áp dụng ${targetingCard.title} lên ${row.player_name}...`);
+
+    const { result, error } = await applyTargetCardEffect({
+      targetScoreId: row.id,
+      playerScore: scoreRef.current,
+      effect: targetingCard.kind,
+    });
+
+    setTargetActionLoading(false);
+
+    if (error || !result) {
+      setCardMessage(`Không áp dụng được lá ${targetingCard.title}: ${error ?? "lỗi không xác định"}`);
+      return;
+    }
+
+    scoreRef.current = result.player_score;
+    setScore(result.player_score);
+    setCardMessage(`${result.message} Điểm của bạn hiện là ${result.player_score}.`);
+    setTargetingCard(null);
     resumeAfterQuiz(false);
   }
 
@@ -409,6 +456,8 @@ export default function PlayPage() {
     setEnhancedBotNext(false);
     setCurrentQuestion(null);
     setCardChoices(null);
+    setTargetingCard(null);
+    setTargetActionLoading(false);
     setCardMessage(null);
     setAskedQuestionIds([]);
     setPendingBotAfterQuiz(false);
@@ -487,7 +536,13 @@ export default function PlayPage() {
 
           <GameBoard
             board={board}
-            disabled={turn !== "player" || Boolean(roundResult) || Boolean(currentQuestion) || Boolean(cardChoices)}
+            disabled={
+              turn !== "player" ||
+              Boolean(roundResult) ||
+              Boolean(currentQuestion) ||
+              Boolean(cardChoices) ||
+              Boolean(targetingCard)
+            }
             onCellClick={handleCellClick}
             winnerState={winnerState}
           />
@@ -505,12 +560,30 @@ export default function PlayPage() {
         </section>
 
         <aside className="order-3 space-y-4">
-          <Leaderboard captureEnabled compact limit={5} />
+          <Leaderboard
+            captureEnabled
+            compact
+            limit={5}
+            selectMode={
+              targetingCard
+                ? {
+                    label: targetActionLoading ? "Đang xử lý" : "Chọn đối thủ",
+                    helper:
+                      targetingCard.kind === "steal"
+                        ? "Bấm người muốn cướp 25% điểm."
+                        : "Bấm người muốn chia đều điểm.",
+                    disabledPlayerName: playerName,
+                    onSelect: chooseTarget,
+                  }
+                : null
+            }
+          />
 
           <div className="rounded-[1.5rem] border border-white/10 bg-slate-950/50 p-5 text-sm leading-6 text-slate-300 backdrop-blur">
             <h2 className="mb-3 text-lg font-black text-white">Luật nhanh</h2>
             <p>Người chơi là X, bot là O. Ai có 5 quân liên tiếp theo ngang, dọc hoặc chéo sẽ thắng.</p>
             <p className="mt-3">Sau mỗi 3 lượt của bạn, game mở quiz. Đúng: +30 điểm và chọn 1 lá bài. Sai: mất 50% điểm.</p>
+            <p className="mt-3">Lá Cướp điểm và Chia điểm sẽ yêu cầu chọn trực tiếp một người trên leaderboard.</p>
             <p className="mt-3">Thắng ván sẽ cộng thưởng và tự sang ván mới, điểm không bị reset.</p>
           </div>
         </aside>
@@ -544,6 +617,29 @@ export default function PlayPage() {
               ))}
             </div>
           </div>
+        </div>
+      ) : null}
+
+      {targetingCard ? (
+        <div className="fixed bottom-4 left-1/2 z-50 w-[min(92vw,680px)] -translate-x-1/2 rounded-[1.5rem] border border-cyan-300/30 bg-slate-950/95 p-4 text-center text-white shadow-2xl shadow-cyan-900/40">
+          <p className="text-sm font-black uppercase tracking-[0.2em] text-cyan-200">{targetingCard.title}</p>
+          <p className="mt-1 text-sm text-slate-200">
+            {targetingCard.kind === "steal"
+              ? "Hãy bấm một đối thủ trên leaderboard để cướp 25% điểm của họ."
+              : "Hãy bấm một đối thủ trên leaderboard để chia đều tổng điểm của hai bên."}
+          </p>
+          <button
+            className="mt-3 rounded-full border border-white/15 px-4 py-2 text-xs font-bold text-slate-100 transition hover:bg-white/10"
+            disabled={targetActionLoading}
+            onClick={() => {
+              setTargetingCard(null);
+              setCardMessage("Đã bỏ chọn lá mục tiêu, game tiếp tục.");
+              resumeAfterQuiz(false);
+            }}
+            type="button"
+          >
+            Bỏ qua lá này
+          </button>
         </div>
       ) : null}
 
