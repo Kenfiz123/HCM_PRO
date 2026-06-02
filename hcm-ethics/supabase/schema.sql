@@ -176,6 +176,7 @@ revoke all on function public.upsert_player_score(text, int, text, int, int, int
 grant execute on function public.upsert_player_score(text, int, text, int, int, int) to anon, authenticated;
 
 drop function if exists public.apply_score_card_target_effect(uuid, int, text);
+drop function if exists public.apply_score_card_target_effect(uuid, int, text, int);
 
 create or replace function public.apply_score_card_target_effect(
   p_target_score_id uuid,
@@ -267,3 +268,5 @@ begin
 exception
   when duplicate_object then null;
 end $$;
+
+notify pgrst, 'reload schema';

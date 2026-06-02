@@ -1,4 +1,5 @@
 drop function if exists public.apply_score_card_target_effect(uuid, int, text);
+drop function if exists public.apply_score_card_target_effect(uuid, int, text, int);
 
 create or replace function public.apply_score_card_target_effect(
   p_target_score_id uuid,
@@ -68,3 +69,5 @@ $$;
 
 revoke all on function public.apply_score_card_target_effect(uuid, int, text, int) from public;
 grant execute on function public.apply_score_card_target_effect(uuid, int, text, int) to anon, authenticated;
+
+notify pgrst, 'reload schema';

@@ -14,12 +14,6 @@ type ChatResponse = {
   source?: "ai" | "local";
 };
 
-const quickQuestions = [
-  "Đạo đức là gốc nghĩa là gì?",
-  "4 phẩm chất đạo đức là gì?",
-  "Nguyên tắc tu dưỡng là gì?",
-];
-
 const openingMessage: ChatMessage = {
   content: "Mình trả lời trực tiếp, đúng trọng tâm và rõ ý theo câu hỏi của bạn.",
   id: "opening",
@@ -95,7 +89,7 @@ export default function PresentationChatbot() {
       {isOpen ? (
         <section
           aria-label="Chatbot AI thuyết trình"
-          className="fixed bottom-24 right-4 z-[70] flex max-h-[min(76vh,620px)] w-[calc(100vw-2rem)] max-w-[430px] flex-col overflow-hidden rounded-3xl border border-[#ffd700]/35 bg-[#1a0a00]/95 text-white shadow-2xl shadow-black/40 backdrop-blur"
+          className="fixed bottom-24 right-4 z-[70] flex min-h-[min(72vh,680px)] max-h-[min(86vh,760px)] w-[calc(100vw-2rem)] max-w-[560px] flex-col overflow-hidden rounded-3xl border border-[#ffd700]/35 bg-[#1a0a00]/95 text-white shadow-2xl shadow-black/40 backdrop-blur"
         >
           <header className="flex items-center justify-between gap-3 border-b border-white/10 bg-gradient-to-r from-[#8b0000] to-[#c8102e] px-5 py-4">
             <div>
@@ -115,7 +109,7 @@ export default function PresentationChatbot() {
           <div className="flex-1 space-y-3 overflow-y-auto px-4 py-4">
             {messages.map((message) => (
               <div
-                className={`max-w-[88%] rounded-2xl px-4 py-3 text-sm leading-6 ${
+                className={`max-w-[90%] rounded-2xl px-4 py-3 text-base leading-7 ${
                   message.role === "user"
                     ? "ml-auto bg-[#ffd700] font-semibold text-[#5b1200]"
                     : "border border-white/10 bg-white/10 text-white/90"
@@ -134,20 +128,6 @@ export default function PresentationChatbot() {
           </div>
 
           <div className="border-t border-white/10 px-4 py-4">
-            <div className="mb-3 flex flex-wrap gap-2">
-              {quickQuestions.map((quickQuestion) => (
-                <button
-                  className="rounded-full border border-[#ffd700]/25 bg-[#ffd700]/10 px-3 py-2 text-xs font-bold text-[#fff0a0] transition hover:bg-[#ffd700]/20 disabled:cursor-not-allowed disabled:opacity-50"
-                  disabled={isLoading}
-                  key={quickQuestion}
-                  onClick={() => void submitQuestion(quickQuestion)}
-                  type="button"
-                >
-                  {quickQuestion}
-                </button>
-              ))}
-            </div>
-
             <form className="flex gap-2" onSubmit={handleSubmit}>
               <input
                 className="min-w-0 flex-1 rounded-2xl border border-white/15 bg-white px-4 py-3 text-sm font-semibold text-[#1a0a00] outline-none transition placeholder:text-[#7c5f4c] focus:border-[#ffd700] focus:ring-4 focus:ring-[#ffd700]/25"

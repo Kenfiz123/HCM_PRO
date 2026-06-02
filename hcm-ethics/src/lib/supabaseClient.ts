@@ -95,6 +95,13 @@ export async function applyTargetCardEffect(payload: {
   });
 
   if (error) {
+    if (error.message.includes("apply_score_card_target_effect") && error.message.includes("schema cache")) {
+      return {
+        result: null,
+        error: "Supabase chưa cập nhật RPC thẻ bài. Hãy chạy supabase/fix-card-percent-effects.sql trong SQL Editor rồi thử lại.",
+      };
+    }
+
     return { result: null, error: error.message };
   }
 

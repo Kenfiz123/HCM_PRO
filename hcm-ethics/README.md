@@ -42,7 +42,7 @@ File SQL cũng tạo các RPC:
 Client không cần quyền update/delete trực tiếp; các RPC server-side sẽ cập nhật điểm an toàn hơn.
 
 Nếu bấm `Xóa data BXH` và Supabase báo `DELETE requires a WHERE clause`, hoặc sau khi thêm pass xóa BXH, chạy file `supabase/fix-clear-leaderboard.sql` trong SQL Editor để cập nhật lại RPC `clear_leaderboard` và chỉ cho service role được gọi hàm xóa.
-Nếu dùng thẻ `Cướp 30%/50%/70%/100%`, chạy file `supabase/fix-card-percent-effects.sql` trong SQL Editor để cập nhật RPC tính phần trăm.
+Nếu dùng thẻ `Cướp 30%/50%/70%/100%`, chạy file `supabase/fix-card-percent-effects.sql` trong SQL Editor để cập nhật RPC tính phần trăm. File này cũng reload schema cache để xử lý lỗi `Could not find the function public.apply_score_card_target_effect(...) in the schema cache`.
 
 ## Thêm env
 
