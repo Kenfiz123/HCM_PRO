@@ -1,14 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
+const DEFAULT_GAME_URL = "https://hcm-geneekcu9-kenfis-projects.vercel.app/game";
 
 export default function QRCodeJoin() {
-  const [origin] = useState(() => process.env.NEXT_PUBLIC_SITE_URL || (typeof window === "undefined" ? "" : window.location.origin));
-
-  const joinUrl = useMemo(() => {
-    const baseUrl = origin || "https://your-vercel-app.vercel.app";
-    return `${baseUrl.replace(/\/$/, "")}/game`;
-  }, [origin]);
+  const joinUrl = normalizeGameUrl(process.env.NEXT_PUBLIC_GAME_URL || DEFAULT_GAME_URL);
 
   const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=360x360&margin=18&data=${encodeURIComponent(
     joinUrl,
@@ -28,4 +23,14 @@ export default function QRCodeJoin() {
       </a>
     </div>
   );
+}
+
+function normalizeGameUrl(url: string) {
+  const trimmedUrl = url.trim().replace(/\/$/, "");
+
+  if (trimmedUrl.endsWith("/game")) {
+    return trimmedUrl;
+  }
+
+  return `${trimmedUrl}/game`;
 }
