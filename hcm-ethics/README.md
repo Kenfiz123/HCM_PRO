@@ -49,10 +49,13 @@ Copy `.env.example` thành `.env.local` trong thư mục `hcm-ethics`:
 NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_ANON_KEY=
 NEXT_PUBLIC_SITE_URL=http://localhost:3000
+OPENAI_API_KEY=
+OPENAI_MODEL=gpt-4o-mini
 ```
 
 Chỉ dùng anon key ở client. Không đưa `SUPABASE_SERVICE_ROLE_KEY` vào frontend.
 `NEXT_PUBLIC_SUPABASE_URL` nên là URL project gốc dạng `https://xxxx.supabase.co`, không cần thêm `/rest/v1`. App vẫn tự chuẩn hóa nếu lỡ nhập URL có `/rest/v1`.
+`OPENAI_API_KEY` chỉ chạy ở server qua `/api/presentation-chat`, không được thêm tiền tố `NEXT_PUBLIC_`. Nếu chưa cấu hình key, chatbot vẫn trả lời bằng fallback nội bộ theo nội dung bài.
 
 Nếu chưa cấu hình Supabase, game vẫn chơi được. Leaderboard sẽ hiển thị trạng thái `Chưa kết nối Supabase`.
 
@@ -88,6 +91,8 @@ npm run build
    - `NEXT_PUBLIC_SUPABASE_URL`
    - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
    - `NEXT_PUBLIC_SITE_URL` bằng URL Vercel public.
+   - `OPENAI_API_KEY` để bật chatbot AI cho trang thuyết trình.
+   - `OPENAI_MODEL` tùy chọn, mặc định `gpt-4o-mini`.
 4. Deploy.
 
 Nếu deploy từ root repo, `vercel.json` ở root đã trỏ build về workspace `hcm-ethics`. Nếu chọn root directory là `hcm-ethics` trong Vercel, Vercel sẽ dùng `hcm-ethics/vercel.json`.

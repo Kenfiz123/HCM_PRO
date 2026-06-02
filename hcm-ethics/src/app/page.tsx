@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import PresentationChatbot from "@/components/PresentationChatbot";
 
 const foundations = [
   {
@@ -197,6 +198,7 @@ export default function PresentationPage() {
           </div>
         </div>
       </section>
+      <PresentationChatbot />
     </main>
   );
 }
