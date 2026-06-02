@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { CLEAR_LEADERBOARD_CONFIRM, LEADERBOARD_REFRESH_EVENT } from "@/lib/leaderboardEvents";
 import { clearLeaderboard, fetchLeaderboard, ScoreRow, subscribeLeaderboard } from "@/lib/supabaseClient";
 import { getResultLabel } from "@/lib/scoring";
 
@@ -121,9 +122,11 @@ export default function Leaderboard({
     const unsubscribe = subscribeLeaderboard(() => {
       void loadRows();
     });
+    window.addEventListener(LEADERBOARD_REFRESH_EVENT, loadRows);
 
     return () => {
       active = false;
+      window.removeEventListener(LEADERBOARD_REFRESH_EVENT, loadRows);
       unsubscribe?.();
     };
   }, [limit]);
@@ -133,9 +136,7 @@ export default function Leaderboard({
       return;
     }
 
-    const confirmed = window.confirm(
-      "Chỉ xóa data bảng xếp hạng. Điểm sẽ bị xóa khỏi leaderboard realtime hiện tại. Bạn chắc chắn muốn xóa?",
-    );
+    const confirmed = window.confirm(CLEAR_LEADERBOARD_CONFIRM);
     if (!confirmed) {
       return;
     }
@@ -146,6 +147,7 @@ export default function Leaderboard({
       setStatus(result.error);
     } else {
       setRows([]);
+      window.dispatchEvent(new Event(LEADERBOARD_REFRESH_EVENT));
     }
     setClearing(false);
   }

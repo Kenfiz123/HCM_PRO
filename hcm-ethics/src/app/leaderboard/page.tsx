@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Leaderboard from "@/components/Leaderboard";
+import LeaderboardClearButton from "@/components/LeaderboardClearButton";
 
 export default function LeaderboardPage() {
   return (
@@ -10,13 +11,14 @@ export default function LeaderboardPage() {
             <p className="text-sm font-bold uppercase tracking-[0.22em] text-cyan-200">Caro Quiz Battle</p>
             <h1 className="neon-title mt-2 text-4xl font-black md:text-6xl">Top người chơi</h1>
           </div>
-          <div className="flex gap-3">
+          <div className="flex flex-wrap gap-3">
             <Link
               className="rounded-2xl bg-cyan-300 px-5 py-3 font-black text-slate-950 transition hover:bg-cyan-200"
               href="/game"
             >
               Chơi ngay
             </Link>
+            <LeaderboardClearButton />
             <Link
               className="rounded-2xl border border-white/10 px-5 py-3 font-bold text-white transition hover:border-fuchsia-300 hover:bg-fuchsia-300/10"
               href="/presenter"
@@ -25,7 +27,7 @@ export default function LeaderboardPage() {
             </Link>
           </div>
         </div>
-        <Leaderboard captureEnabled clearEnabled limit={10} />
+        <Leaderboard captureEnabled limit={10} />
       </div>
     </main>
   );
