@@ -247,7 +247,8 @@ security definer
 set search_path = public
 as $$
 begin
-  delete from public.scores;
+  delete from public.scores
+  where id is not null;
 end;
 $$;
 

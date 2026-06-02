@@ -41,6 +41,8 @@ File SQL cũng tạo các RPC:
 
 Client không cần quyền update/delete trực tiếp; các RPC server-side sẽ cập nhật điểm an toàn hơn.
 
+Nếu bấm `Xóa data BXH` và Supabase báo `DELETE requires a WHERE clause`, chạy file `supabase/fix-clear-leaderboard.sql` trong SQL Editor để cập nhật lại RPC `clear_leaderboard`.
+
 ## Thêm env
 
 Copy `.env.example` thành `.env.local` trong thư mục `hcm-ethics`:

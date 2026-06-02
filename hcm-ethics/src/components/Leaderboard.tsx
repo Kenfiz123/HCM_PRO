@@ -102,6 +102,7 @@ export default function Leaderboard({
   const [rows, setRows] = useState<ScoreRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [status, setStatus] = useState<string | null>(null);
+  const [clearError, setClearError] = useState<string | null>(null);
   const [clearing, setClearing] = useState(false);
 
   useEffect(() => {
@@ -141,10 +142,11 @@ export default function Leaderboard({
       return;
     }
 
+    setClearError(null);
     setClearing(true);
     const result = await clearLeaderboard();
     if (result.error) {
-      setStatus(result.error);
+      setClearError(result.error);
     } else {
       setRows([]);
       window.dispatchEvent(new Event(LEADERBOARD_REFRESH_EVENT));
@@ -197,6 +199,11 @@ export default function Leaderboard({
           </span>
         </div>
       </div>
+      {clearError ? (
+        <div className="border-b border-rose-300/20 bg-rose-300/10 px-5 py-3 text-sm font-semibold text-rose-100">
+          {clearError}
+        </div>
+      ) : null}
 
       {loading ? (
         <div className="p-8 text-center text-slate-300">Đang tải leaderboard...</div>
