@@ -47,9 +47,10 @@ type ScoreCard = {
   value?: number;
 };
 
-const CARD_REVEAL_MS = 850;
+const BOT_THINK_DELAY_MS = 250;
+const CARD_REVEAL_MS = 650;
 const FREEZE_DURATION_MS = 8000;
-const SCORE_SYNC_DELAY_MS = 60;
+const SCORE_SYNC_DELAY_MS = 30;
 
 function resultFromWinner(winner: "X" | "O" | null): GameResult {
   if (winner === "X") {
@@ -515,7 +516,7 @@ export default function PlayPage() {
       }
 
       setTurn("player");
-    }, 450 + freezeDelay);
+    }, BOT_THINK_DELAY_MS + freezeDelay);
   }
 
   function maybeOpenQuiz(nextBoard: Board, nextPlayerMoveCount: number): boolean {

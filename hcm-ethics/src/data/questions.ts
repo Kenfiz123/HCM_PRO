@@ -245,6 +245,286 @@ export const quizQuestions: QuizQuestion[] = [
       "Nội dung nêu tư tưởng đạo đức Hồ Chí Minh là nền tảng tư tưởng và đạo đức của Đảng Cộng sản Việt Nam.",
     difficulty: "medium",
   },
+  {
+    id: "q19",
+    question: "Vì sao Hồ Chí Minh coi đạo đức là gốc của người cách mạng?",
+    options: [
+      "Vì đạo đức định hướng hành động và giúp người cách mạng vượt qua khó khăn",
+      "Vì đạo đức thay thế hoàn toàn năng lực chuyên môn",
+      "Vì đạo đức chỉ cần cho người làm lãnh đạo",
+      "Vì đạo đức không liên quan đến thực tiễn",
+    ],
+    correctAnswerIndex: 0,
+    explanation:
+      "Đạo đức là gốc vì nó định hướng tài năng, hành động và ý chí phục vụ nhân dân của người cách mạng.",
+    difficulty: "medium",
+  },
+  {
+    id: "q20",
+    question: "Phẩm chất 'cần' trong cần, kiệm, liêm, chính nhấn mạnh điều gì?",
+    options: [
+      "Siêng năng, chăm chỉ, làm việc có kế hoạch",
+      "Tiêu dùng thật nhiều để kích thích sản xuất",
+      "Tránh làm việc khó",
+      "Chỉ làm việc khi được khen thưởng",
+    ],
+    correctAnswerIndex: 0,
+    explanation:
+      "Cần là siêng năng, chăm chỉ, bền bỉ và biết tổ chức công việc một cách hiệu quả.",
+    difficulty: "easy",
+  },
+  {
+    id: "q21",
+    question: "Phẩm chất 'kiệm' được hiểu đúng là gì?",
+    options: [
+      "Tiết kiệm thời gian, tiền của, công sức nhưng không keo kiệt",
+      "Không chi tiêu bất kỳ việc gì",
+      "Chỉ tiết kiệm cho bản thân",
+      "Tiết kiệm bằng cách giảm chất lượng công việc",
+    ],
+    correctAnswerIndex: 0,
+    explanation:
+      "Kiệm là sử dụng hợp lý thời gian, tiền của và công sức, tránh lãng phí nhưng không phải keo kiệt.",
+    difficulty: "easy",
+  },
+  {
+    id: "q22",
+    question: "Phẩm chất 'chính' trong tư tưởng đạo đức Hồ Chí Minh là gì?",
+    options: [
+      "Ngay thẳng, đứng đắn, không gian dối",
+      "Luôn làm theo lợi ích cá nhân",
+      "Chỉ cần nói hay trước tập thể",
+      "Tránh góp ý cho sai phạm",
+    ],
+    correctAnswerIndex: 0,
+    explanation:
+      "Chính là sống ngay thẳng, trung thực, có trách nhiệm và không gian dối trong lời nói, việc làm.",
+    difficulty: "easy",
+  },
+  {
+    id: "q23",
+    question: "Nói đi đôi với làm yêu cầu người rèn luyện đạo đức phải làm gì?",
+    options: [
+      "Thống nhất giữa lời nói, cam kết và hành động thực tế",
+      "Nói thật nhiều để tạo ảnh hưởng",
+      "Chỉ cần làm, không cần giải thích",
+      "Hứa trước rồi tính sau",
+    ],
+    correctAnswerIndex: 0,
+    explanation:
+      "Nói đi đôi với làm yêu cầu lời nói phải được chứng minh bằng hành động cụ thể và nhất quán.",
+    difficulty: "easy",
+  },
+  {
+    id: "q24",
+    question: "Nêu gương đạo đức có ý nghĩa gì trong giáo dục đạo đức?",
+    options: [
+      "Tạo sức thuyết phục bằng hành động mẫu mực",
+      "Thay thế hoàn toàn việc học tập lý luận",
+      "Chỉ dùng để gây chú ý",
+      "Chỉ áp dụng với học sinh nhỏ tuổi",
+    ],
+    correctAnswerIndex: 0,
+    explanation:
+      "Nêu gương giúp đạo đức trở nên cụ thể, dễ noi theo và có sức thuyết phục hơn lời nói suông.",
+    difficulty: "medium",
+  },
+  {
+    id: "q25",
+    question: "Xây đi đôi với chống trong rèn luyện đạo đức nghĩa là gì?",
+    options: [
+      "Bồi dưỡng phẩm chất tốt đồng thời chống thói hư, chủ nghĩa cá nhân",
+      "Chỉ phê bình người khác",
+      "Chỉ học điều tốt, không cần sửa sai",
+      "Chống mọi ý kiến khác biệt",
+    ],
+    correctAnswerIndex: 0,
+    explanation:
+      "Xây đi đôi với chống là vừa vun đắp cái tốt, vừa đấu tranh với cái xấu trong bản thân và xã hội.",
+    difficulty: "medium",
+  },
+  {
+    id: "q26",
+    question: "Biểu hiện đúng của yêu thương con người theo tư tưởng Hồ Chí Minh là gì?",
+    options: [
+      "Quan tâm, giúp đỡ con người bằng hành động thiết thực",
+      "Chỉ thương người thân quen",
+      "Chỉ nói lời tốt đẹp mà không hành động",
+      "Giúp người khác để được nổi tiếng",
+    ],
+    correctAnswerIndex: 0,
+    explanation:
+      "Yêu thương con người phải thể hiện qua sự tôn trọng, chia sẻ và hành động giúp đỡ thiết thực.",
+    difficulty: "easy",
+  },
+  {
+    id: "q27",
+    question: "Tinh thần quốc tế trong sáng không đối lập với điều gì?",
+    options: [
+      "Chủ nghĩa yêu nước chân chính",
+      "Chủ nghĩa cá nhân",
+      "Lối sống ích kỷ",
+      "Tư tưởng cục bộ hẹp hòi",
+    ],
+    correctAnswerIndex: 0,
+    explanation:
+      "Tinh thần quốc tế trong sáng gắn bó với chủ nghĩa yêu nước chân chính và đoàn kết giữa các dân tộc.",
+    difficulty: "medium",
+  },
+  {
+    id: "q28",
+    question: "Trong rèn luyện đạo đức, tự phê bình có vai trò gì?",
+    options: [
+      "Giúp nhận ra khuyết điểm để sửa chữa và tiến bộ",
+      "Làm giảm uy tín nên không cần thực hiện",
+      "Chỉ dùng để chỉ trích người khác",
+      "Chỉ thực hiện khi bị bắt buộc",
+    ],
+    correctAnswerIndex: 0,
+    explanation:
+      "Tự phê bình giúp mỗi người nhìn lại mình, sửa khuyết điểm và rèn luyện đạo đức bền bỉ hơn.",
+    difficulty: "medium",
+  },
+  {
+    id: "q29",
+    question: "Vì sao tu dưỡng đạo đức phải diễn ra suốt đời?",
+    options: [
+      "Vì hoàn cảnh luôn thay đổi và con người phải thường xuyên tự rèn mình",
+      "Vì đạo đức chỉ hình thành khi về già",
+      "Vì học một lần là đủ",
+      "Vì đạo đức không cần thực hành",
+    ],
+    correctAnswerIndex: 0,
+    explanation:
+      "Tu dưỡng đạo đức là việc suốt đời vì mỗi giai đoạn đều có thử thách và yêu cầu rèn luyện mới.",
+    difficulty: "medium",
+  },
+  {
+    id: "q30",
+    question: "Đạo đức cách mạng khác lối sống cá nhân chủ nghĩa ở điểm nào?",
+    options: [
+      "Đặt lợi ích chung, nhân dân và tập thể lên trên lợi ích ích kỷ",
+      "Luôn đặt lợi ích cá nhân lên đầu",
+      "Tránh trách nhiệm với cộng đồng",
+      "Chỉ quan tâm đến danh tiếng riêng",
+    ],
+    correctAnswerIndex: 0,
+    explanation:
+      "Đạo đức cách mạng hướng tới lợi ích chung và trách nhiệm với nhân dân, trái với lối sống ích kỷ cá nhân.",
+    difficulty: "medium",
+  },
+  {
+    id: "q31",
+    question: "Trong học tập, vận dụng phẩm chất 'cần' thể hiện qua hành động nào?",
+    options: [
+      "Chủ động học đều, làm bài đúng hạn và kiên trì sửa lỗi",
+      "Chỉ học trước ngày kiểm tra",
+      "Sao chép bài của bạn",
+      "Bỏ qua phần khó",
+    ],
+    correctAnswerIndex: 0,
+    explanation:
+      "Trong học tập, cần thể hiện ở sự chăm chỉ, chủ động, có kế hoạch và kiên trì hoàn thành nhiệm vụ.",
+    difficulty: "easy",
+  },
+  {
+    id: "q32",
+    question: "Trong đời sống học sinh, 'liêm' có thể biểu hiện như thế nào?",
+    options: [
+      "Không gian lận, không lấy của người khác, tôn trọng của công",
+      "Lấy đồ chung vì không ai biết",
+      "Gian lận nếu điểm số quan trọng",
+      "Chỉ trung thực khi có người giám sát",
+    ],
+    correctAnswerIndex: 0,
+    explanation:
+      "Liêm trong đời sống học sinh là trung thực, không gian lận và biết tôn trọng tài sản chung, tài sản người khác.",
+    difficulty: "easy",
+  },
+  {
+    id: "q33",
+    question: "Hành động nào phù hợp với nguyên tắc đặt lợi ích chung lên trên lợi ích cá nhân?",
+    options: [
+      "Sẵn sàng nhận phần khó khi tập thể cần và làm đúng trách nhiệm",
+      "Chỉ chọn việc dễ cho mình",
+      "Đổ lỗi cho người khác khi nhóm thất bại",
+      "Làm việc nhóm theo cảm hứng cá nhân",
+    ],
+    correctAnswerIndex: 0,
+    explanation:
+      "Đặt lợi ích chung lên trên lợi ích cá nhân thể hiện ở tinh thần trách nhiệm, hợp tác và sẵn sàng đóng góp cho tập thể.",
+    difficulty: "medium",
+  },
+  {
+    id: "q34",
+    question: "Giáo dục đạo đức cho thế hệ trẻ cần gắn với nội dung nào?",
+    options: [
+      "Lý tưởng sống, lòng yêu nước, trách nhiệm với gia đình và xã hội",
+      "Chỉ kiến thức thi cử",
+      "Chỉ kỹ năng kiếm tiền",
+      "Chỉ hoạt động giải trí",
+    ],
+    correctAnswerIndex: 0,
+    explanation:
+      "Giáo dục đạo đức cho thế hệ trẻ cần bồi dưỡng lý tưởng, lòng yêu nước và trách nhiệm trong học tập, đời sống.",
+    difficulty: "medium",
+  },
+  {
+    id: "q35",
+    question: "Môi trường đạo đức lành mạnh trong nhà trường cần điều gì?",
+    options: [
+      "Tôn trọng, trung thực, hợp tác và kỷ luật tích cực",
+      "Cạnh tranh bằng mọi cách",
+      "Che giấu sai phạm để giữ thành tích",
+      "Chỉ quan tâm điểm số",
+    ],
+    correctAnswerIndex: 0,
+    explanation:
+      "Môi trường đạo đức lành mạnh cần sự tôn trọng, trung thực, hợp tác và kỷ luật giúp mỗi người tiến bộ.",
+    difficulty: "easy",
+  },
+  {
+    id: "q36",
+    question: "Vì sao đức và tài phải đi đôi với nhau?",
+    options: [
+      "Vì tài cần đạo đức định hướng, còn đức cần năng lực để hành động hiệu quả",
+      "Vì chỉ cần tài là đủ",
+      "Vì chỉ cần đức, không cần học tập",
+      "Vì đức và tài không ảnh hưởng nhau",
+    ],
+    correctAnswerIndex: 0,
+    explanation:
+      "Đức và tài bổ sung cho nhau: đạo đức định hướng mục tiêu đúng, tài năng giúp thực hiện mục tiêu hiệu quả.",
+    difficulty: "medium",
+  },
+  {
+    id: "q37",
+    question: "Chống chủ nghĩa cá nhân trước hết cần bắt đầu từ đâu?",
+    options: [
+      "Từ việc tự soi, tự sửa thói ích kỷ trong bản thân",
+      "Từ việc chỉ trích người khác",
+      "Từ việc né tránh trách nhiệm",
+      "Từ việc đặt mình cao hơn tập thể",
+    ],
+    correctAnswerIndex: 0,
+    explanation:
+      "Chống chủ nghĩa cá nhân phải bắt đầu từ tự phê bình, tự sửa mình và rèn thói quen vì lợi ích chung.",
+    difficulty: "medium",
+  },
+  {
+    id: "q38",
+    question: "Bài học thực tiễn quan trọng từ tư tưởng đạo đức Hồ Chí Minh là gì?",
+    options: [
+      "Rèn đạo đức qua việc làm cụ thể hằng ngày, không chỉ qua khẩu hiệu",
+      "Chỉ cần hiểu lý thuyết là đủ",
+      "Đạo đức không liên quan đến học tập",
+      "Rèn luyện đạo đức chỉ dành cho cán bộ",
+    ],
+    correctAnswerIndex: 0,
+    explanation:
+      "Tư tưởng đạo đức Hồ Chí Minh nhấn mạnh rèn luyện bằng hành động cụ thể, thường xuyên và gắn với đời sống.",
+    difficulty: "hard",
+  },
 ];
 
 export function getRandomQuestion(excludedIds: string[] = []): QuizQuestion | null {
