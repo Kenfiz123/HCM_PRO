@@ -10,6 +10,17 @@ type DirectionEvaluation = {
   score: number;
 };
 
+type ThreatSummary = {
+  score: number;
+  win: boolean;
+  openFours: number;
+  fours: number;
+  openThrees: number;
+  threes: number;
+  openTwos: number;
+  maxConsecutive: number;
+};
+
 type ScoreWeights = {
   win: number;
   four: number;
@@ -22,6 +33,7 @@ type ScoreWeights = {
 const BOT_SYMBOL: Mark = "O";
 const PLAYER_SYMBOL: Mark = "X";
 const CANDIDATE_RADIUS = 2;
+const LINE_SCAN_RADIUS = WIN_LENGTH - 1;
 
 const DIRECTIONS = [
   { dx: 0, dy: 1 },
@@ -77,13 +89,43 @@ function findBestMoveWithOptions(
     return blockingMove;
   }
 
+  const botFourMove = findBestThreatMove(board, candidates, botSymbol, ATTACK_WEIGHTS, (threat) =>
+    threat.openFours > 0 || threat.fours > 0,
+  );
+  if (botFourMove) {
+    return botFourMove;
+  }
+
+  const playerFourMove = findBestThreatMove(board, candidates, playerSymbol, DEFENSE_WEIGHTS, (threat) =>
+    threat.openFours > 0 || threat.fours > 0,
+  );
+  if (playerFourMove) {
+    return playerFourMove;
+  }
+
+  const botOpenThreeMove = findBestThreatMove(board, candidates, botSymbol, ATTACK_WEIGHTS, (threat) =>
+    threat.openThrees > 0 || threat.threes >= 2,
+  );
+  if (botOpenThreeMove) {
+    return botOpenThreeMove;
+  }
+
+  const playerOpenThreeMove = findBestThreatMove(board, candidates, playerSymbol, DEFENSE_WEIGHTS, (threat) =>
+    threat.openThrees > 0 || threat.threes >= 2,
+  );
+  if (playerOpenThreeMove) {
+    return playerOpenThreeMove;
+  }
+
   const defenseMultiplier = options.enhanced ? 1.18 : 1;
   let bestMove: Move | null = null;
   let bestScore = Number.NEGATIVE_INFINITY;
 
   for (const move of candidates) {
-    const attackScore = scorePattern(board, move.row, move.col, botSymbol, ATTACK_WEIGHTS);
-    const defenseScore = scorePattern(board, move.row, move.col, playerSymbol, DEFENSE_WEIGHTS) * defenseMultiplier;
+    const attackThreat = analyzeMoveThreat(board, move.row, move.col, botSymbol, ATTACK_WEIGHTS);
+    const defenseThreat = analyzeMoveThreat(board, move.row, move.col, playerSymbol, DEFENSE_WEIGHTS);
+    const attackScore = attackThreat.score;
+    const defenseScore = defenseThreat.score * defenseMultiplier;
     const positionalScore = getCenterScore(move.row, move.col) + getNeighborScore(board, move.row, move.col);
     const totalScore = attackScore + defenseScore + positionalScore;
 
@@ -215,14 +257,113 @@ function wouldWin(board: Board, row: number, col: number, symbol: Mark): boolean
 }
 
 function scorePattern(board: Board, row: number, col: number, symbol: Mark, weights: ScoreWeights): number {
+  return analyzeMoveThreat(board, row, col, symbol, weights).score;
+}
+
+function analyzeMoveThreat(board: Board, row: number, col: number, symbol: Mark, weights: ScoreWeights): ThreatSummary {
   if (!isInside(row, col) || board[row][col] !== null) {
-    return Number.NEGATIVE_INFINITY;
+    return {
+      score: Number.NEGATIVE_INFINITY,
+      win: false,
+      openFours: 0,
+      fours: 0,
+      openThrees: 0,
+      threes: 0,
+      openTwos: 0,
+      maxConsecutive: 0,
+    };
   }
 
-  return DIRECTIONS.reduce((total, direction) => {
+  const summary: ThreatSummary = {
+    score: 0,
+    win: false,
+    openFours: 0,
+    fours: 0,
+    openThrees: 0,
+    threes: 0,
+    openTwos: 0,
+    maxConsecutive: 0,
+  };
+
+  for (const direction of DIRECTIONS) {
     const evaluation = evaluateDirection(board, row, col, direction.dx, direction.dy, symbol);
-    return total + getDirectionPatternScore(evaluation.consecutive, evaluation.openEnds, weights);
-  }, 0);
+    const windowThreat = evaluateLineWindows(board, row, col, direction.dx, direction.dy, symbol, weights);
+
+    summary.score += Math.max(
+      getDirectionPatternScore(evaluation.consecutive, evaluation.openEnds, weights),
+      windowThreat.score,
+    );
+    summary.win ||= evaluation.consecutive >= WIN_LENGTH || windowThreat.win;
+    summary.openFours += windowThreat.openFours;
+    summary.fours += windowThreat.fours + Number(evaluation.consecutive === 4 && evaluation.openEnds === 1);
+    summary.openThrees += windowThreat.openThrees + Number(evaluation.consecutive === 3 && evaluation.openEnds === 2);
+    summary.threes += windowThreat.threes + Number(evaluation.consecutive === 3 && evaluation.openEnds === 1);
+    summary.openTwos += windowThreat.openTwos + Number(evaluation.consecutive === 2 && evaluation.openEnds === 2);
+    summary.maxConsecutive = Math.max(summary.maxConsecutive, evaluation.consecutive, windowThreat.maxConsecutive);
+  }
+
+  summary.score += getForkBonus(summary, weights);
+  return summary;
+}
+
+function evaluateLineWindows(
+  board: Board,
+  row: number,
+  col: number,
+  dx: number,
+  dy: number,
+  symbol: Mark,
+  weights: ScoreWeights,
+): ThreatSummary {
+  const opponent = symbol === "X" ? "O" : "X";
+  const cells: CellSnapshot[] = [];
+  const candidateIndex = LINE_SCAN_RADIUS;
+  const summary: ThreatSummary = {
+    score: 0,
+    win: false,
+    openFours: 0,
+    fours: 0,
+    openThrees: 0,
+    threes: 0,
+    openTwos: 0,
+    maxConsecutive: 0,
+  };
+
+  for (let offset = -LINE_SCAN_RADIUS; offset <= LINE_SCAN_RADIUS; offset += 1) {
+    const nextRow = row + dx * offset;
+    const nextCol = col + dy * offset;
+
+    cells.push({
+      mark: offset === 0 ? symbol : isInside(nextRow, nextCol) ? board[nextRow][nextCol] : opponent,
+    });
+  }
+
+  for (let start = 0; start <= cells.length - WIN_LENGTH; start += 1) {
+    const end = start + WIN_LENGTH - 1;
+    if (candidateIndex < start || candidateIndex > end) {
+      continue;
+    }
+
+    const window = cells.slice(start, start + WIN_LENGTH);
+    if (window.some((cell) => cell.mark === opponent)) {
+      continue;
+    }
+
+    const ownCount = window.filter((cell) => cell.mark === symbol).length;
+    const openEnds = Number(cells[start - 1]?.mark === null) + Number(cells[end + 1]?.mark === null);
+    const windowScore = getWindowScore(ownCount, openEnds, weights);
+
+    summary.score = Math.max(summary.score, windowScore);
+    summary.win ||= ownCount >= WIN_LENGTH;
+    summary.openFours += Number(ownCount === 4 && openEnds === 2);
+    summary.fours += Number(ownCount === 4 && openEnds < 2);
+    summary.openThrees += Number(ownCount === 3 && openEnds === 2);
+    summary.threes += Number(ownCount === 3 && openEnds === 1);
+    summary.openTwos += Number(ownCount === 2 && openEnds === 2);
+    summary.maxConsecutive = Math.max(summary.maxConsecutive, ownCount);
+  }
+
+  return summary;
 }
 
 function getDirectionPatternScore(consecutive: number, openEnds: number, weights: ScoreWeights): number {
@@ -251,6 +392,88 @@ function getDirectionPatternScore(consecutive: number, openEnds: number, weights
   }
 
   return 0;
+}
+
+type CellSnapshot = {
+  mark: Mark | null;
+};
+
+function getWindowScore(ownCount: number, openEnds: number, weights: ScoreWeights): number {
+  if (ownCount >= WIN_LENGTH) {
+    return weights.win;
+  }
+
+  if (ownCount === 4) {
+    return weights.four + (openEnds === 2 ? 60_000 : 0);
+  }
+
+  if (ownCount === 3 && openEnds === 2) {
+    return weights.openThree;
+  }
+
+  if (ownCount === 3 && openEnds === 1) {
+    return weights.semiOpenThree;
+  }
+
+  if (ownCount === 2 && openEnds === 2) {
+    return weights.openTwo;
+  }
+
+  if (ownCount === 2 && openEnds === 1) {
+    return weights.semiOpenTwo;
+  }
+
+  return 0;
+}
+
+function getForkBonus(threat: ThreatSummary, weights: ScoreWeights): number {
+  const fourThreats = threat.openFours + threat.fours;
+  const threeThreats = threat.openThrees + threat.threes;
+
+  if (fourThreats >= 2) {
+    return weights.four;
+  }
+
+  if (fourThreats >= 1 && threat.openThrees >= 1) {
+    return Math.round(weights.four * 0.75);
+  }
+
+  if (threat.openThrees >= 2) {
+    return weights.openThree;
+  }
+
+  if (threeThreats >= 2) {
+    return Math.round(weights.openThree * 0.55);
+  }
+
+  return 0;
+}
+
+function findBestThreatMove(
+  board: Board,
+  candidates: Move[],
+  symbol: Mark,
+  weights: ScoreWeights,
+  predicate: (threat: ThreatSummary) => boolean,
+): Move | null {
+  let bestMove: Move | null = null;
+  let bestScore = Number.NEGATIVE_INFINITY;
+
+  for (const move of candidates) {
+    const threat = analyzeMoveThreat(board, move.row, move.col, symbol, weights);
+    if (!predicate(threat)) {
+      continue;
+    }
+
+    const positionalScore = getCenterScore(move.row, move.col) + getNeighborScore(board, move.row, move.col);
+    const totalScore = threat.score + positionalScore;
+    if (totalScore > bestScore) {
+      bestScore = totalScore;
+      bestMove = move;
+    }
+  }
+
+  return bestMove;
 }
 
 function getCenterScore(row: number, col: number): number {
