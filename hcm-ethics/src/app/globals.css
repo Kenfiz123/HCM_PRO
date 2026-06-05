@@ -844,6 +844,110 @@ input {
   animation: shine-pass 0.9s ease;
 }
 
+.detail-card {
+  width: 100%;
+  cursor: pointer;
+}
+
+.detail-card:focus-visible,
+.gold-button:focus-visible,
+.glass-button:focus-visible,
+.nav-pill:focus-visible {
+  outline: 3px solid rgba(255, 215, 0, 0.82);
+  outline-offset: 4px;
+}
+
+.detail-card span:last-child {
+  position: relative;
+  z-index: 1;
+}
+
+.detail-card span:last-child::after {
+  display: inline-block;
+  padding-left: 0.35rem;
+  content: "→";
+  transition: transform 180ms ease;
+}
+
+.detail-card:hover span:last-child::after {
+  transform: translateX(4px);
+}
+
+.visual-story-card {
+  position: relative;
+  transition: transform 280ms ease, box-shadow 280ms ease;
+}
+
+.visual-story-card img {
+  filter: saturate(0.92) contrast(1.04);
+  transition: filter 260ms ease, transform 360ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.visual-story-card .relative::after {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, transparent 50%, rgba(26, 10, 0, 0.18));
+  content: "";
+  pointer-events: none;
+}
+
+.visual-story-card:hover {
+  box-shadow: 0 22px 48px rgba(139, 0, 0, 0.14);
+  transform: translateY(-4px);
+}
+
+.visual-story-card:hover img {
+  filter: saturate(1.05) contrast(1.08);
+  transform: scale(1.045);
+}
+
+.visual-ethic-link {
+  display: inline-flex;
+  max-width: 100%;
+  background: #fff0dc;
+  color: #c8102e;
+  line-height: 1.35;
+}
+
+.hover-detail {
+  max-height: 0;
+  margin-top: 0;
+  opacity: 0;
+  overflow: hidden;
+  padding-bottom: 0;
+  padding-top: 0;
+  transform: translateY(8px);
+  transition: max-height 260ms ease, margin-top 220ms ease, opacity 220ms ease, padding 220ms ease, transform 220ms ease;
+}
+
+.hover-detail-card:hover .hover-detail,
+.hover-detail-card:focus-within .hover-detail {
+  max-height: 9rem;
+  margin-top: 1rem;
+  opacity: 1;
+  padding-bottom: 1rem;
+  padding-top: 1rem;
+  transform: none;
+}
+
+.feature-hover {
+  transition: background-color 180ms ease, color 180ms ease, transform 180ms ease;
+}
+
+.feature-hover:hover {
+  background: #8b0000;
+  color: #fff0a0;
+  transform: translateX(3px);
+}
+
+.detail-modal-backdrop {
+  animation: backdrop-fade 0.22s ease both;
+}
+
+.detail-modal {
+  scrollbar-gutter: stable;
+}
+
 .number-chip,
 .quality-index {
   display: inline-flex;
