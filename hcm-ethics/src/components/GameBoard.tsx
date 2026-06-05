@@ -28,9 +28,9 @@ export default function GameBoard({
   onCellClick,
 }: GameBoardProps) {
   return (
-    <div className="relative mx-auto w-full max-w-[min(94vw,760px)]">
+    <div className="board-wrap relative mx-auto w-full max-w-[min(94vw,760px)]">
       <div
-        className="grid w-full gap-0.5 rounded-[1.5rem] border border-white/15 bg-slate-950/70 p-2 shadow-2xl shadow-fuchsia-900/20 backdrop-blur"
+        className="game-board grid w-full gap-0.5 rounded-[1.5rem] border border-white/15 bg-slate-950/70 p-2 shadow-2xl shadow-fuchsia-900/20 backdrop-blur"
         style={{ gridTemplateColumns: `repeat(${board.length}, minmax(0, 1fr))` }}
       >
         {board.map((row, rowIndex) =>
@@ -43,7 +43,7 @@ export default function GameBoard({
               <button
                 aria-label={`Ô ${rowIndex + 1}-${colIndex + 1}`}
                 className={[
-                  "aspect-square rounded-md border text-[clamp(0.78rem,3.2vw,1.7rem)] font-black leading-none transition duration-200",
+                  "board-cell aspect-square rounded-md border text-[clamp(0.78rem,3.2vw,1.7rem)] font-black leading-none transition duration-200",
                   "focus:outline-none focus:ring-2 focus:ring-cyan-300",
                   cell === "X"
                     ? "border-cyan-300/60 bg-cyan-400/15 text-cyan-200 shadow-lg shadow-cyan-500/20"
@@ -70,7 +70,7 @@ export default function GameBoard({
         )}
       </div>
       {frozen ? (
-        <div className="absolute inset-0 flex items-center justify-center rounded-[1.5rem] border border-cyan-200/40 bg-slate-950/55 text-center text-xl font-black text-cyan-100 shadow-inner backdrop-blur-sm">
+        <div className="frost-overlay absolute inset-0 flex items-center justify-center rounded-[1.5rem] border border-cyan-200/40 bg-slate-950/55 text-center text-xl font-black text-cyan-100 shadow-inner backdrop-blur-sm">
           {freezeLabel}
         </div>
       ) : null}

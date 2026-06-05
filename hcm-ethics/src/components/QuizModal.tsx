@@ -23,8 +23,8 @@ export default function QuizModal({ question, onResolve }: QuizModalProps) {
   const isCorrect = selectedIndex === question.correctAnswerIndex;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 p-4 backdrop-blur-md">
-      <div className="w-full max-w-lg overflow-hidden rounded-[1.5rem] border border-cyan-300/30 bg-slate-950 text-white shadow-2xl shadow-cyan-500/20">
+    <div className="modal-backdrop fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 p-4 backdrop-blur-md">
+      <div className="quiz-modal modal-pop w-full max-w-lg overflow-hidden rounded-[1.5rem] border border-cyan-300/30 bg-slate-950 text-white shadow-2xl shadow-cyan-500/20">
         <div className="border-b border-white/10 bg-gradient-to-r from-cyan-500/20 via-fuchsia-500/20 to-yellow-400/20 p-5">
           <div className="mb-2 flex items-center justify-between gap-3">
             <span className="rounded-full border border-cyan-300/40 bg-cyan-300/10 px-3 py-1 text-xs font-bold uppercase tracking-[0.2em] text-cyan-100">
@@ -45,7 +45,7 @@ export default function QuizModal({ question, onResolve }: QuizModalProps) {
             return (
               <button
                 className={[
-                  "w-full rounded-2xl border p-4 text-left text-sm font-semibold transition",
+                  "quiz-option w-full rounded-2xl border p-4 text-left text-sm font-semibold transition",
                   "focus:outline-none focus:ring-2 focus:ring-cyan-300",
                   !answered
                     ? "border-white/10 bg-white/[0.06] hover:border-cyan-300/70 hover:bg-cyan-300/10"
@@ -77,7 +77,7 @@ export default function QuizModal({ question, onResolve }: QuizModalProps) {
             </p>
             <p className="mt-2 text-sm leading-6 text-slate-300">{question.explanation}</p>
             <button
-              className="mt-5 w-full rounded-2xl bg-cyan-300 px-5 py-3 font-black text-slate-950 transition hover:bg-cyan-200"
+              className="energy-button mt-5 w-full rounded-2xl bg-cyan-300 px-5 py-3 font-black text-slate-950 transition hover:bg-cyan-200"
               onClick={() => onResolve(isCorrect)}
               type="button"
             >

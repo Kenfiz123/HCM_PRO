@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import ScrollEffects from "@/components/ScrollEffects";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -17,7 +18,10 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           rel="stylesheet"
         />
       </head>
-      <body>{children}</body>
+      <body>
+        <ScrollEffects />
+        {children}
+      </body>
     </html>
   );
 }

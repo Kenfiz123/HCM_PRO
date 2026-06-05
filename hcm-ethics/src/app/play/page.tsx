@@ -742,32 +742,32 @@ export default function PlayPage() {
             : "Lượt của bạn";
 
   return (
-    <main className="game-shell min-h-screen px-4 py-5">
+    <main className="game-shell game-aurora min-h-screen px-4 py-5">
       <div className="mx-auto grid max-w-[1560px] gap-5 xl:grid-cols-[330px_1fr_390px]">
         <aside className="order-2 space-y-4 xl:order-1">
-          <div className="rounded-[1.5rem] border border-white/10 bg-white/[0.07] p-5 shadow-xl shadow-cyan-950/20 backdrop-blur">
+          <div className="game-panel rounded-[1.5rem] border border-white/10 bg-white/[0.07] p-5 shadow-xl shadow-cyan-950/20 backdrop-blur">
             <p className="text-sm font-bold uppercase tracking-[0.22em] text-cyan-200">Người chơi</p>
             <h1 className="mt-2 text-2xl font-black text-white">{playerName}</h1>
             <div className="mt-5 grid grid-cols-2 gap-3">
-              <div className="rounded-2xl bg-cyan-300/10 p-4">
+              <div className="stat-tile rounded-2xl bg-cyan-300/10 p-4">
                 <p className="text-xs text-slate-300">Điểm</p>
                 <p className="text-3xl font-black text-cyan-100">{score}</p>
               </div>
-              <div className="rounded-2xl bg-fuchsia-300/10 p-4">
+              <div className="stat-tile rounded-2xl bg-fuchsia-300/10 p-4">
                 <p className="text-xs text-slate-300">Lượt ván này</p>
                 <p className="text-3xl font-black text-fuchsia-100">{totalMoves}</p>
               </div>
             </div>
           </div>
 
-          <div className="rounded-[1.5rem] border border-white/10 bg-white/[0.07] p-5 backdrop-blur">
+          <div className="game-panel rounded-[1.5rem] border border-white/10 bg-white/[0.07] p-5 backdrop-blur">
             <h2 className="text-lg font-black text-white">Quiz</h2>
             <div className="mt-4 grid grid-cols-2 gap-3">
-              <div className="rounded-2xl bg-emerald-300/10 p-4">
+              <div className="stat-tile rounded-2xl bg-emerald-300/10 p-4">
                 <p className="text-xs text-slate-300">Đúng</p>
                 <p className="text-3xl font-black text-emerald-100">{correctAnswers}</p>
               </div>
-              <div className="rounded-2xl bg-rose-300/10 p-4">
+              <div className="stat-tile rounded-2xl bg-rose-300/10 p-4">
                 <p className="text-xs text-slate-300">Sai</p>
                 <p className="text-3xl font-black text-rose-100">{wrongAnswers}</p>
               </div>
@@ -775,13 +775,13 @@ export default function PlayPage() {
           </div>
 
           {cardMessage ? (
-            <div className="rounded-[1.5rem] border border-cyan-300/25 bg-cyan-300/10 p-5 text-sm font-semibold leading-6 text-cyan-50 backdrop-blur">
+            <div className="status-toast rounded-[1.5rem] border border-cyan-300/25 bg-cyan-300/10 p-5 text-sm font-semibold leading-6 text-cyan-50 backdrop-blur">
               {cardMessage}
             </div>
           ) : null}
         </aside>
 
-        <section className="order-1 rounded-[2rem] border border-white/10 bg-white/[0.06] p-4 shadow-2xl shadow-fuchsia-950/20 backdrop-blur xl:order-2">
+        <section className="play-board-panel order-1 rounded-[2rem] border border-white/10 bg-white/[0.06] p-4 shadow-2xl shadow-fuchsia-950/20 backdrop-blur xl:order-2">
           <div className="mb-4 flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
             <div>
               <p className="text-xs font-black uppercase tracking-[0.24em] text-cyan-200">Caro Quiz Battle</p>
@@ -821,7 +821,7 @@ export default function PlayPage() {
           />
 
           {roundResult ? (
-            <div className="mt-5 rounded-[1.5rem] border border-yellow-300/30 bg-yellow-300/10 p-5 text-center">
+            <div className="round-result-pop mt-5 rounded-[1.5rem] border border-yellow-300/30 bg-yellow-300/10 p-5 text-center">
               <p className="text-sm font-bold uppercase tracking-[0.22em] text-yellow-100">Kết quả ván</p>
               <h3 className="mt-2 text-4xl font-black text-white">{getResultLabel(roundResult)}</h3>
               <p className="mt-2 text-slate-200">
@@ -861,7 +861,7 @@ export default function PlayPage() {
             }
           />
 
-          <div className="rounded-[1.5rem] border border-white/10 bg-slate-950/50 p-5 text-sm leading-6 text-slate-300 backdrop-blur">
+          <div className="game-panel rounded-[1.5rem] border border-white/10 bg-slate-950/50 p-5 text-sm leading-6 text-slate-300 backdrop-blur">
             <h2 className="mb-3 text-lg font-black text-white">Luật nhanh</h2>
             <p>Bàn 15x15. Người chơi là X, bot là O. Ai có 5 quân liên tiếp theo ngang, dọc hoặc chéo sẽ thắng.</p>
             <p className="mt-3">Sau mỗi 3 lượt của bạn, game mở quiz. Đúng: +30 điểm và chọn 1 lá bài. Sai: mất 50% điểm.</p>
@@ -873,8 +873,8 @@ export default function PlayPage() {
       </div>
 
       {cardChoices ? (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 p-4 backdrop-blur-md">
-          <div className="w-full max-w-4xl rounded-[1.75rem] border border-white/10 bg-slate-950 p-5 text-white shadow-2xl shadow-fuchsia-900/30">
+        <div className="modal-backdrop fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 p-4 backdrop-blur-md">
+          <div className="modal-pop w-full max-w-4xl rounded-[1.75rem] border border-white/10 bg-slate-950 p-5 text-white shadow-2xl shadow-fuchsia-900/30">
             <div className="mb-5 text-center">
               <p className="text-sm font-black uppercase tracking-[0.24em] text-cyan-200">Chọn phần thưởng</p>
               <h2 className="mt-2 text-3xl font-black">Chọn 1 trong 3 lá bài</h2>
@@ -884,7 +884,7 @@ export default function PlayPage() {
               {cardChoices.map((card) => (
                 <button
                   className={[
-                    "min-h-56 rounded-[1.5rem] border p-5 text-center transition",
+                    "card-choice min-h-56 rounded-[1.5rem] border p-5 text-center transition",
                     revealedCardId === card.id
                       ? "border-yellow-200 bg-gradient-to-br from-yellow-300/20 via-fuchsia-500/20 to-cyan-300/20 shadow-2xl shadow-yellow-400/20"
                       : "border-cyan-300/30 bg-gradient-to-br from-slate-900 via-indigo-950 to-fuchsia-950 hover:-translate-y-1 hover:border-cyan-200 hover:shadow-2xl hover:shadow-cyan-500/20",
@@ -933,7 +933,7 @@ export default function PlayPage() {
       ) : null}
 
       {targetingCard ? (
-        <div className="fixed bottom-4 left-1/2 z-50 w-[min(92vw,680px)] -translate-x-1/2 rounded-[1.5rem] border border-cyan-300/30 bg-slate-950/95 p-4 text-center text-white shadow-2xl shadow-cyan-900/40">
+        <div className="target-banner fixed bottom-4 left-1/2 z-50 w-[min(92vw,680px)] -translate-x-1/2 rounded-[1.5rem] border border-cyan-300/30 bg-slate-950/95 p-4 text-center text-white shadow-2xl shadow-cyan-900/40">
           <p className="text-sm font-black uppercase tracking-[0.2em] text-cyan-200">{targetingCard.title}</p>
           <p className="mt-1 text-sm text-slate-200">
             {targetingCard.kind === "steal"

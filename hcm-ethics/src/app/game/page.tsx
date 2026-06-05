@@ -18,10 +18,10 @@ export default function GameHomePage() {
   }
 
   return (
-    <main className="game-shell flex min-h-screen items-center justify-center px-4 py-8">
+    <main className="game-shell game-aurora flex min-h-screen items-center justify-center px-4 py-8">
       <section className="grid w-full max-w-6xl items-center gap-8 lg:grid-cols-[1.05fr_0.95fr]">
-        <div className="space-y-6">
-          <div className="inline-flex rounded-full border border-cyan-300/30 bg-cyan-300/10 px-4 py-2 text-sm font-bold text-cyan-100 shadow-lg shadow-cyan-500/10">
+        <div className="game-home-intro space-y-6">
+          <div className="pulse-badge inline-flex rounded-full border border-cyan-300/30 bg-cyan-300/10 px-4 py-2 text-sm font-bold text-cyan-100 shadow-lg shadow-cyan-500/10">
             Mini game cuối bài thuyết trình
           </div>
           <div>
@@ -32,7 +32,7 @@ export default function GameHomePage() {
           </div>
 
           <form
-            className="max-w-xl rounded-[1.5rem] border border-white/10 bg-white/[0.07] p-5 shadow-2xl shadow-fuchsia-900/20 backdrop-blur"
+            className="game-start-panel max-w-xl rounded-[1.5rem] border border-white/10 bg-white/[0.07] p-5 shadow-2xl shadow-fuchsia-900/20 backdrop-blur"
             onSubmit={startGame}
           >
             <label className="text-sm font-bold text-slate-200" htmlFor="player-name">
@@ -49,7 +49,7 @@ export default function GameHomePage() {
             />
             <div className="mt-5 grid gap-3 sm:grid-cols-[1fr_auto]">
               <button
-                className="rounded-2xl bg-cyan-300 px-6 py-4 text-base font-black text-slate-950 shadow-lg shadow-cyan-500/20 transition hover:-translate-y-0.5 hover:bg-cyan-200"
+                className="energy-button rounded-2xl bg-cyan-300 px-6 py-4 text-base font-black text-slate-950 shadow-lg shadow-cyan-500/20 transition hover:-translate-y-0.5 hover:bg-cyan-200"
                 type="submit"
               >
                 Bắt đầu chơi
@@ -64,12 +64,12 @@ export default function GameHomePage() {
           </form>
         </div>
 
-        <div className="float-card rounded-[2rem] border border-white/10 bg-slate-950/60 p-5 shadow-2xl shadow-cyan-900/20 backdrop-blur">
+        <div className="preview-board float-card rounded-[2rem] border border-white/10 bg-slate-950/60 p-5 shadow-2xl shadow-cyan-900/20 backdrop-blur">
           <div className="grid grid-cols-3 gap-3">
             {Array.from({ length: 9 }).map((_, index) => (
               <div
                 className={[
-                  "aspect-square rounded-2xl border border-white/10 bg-white/[0.06] text-center text-4xl font-black leading-[1.9]",
+                  "preview-cell aspect-square rounded-2xl border border-white/10 bg-white/[0.06] text-center text-4xl font-black leading-[1.9]",
                   index === 0 || index === 4 || index === 8
                     ? "text-cyan-200 shadow-lg shadow-cyan-500/10"
                     : index === 2 || index === 5
