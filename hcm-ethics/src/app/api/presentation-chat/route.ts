@@ -1,6 +1,6 @@
 const MAX_QUESTION_LENGTH = 1000;
-const MAX_ANSWER_WORDS = 320;
-const MAX_AI_OUTPUT_TOKENS = 700;
+const MAX_ANSWER_WORDS = 420;
+const MAX_AI_OUTPUT_TOKENS = 900;
 const RATE_LIMIT_WINDOW_MS = 60_000;
 const RATE_LIMIT_MAX_REQUESTS = 12;
 
@@ -49,7 +49,7 @@ Giáo dục đạo đức: ưu tiên thế hệ trẻ; kết hợp giáo dục v
 Mini game cuối bài: Caro Quiz Battle giúp ôn tập nội dung qua câu hỏi và bảng xếp hạng realtime.
 `.trim();
 
-const securityInstructions = `
+let securityInstructions = `
 Bạn là chatbot AI trong trang thuyết trình về tư tưởng đạo đức Hồ Chí Minh.
 Trả lời trực tiếp câu hỏi của người dùng, không giới hạn chỉ trong nội dung bài thuyết trình.
 Nếu câu hỏi liên quan đến bài thuyết trình, ưu tiên dùng phần nội dung bài được cung cấp để trả lời chính xác.
@@ -61,6 +61,14 @@ Luôn trả lời theo cấu trúc: dòng đầu chỉ ghi 1-4 cụm từ khóa 
 Không kết thúc giữa câu. Không dùng citation kiểu [1], [2] nếu không có nguồn thật để trích dẫn.
 Nếu không chắc chắn, nói rõ phần nào là suy luận hoặc chưa đủ dữ liệu.
 `.trim();
+
+const answerStyleInstructions = `
+Phần giải thích sau dòng từ khóa phải gồm 3-4 câu hoàn chỉnh.
+Câu 1 trả lời trực tiếp câu hỏi, câu 2 làm rõ ý chính, câu 3 đưa ví dụ hoặc liên hệ thực tế, câu 4 chỉ thêm khi cần.
+Không trả lời quá ngắn chỉ 1-2 câu, trừ khi đó là lời từ chối vì lý do bảo mật.
+`.trim();
+
+securityInstructions = `${securityInstructions}\n${answerStyleInstructions}`;
 
 const unsafeIntentKeywords = [
   "api key",
@@ -444,7 +452,23 @@ function buildLocalAnswer(question: string): string | null {
 }
 
 function formatAnswer(keyword: string, explanation: string): string {
-  return `${keyword}\n${explanation}`;
+  return `${keyword}\n${expandExplanation(explanation)}`;
+}
+
+function expandExplanation(explanation: string): string {
+  const cleanExplanation = explanation.trim();
+  const sentenceCount = cleanExplanation.split(/[.!?。]+/).filter((sentence) => sentence.trim().length > 0).length;
+
+  if (sentenceCount >= 3) {
+    return cleanExplanation;
+  }
+
+  const additions = [
+    "Khi trình bày, bạn nên nêu ý chính trước rồi liên hệ với một minh chứng cụ thể để người nghe dễ nhớ.",
+    "Nội dung này cũng có thể gắn với đời sống hiện nay để thấy tư tưởng đạo đức Hồ Chí Minh không chỉ là lý thuyết mà còn là chuẩn mực hành động.",
+  ];
+
+  return [cleanExplanation, ...additions.slice(0, 3 - sentenceCount)].join(" ");
 }
 
 function isPresentationTopicQuestion(normalizedQuestion: string): boolean {

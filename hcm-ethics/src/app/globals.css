@@ -974,8 +974,24 @@ input {
 }
 
 .detail-modal.media-first-modal > section {
+  display: flex;
   margin-top: 2.75rem;
+  min-height: calc(86vh - 7.25rem);
   order: 1;
+}
+
+.detail-modal.media-first-modal > section > div {
+  flex: 1;
+  grid-auto-rows: minmax(38vh, auto);
+}
+
+.detail-modal.media-first-modal > section article {
+  display: flex;
+}
+
+.detail-modal.media-first-modal > section article > div {
+  min-height: 38vh;
+  width: 100%;
 }
 
 .detail-modal.media-first-modal > header {
@@ -999,6 +1015,18 @@ input {
 }
 
 @media (min-width: 768px) {
+  .detail-modal.media-first-modal > section {
+    min-height: calc(min(86vh, 760px) - 7rem);
+  }
+
+  .detail-modal.media-first-modal > section > div {
+    grid-auto-rows: minmax(0, 1fr);
+  }
+
+  .detail-modal.media-first-modal > section article > div {
+    min-height: 14rem;
+  }
+
   .detail-modal.media-first-modal > header > button {
     right: 2rem;
     top: 2rem;
