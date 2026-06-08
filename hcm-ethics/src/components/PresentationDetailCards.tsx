@@ -142,7 +142,9 @@ export default function PresentationDetailCards({
           role="dialog"
         >
           <article
-            className="detail-modal modal-pop max-h-[min(86vh,760px)] w-full max-w-3xl overflow-y-auto rounded-3xl border border-[#ffd700]/35 bg-[#fffaf0] p-6 text-[#1a0a00] shadow-2xl md:p-8"
+            className={`detail-modal modal-pop max-h-[min(86vh,760px)] w-full max-w-3xl overflow-y-auto rounded-3xl border border-[#ffd700]/35 bg-[#fffaf0] p-6 text-[#1a0a00] shadow-2xl md:p-8 ${
+              mediaFirstInModal ? "media-first-modal" : ""
+            }`}
             onClick={(event) => event.stopPropagation()}
           >
             <header className="flex items-start justify-between gap-4 border-b border-[#c8102e]/15 pb-4">

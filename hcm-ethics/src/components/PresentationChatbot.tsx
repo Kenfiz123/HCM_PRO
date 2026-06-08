@@ -123,7 +123,7 @@ export default function PresentationChatbot() {
                 }`}
                 key={message.id}
               >
-                <p className="whitespace-pre-line">{message.content}</p>
+                {message.role === "assistant" ? <AssistantMessage content={message.content} /> : <p>{message.content}</p>}
               </div>
             ))}
 
@@ -184,6 +184,22 @@ export default function PresentationChatbot() {
         AI
       </button>
     </>
+  );
+}
+
+function AssistantMessage({ content }: { content: string }) {
+  const [keywordLine = "", ...bodyLines] = content.split("\n");
+  const body = bodyLines.join("\n").trim();
+
+  if (!body) {
+    return <p>{content}</p>;
+  }
+
+  return (
+    <div>
+      <p className="font-black text-[#fff0a0]">{keywordLine}</p>
+      <p className="mt-1 whitespace-pre-line">{body}</p>
+    </div>
   );
 }
 

@@ -967,6 +967,44 @@ input {
   scrollbar-gutter: stable;
 }
 
+.detail-modal.media-first-modal {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.detail-modal.media-first-modal > section {
+  margin-top: 2.75rem;
+  order: 1;
+}
+
+.detail-modal.media-first-modal > header {
+  margin-top: 1.25rem;
+  order: 2;
+}
+
+.detail-modal.media-first-modal > header > button {
+  position: absolute;
+  right: 1.5rem;
+  top: 1.5rem;
+  z-index: 2;
+}
+
+.detail-modal.media-first-modal > div {
+  order: 3;
+}
+
+.detail-modal.media-first-modal > p {
+  order: 4;
+}
+
+@media (min-width: 768px) {
+  .detail-modal.media-first-modal > header > button {
+    right: 2rem;
+    top: 2rem;
+  }
+}
+
 .number-chip,
 .quality-index {
   display: inline-flex;
