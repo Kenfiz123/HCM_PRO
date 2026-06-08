@@ -970,6 +970,7 @@ input {
 .detail-modal.media-first-modal {
   display: flex;
   flex-direction: column;
+  max-width: calc(48rem + 10px);
   position: relative;
 }
 
