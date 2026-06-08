@@ -20,6 +20,13 @@ const openingMessage: ChatMessage = {
   role: "assistant",
 };
 
+const suggestedQuestions = [
+  "Bốn phẩm chất đạo đức gồm những gì?",
+  "Cần, kiệm, liêm, chính nghĩa là gì?",
+  "Video thiên tai và COVID thuộc phẩm chất nào?",
+  "Đạo đức là gốc của người cách mạng nghĩa là gì?",
+];
+
 export default function PresentationChatbot() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([openingMessage]);
@@ -119,6 +126,25 @@ export default function PresentationChatbot() {
                 <p>{message.content}</p>
               </div>
             ))}
+
+            {messages.length === 1 ? (
+              <div className="grid gap-2">
+                <p className="px-1 text-xs font-black uppercase tracking-[0.18em] text-[#fff0a0]">Câu hỏi gợi ý</p>
+                <div className="flex flex-wrap gap-2">
+                  {suggestedQuestions.map((suggestedQuestion) => (
+                    <button
+                      className="rounded-full border border-[#ffd700]/30 bg-white/10 px-3 py-2 text-left text-xs font-bold text-white/90 transition hover:bg-[#ffd700]/20"
+                      disabled={isLoading}
+                      key={suggestedQuestion}
+                      onClick={() => void submitQuestion(suggestedQuestion)}
+                      type="button"
+                    >
+                      {suggestedQuestion}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ) : null}
 
             {isLoading ? (
               <div className="inline-flex rounded-2xl border border-white/10 bg-white/10 px-4 py-3 text-sm text-white/75">

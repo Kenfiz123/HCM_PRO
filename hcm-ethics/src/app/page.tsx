@@ -56,6 +56,19 @@ const visualMoments = [
   },
 ];
 
+const qualityVideoChallenge = [
+  {
+    sourceUrl: "https://youtu.be/58Oh1W6EldA?si=IkJ1cybkhp754G2g",
+    title: "Hỗ trợ nhân dân trong mùa thiên tai, bão lũ",
+    videoEmbedUrl: "https://www.youtube.com/embed/58Oh1W6EldA",
+  },
+  {
+    sourceUrl: "https://youtu.be/x9lAY5ev0i8?si=32TaLiR1eVLPd111",
+    title: "Tuyến đầu chống dịch COVID-19",
+    videoEmbedUrl: "https://www.youtube.com/embed/x9lAY5ev0i8",
+  },
+];
+
 const roleCards: PresentationDetailItem[] = [
   {
     badge: "Vai trò 1",
@@ -108,6 +121,32 @@ const qualityCards: PresentationDetailItem[] = [
       "Trong đại dịch COVID-19, nhiều y bác sĩ, công an, bộ đội và tình nguyện viên vào tâm dịch, chấp nhận nguy hiểm để bảo vệ tính mạng nhân dân.",
       "Khi bão lũ, sạt lở xảy ra, lực lượng cứu hộ và người dân cùng tham gia cứu nạn, tiếp tế, dọn dẹp để giúp vùng bị nạn ổn định đời sống.",
     ],
+    evidenceMedia: [
+      {
+        description: "Minh chứng cho tinh thần lấy dân làm gốc, hướng chính sách phát triển vào đời sống thiết thực của nhân dân.",
+        imageAlt: "Chương trình xóa đói giảm nghèo và xây dựng nông thôn mới",
+        imageSrc: "/pham-chat-1-trung-hieu/Chương trình xóa đói giảm nghèo và xây dựng nông thôn mới.jpg",
+        title: "Xóa đói giảm nghèo và xây dựng nông thôn mới",
+      },
+      {
+        description: "Thể hiện thái độ phục vụ nhân dân qua việc tiếp dân, lắng nghe và giải quyết thủ tục hành chính.",
+        imageAlt: "Cán bộ tiếp dân, giải quyết thủ tục hành chính",
+        imageSrc: "/pham-chat-1-trung-hieu/Cán bộ tiếp dân, giải quyết thủ tục hành chính.jpg",
+        title: "Cán bộ tiếp dân, giải quyết thủ tục hành chính",
+      },
+      {
+        description: "Gắn với tinh thần hiếu với dân: kịp thời cứu trợ, chia sẻ khó khăn với đồng bào trong thiên tai.",
+        imageAlt: "Cứu trợ đồng bào miền Trung trong các đợt lũ lụt",
+        imageSrc: "/pham-chat-1-trung-hieu/Cứu trợ đồng bào miền Trung trong các đợt lũ lụt.jpg",
+        title: "Cứu trợ đồng bào miền Trung trong lũ lụt",
+      },
+      {
+        description: "Là dẫn chứng gần gũi về trách nhiệm bảo vệ sức khỏe, tính mạng nhân dân trong hoàn cảnh khẩn cấp.",
+        imageAlt: "Phòng chống đại dịch COVID-19 giai đoạn 2020-2022",
+        imageSrc: "/pham-chat-1-trung-hieu/Phòng chống đại dịch COVID-19 (2020–2022).jpg",
+        title: "Phòng chống đại dịch COVID-19",
+      },
+    ],
     summary: "Trung thành với đất nước và tận tụy phục vụ nhân dân là phẩm chất đứng đầu.",
     takeaway: "Có thể dẫn bằng câu hỏi: nếu nói yêu nước nhưng thờ ơ với đời sống nhân dân, liệu đó có phải là trung với nước không?",
     title: "Trung với nước, hiếu với dân",
@@ -122,6 +161,36 @@ const qualityCards: PresentationDetailItem[] = [
       "Các chiến dịch phòng chống tham nhũng thể hiện yêu cầu liêm, chính và chí công vô tư trong xây dựng bộ máy nhà nước trong sạch.",
       "Những người dân trả lại của rơi, không nhận thứ không thuộc về mình, là ví dụ gần gũi về chữ liêm trong đời sống hằng ngày.",
     ],
+    evidenceMedia: [
+      {
+        description: "Minh họa chữ cần: siêng năng, trách nhiệm, làm việc có kế hoạch để hoàn thành nhiệm vụ chung.",
+        imageAlt: "Công nhân và kỹ sư thi công xuyên Tết tại các dự án APEC ở Phú Quốc",
+        imageSrc:
+          "/pham-chat-2-can-kiem-liem-chinh/Cần Hơn 6.200 công nhân, kỹ sư thi công xuyên Tết tại các dự án APEC ở Phú Quốc.jpg",
+        title: "Cần: lao động trách nhiệm, bền bỉ",
+      },
+      {
+        description: "Minh họa chữ kiệm qua lối sống giản dị, không đặt đặc quyền cá nhân lên trên chuẩn mực chung.",
+        imageAlt: "Bác sống giản dị, từ chối ưu tiên, đặc quyền dành cho nguyên thủ quốc gia",
+        imageSrc:
+          "/pham-chat-2-can-kiem-liem-chinh/Kiệm Bác sống giản dị, từ chối ưu tiên, đặc quyền dành cho nguyên thủ quốc gia.jpg",
+        title: "Kiệm: giản dị, không xa hoa",
+      },
+      {
+        description: "Minh họa chữ liêm bằng việc phê phán hành vi lợi dụng chức trách, tiếp tay cho lợi ích sai trái.",
+        imageAlt: "Nhóm cựu cán bộ Hải quan Hải Phòng lĩnh án tù vì tiếp tay buôn lậu",
+        imageSrc:
+          "/pham-chat-2-can-kiem-liem-chinh/Liêm Nhóm cựu cán bộ Hải quan Hải Phòng lĩnh án tù vì tiếp tay buôn lậu.jpg",
+        title: "Liêm: trong sạch, không tham lợi riêng",
+      },
+      {
+        description: "Minh họa chữ chính: mọi người đều phải tôn trọng kỷ cương, pháp luật và sự công bằng.",
+        imageAlt: "Xét xử công khai, bất kể chức quyền là gì đều phải tuân theo quy định của pháp luật",
+        imageSrc:
+          "/pham-chat-2-can-kiem-liem-chinh/Chính Xét xử công khai, bất kể chức quyền là gì đều phải tuân theo quy định của pháp lực.jpg",
+        title: "Chính: ngay thẳng, công bằng",
+      },
+    ],
     summary: "Năm phẩm chất này tạo nên chuẩn mực sống trong sạch, trách nhiệm và công bằng.",
     title: "Cần, kiệm, liêm, chính, chí công vô tư",
   },
@@ -135,6 +204,32 @@ const qualityCards: PresentationDetailItem[] = [
       "Các phong trào thiện nguyện như quỹ vì người nghèo, quán cơm giá rẻ, ATM gạo hay hỗ trợ bệnh nhi cho thấy tinh thần thương người trong cộng đồng.",
       "Mỗi khi có thiên tai, tinh thần lá lành đùm lá rách thể hiện qua việc quyên góp, nấu bánh, gửi nhu yếu phẩm đến vùng khó khăn.",
     ],
+    evidenceMedia: [
+      {
+        description: "Thể hiện tình yêu thương bằng hành động cụ thể: hỗ trợ bữa ăn cho người bệnh và thân nhân trong hoàn cảnh khó khăn.",
+        imageAlt: "Bếp ăn từ thiện tại bệnh viện",
+        imageSrc: "/pham-chat-3-yeu-thuong-con-nguoi/Bếp ăn từ thiện tại bệnh viện.jpg",
+        title: "Bếp ăn từ thiện tại bệnh viện",
+      },
+      {
+        description: "Minh chứng cho tinh thần thanh niên tình nguyện, biết sống vì cộng đồng và chia sẻ trách nhiệm xã hội.",
+        imageAlt: "Chương trình Xuân tình nguyện Mùa hè xanh",
+        imageSrc: "/pham-chat-3-yeu-thuong-con-nguoi/Chương trình Xuân tình nguyện Mùa hè xanh.jpg",
+        title: "Xuân tình nguyện, Mùa hè xanh",
+      },
+      {
+        description: "Hiến máu tình nguyện là biểu hiện trực tiếp của lòng nhân ái, sẵn sàng giúp đỡ người khác khi cần.",
+        imageAlt: "Phong trào hiến máu tình nguyện",
+        imageSrc: "/pham-chat-3-yeu-thuong-con-nguoi/Phong trào hiến máu tình nguyện.jpg",
+        title: "Phong trào hiến máu tình nguyện",
+      },
+      {
+        description: "Gắn với tinh thần chăm lo cho người yếu thế, tạo cơ hội học tập và phát triển cho trẻ em khó khăn.",
+        imageAlt: "Trao học bổng, hỗ trợ trẻ em có hoàn cảnh khó khăn",
+        imageSrc: "/pham-chat-3-yeu-thuong-con-nguoi/Trao học bổng, hỗ trợ trẻ em có hoàn cảnh khó khăn.jpg",
+        title: "Hỗ trợ trẻ em có hoàn cảnh khó khăn",
+      },
+    ],
     summary: "Tình yêu thương phải đi vào hành động cụ thể, thiết thực và rộng mở.",
     title: "Yêu thương con người",
   },
@@ -147,6 +242,30 @@ const qualityCards: PresentationDetailItem[] = [
     examples: [
       "Lực lượng mũ nồi xanh Việt Nam tham gia gìn giữ hòa bình Liên Hợp Quốc, vừa làm nhiệm vụ chuyên môn vừa hỗ trợ đời sống người dân địa phương.",
       "Việt Nam từng cử lực lượng cứu hộ sang Thổ Nhĩ Kỳ và Syria sau thảm họa động đất năm 2023, thể hiện trách nhiệm quốc tế và tinh thần nhân đạo.",
+    ],
+    evidenceMedia: [
+      {
+        description:
+          "Minh chứng cho tinh thần đoàn kết quốc tế, đóng góp vào hòa bình và ổn định chung của thế giới.",
+        imageAlt: "Việt Nam tham gia lực lượng gìn giữ hòa bình Liên Hợp Quốc",
+        imageSrc:
+          "/pham-chat-4-quoc-te-trong-sang/Việt Nam tham gia lực lượng gìn giữ hòa bình Liên Hợp Quốc.jpg",
+        title: "Việt Nam tham gia gìn giữ hòa bình Liên Hợp Quốc",
+      },
+      {
+        description:
+          "Thể hiện tinh thần hợp tác, gắn bó với các nước trong khu vực trên cơ sở tôn trọng, chia sẻ và cùng phát triển.",
+        imageAlt: "Hợp tác trong cộng đồng ASEAN",
+        imageSrc: "/pham-chat-4-quoc-te-trong-sang/Hợp tác trong cộng đồng ASEAN.jpg",
+        title: "Hợp tác trong cộng đồng ASEAN",
+      },
+      {
+        description:
+          "Làm rõ giá trị nhân đạo quốc tế: sẵn sàng chia sẻ khó khăn với các quốc gia gặp thiên tai, dịch bệnh.",
+        imageAlt: "Hỗ trợ nhân đạo cho các nước gặp thiên tai, dịch bệnh",
+        imageSrc: "/pham-chat-4-quoc-te-trong-sang/Hỗ trợ nhân đạo cho các nước gặp thiên tai, dịch bệnh.jpg",
+        title: "Hỗ trợ nhân đạo quốc tế",
+      },
     ],
     summary: "Yêu nước không khép kín mà gắn với đoàn kết, nhân đạo và trách nhiệm quốc tế.",
     title: "Tinh thần quốc tế trong sáng",
@@ -483,6 +602,54 @@ export default function PresentationPage() {
         <AnimateOnScroll className="mx-auto max-w-6xl">
           <SectionTitle subtitle="Bốn phẩm chất then chốt tạo nên nhân cách người cách mạng" title="Phẩm Chất Đạo Đức" />
           <PresentationDetailCards items={qualityCards} />
+          <div className="effect-panel stagger-child mt-8 rounded-2xl border border-[#ffd700]/50 bg-white p-6 shadow-lg">
+            <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+              <div>
+                <p className="text-sm font-black uppercase tracking-[0.18em] text-[#c8102e]">Hoạt động tương tác</p>
+                <h3 className="mt-2 text-2xl font-black text-[#8b0000]">Xem video và đoán phẩm chất đạo đức</h3>
+              </div>
+              <p className="max-w-xl font-semibold leading-7 text-[#6b4226]">
+                Sau khi xem hai video, hãy hỏi người xem: những hành động này thuộc phẩm chất đạo đức nào trong bốn phẩm chất bên dưới?
+              </p>
+            </div>
+
+            <div className="mt-6 grid gap-5 lg:grid-cols-2">
+              {qualityVideoChallenge.map((video) => (
+                <article className="overflow-hidden rounded-2xl border border-[#c8102e]/10 bg-[#fffaf0]" key={video.title}>
+                  <div className="aspect-video bg-[#1a0a00]">
+                    <iframe
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      allowFullScreen
+                      className="h-full w-full"
+                      loading="lazy"
+                      referrerPolicy="strict-origin-when-cross-origin"
+                      src={video.videoEmbedUrl}
+                      title={video.title}
+                    />
+                  </div>
+                  <div className="p-4">
+                    <h4 className="font-black text-[#8b0000]">{video.title}</h4>
+                    <a className="mt-2 inline-flex text-sm font-black text-[#c8102e]" href={video.sourceUrl} rel="noreferrer" target="_blank">
+                      Mở nguồn video
+                    </a>
+                  </div>
+                </article>
+              ))}
+            </div>
+
+            <div className="mt-6 rounded-2xl bg-[#8b0000] p-5 text-white">
+              <p className="text-xl font-black text-[#fff0a0]">Câu hỏi cho người xem</p>
+              <p className="mt-2 leading-7">
+                Hai video trên thể hiện phẩm chất nào: Trung với nước, hiếu với dân; Cần, kiệm, liêm, chính; Yêu thương con người; hay Tinh thần quốc tế trong sáng?
+              </p>
+              <details className="mt-4 rounded-xl bg-white/10 p-4">
+                <summary className="cursor-pointer font-black text-[#fff0a0]">Đáp án gợi ý sau khi thảo luận</summary>
+                <p className="mt-3 leading-7">
+                  Phù hợp nhất là <strong>Trung với nước, hiếu với dân</strong>, vì cả hai video đều nhấn mạnh trách nhiệm bảo vệ, chăm lo và phục vụ nhân dân trong hoàn cảnh khó khăn.
+                </p>
+              </details>
+            </div>
+          </div>
         </AnimateOnScroll>
       </section>
 

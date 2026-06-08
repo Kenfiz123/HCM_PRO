@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { type FormEvent, useState } from "react";
+import { quizQuestions } from "@/data/questions";
 
 export default function GameHomePage() {
   const router = useRouter();
@@ -89,7 +90,7 @@ export default function GameHomePage() {
                 <p className="text-xs text-slate-300">Bàn caro</p>
               </div>
               <div>
-                <p className="text-2xl font-black text-fuchsia-100">38</p>
+                <p className="text-2xl font-black text-fuchsia-100">{quizQuestions.length}</p>
                 <p className="text-xs text-slate-300">Câu hỏi</p>
               </div>
               <div>

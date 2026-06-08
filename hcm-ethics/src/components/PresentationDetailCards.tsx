@@ -1,10 +1,21 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useState } from "react";
+
+type EvidenceMedia = {
+  description?: string;
+  imageAlt?: string;
+  imageSrc?: string;
+  sourceUrl?: string;
+  title: string;
+  videoEmbedUrl?: string;
+};
 
 export type PresentationDetailItem = {
   badge?: string;
   body: string[];
+  evidenceMedia?: EvidenceMedia[];
   examples?: string[];
   summary: string;
   takeaway?: string;
@@ -105,6 +116,63 @@ export default function PresentationDetailCards({ columns = "two", items }: Pres
                     </li>
                   ))}
                 </ul>
+              </section>
+            ) : null}
+
+            {selectedItem.evidenceMedia?.length ? (
+              <section className="mt-6 rounded-2xl border border-[#ffd700]/45 bg-white p-5">
+                <h3 className="text-lg font-black text-[#8b0000]">Hình ảnh và video minh chứng</h3>
+                <div className="mt-4 grid gap-4 md:grid-cols-2">
+                  {selectedItem.evidenceMedia.map((media) => (
+                    <article
+                      className={`rounded-2xl border border-[#c8102e]/10 bg-[#fffaf0] p-3 ${
+                        media.videoEmbedUrl ? "md:col-span-2" : ""
+                      }`}
+                      key={media.title}
+                    >
+                      {media.imageSrc ? (
+                        <div className="relative aspect-video overflow-hidden rounded-2xl bg-[#fff0dc]">
+                          <Image
+                            alt={media.imageAlt ?? media.title}
+                            className="object-cover"
+                            fill
+                            sizes="(max-width: 768px) 100vw, 768px"
+                            src={media.imageSrc}
+                          />
+                        </div>
+                      ) : null}
+
+                      {media.videoEmbedUrl ? (
+                        <div className="aspect-video overflow-hidden rounded-2xl bg-[#1a0a00]">
+                          <iframe
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            allowFullScreen
+                            className="h-full w-full"
+                            loading="lazy"
+                            referrerPolicy="strict-origin-when-cross-origin"
+                            src={media.videoEmbedUrl}
+                            title={media.title}
+                          />
+                        </div>
+                      ) : null}
+
+                      <div className="mt-3">
+                        <h4 className="font-black text-[#8b0000]">{media.title}</h4>
+                        {media.description ? <p className="mt-1 leading-7 text-[#3d1f00]">{media.description}</p> : null}
+                        {media.sourceUrl ? (
+                          <a
+                            className="mt-2 inline-flex text-sm font-black text-[#c8102e]"
+                            href={media.sourceUrl}
+                            rel="noreferrer"
+                            target="_blank"
+                          >
+                            Mở nguồn video
+                          </a>
+                        ) : null}
+                      </div>
+                    </article>
+                  ))}
+                </div>
               </section>
             ) : null}
 

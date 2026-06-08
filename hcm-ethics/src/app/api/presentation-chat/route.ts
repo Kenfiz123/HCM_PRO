@@ -41,7 +41,10 @@ Cơ sở hình thành: truyền thống đạo đức dân tộc Việt Nam; tin
 Đặc điểm: kết hợp lý luận với thực tiễn; mang tính dân tộc và tính thời đại; coi đạo đức là gốc của người cách mạng; tu dưỡng đạo đức suốt đời.
 Vai trò: đạo đức là nền tảng để người cách mạng hoàn thành sứ mệnh; đức và tài bổ sung cho nhau, trong đó đức là gốc.
 Phẩm chất cốt lõi: trung với nước, hiếu với dân; cần, kiệm, liêm, chính, chí công vô tư; yêu thương con người; tinh thần quốc tế trong sáng.
+Minh chứng phẩm chất: thiên tai và tuyến đầu COVID-19 gắn với trung với nước, hiếu với dân; bếp ăn từ thiện, hiến máu, học bổng gắn với yêu thương con người; gìn giữ hòa bình Liên Hợp Quốc, hợp tác ASEAN, hỗ trợ nhân đạo quốc tế gắn với tinh thần quốc tế trong sáng; xử lý sai phạm, xét xử công khai gắn với liêm, chính, chí công vô tư.
 Nguyên tắc xây dựng đạo đức: nói đi đôi với làm; xây đi đôi với chống; tu dưỡng suốt đời; đặt lợi ích chung lên trên lợi ích cá nhân.
+Phương pháp tu dưỡng: rèn luyện trong thực tiễn; tự phê bình và phê bình; học tập nâng cao lý luận; gắn bó với nhân dân; kiên trì bền bỉ; đấu tranh chống chủ nghĩa cá nhân.
+Giáo dục đạo đức: ưu tiên thế hệ trẻ; kết hợp giáo dục với tự giáo dục; giáo dục lý tưởng và lòng yêu nước; phát huy gương mẫu và môi trường lành mạnh.
 Ý nghĩa: soi đường cho xây dựng Đảng, xây dựng đất nước và rèn luyện thế hệ trẻ trong học tập, nghề nghiệp, cuộc sống.
 Mini game cuối bài: Caro Quiz Battle giúp ôn tập nội dung qua câu hỏi và bảng xếp hạng realtime.
 `.trim();
@@ -282,20 +285,63 @@ function buildLocalAnswer(question: string): string | null {
     return "Cơ sở hình thành gồm 3 nguồn chính: truyền thống đạo đức dân tộc Việt Nam, tinh hoa đạo đức nhân loại, và chủ nghĩa Mác - Lênin.";
   }
 
-  if (normalizedQuestion.includes("pham chat") || normalizedQuestion.includes("can kiem") || normalizedQuestion.includes("liem chinh")) {
-    return "Bốn phẩm chất cốt lõi là: trung với nước, hiếu với dân; cần, kiệm, liêm, chính, chí công vô tư; yêu thương con người; tinh thần quốc tế trong sáng.";
-  }
-
   if (normalizedQuestion.includes("can") && normalizedQuestion.includes("kiem")) {
     return "Cần là siêng năng, chăm chỉ, làm việc có kế hoạch. Kiệm là tiết kiệm thời gian, tiền của, công sức, tránh lãng phí nhưng không keo kiệt.";
   }
 
-  if (normalizedQuestion.includes("liem") || normalizedQuestion.includes("can kiem") || normalizedQuestion.includes("liem chinh")) {
+  if (normalizedQuestion.includes("liem") || normalizedQuestion.includes("chinh") || normalizedQuestion.includes("liem chinh")) {
     return "Liêm là trong sạch, không tham lam, không lấy của công làm của tư. Chính là ngay thẳng, trung thực, sống và làm việc đứng đắn.";
+  }
+
+  if (normalizedQuestion.includes("chi cong") || normalizedQuestion.includes("vo tu")) {
+    return "Chí công vô tư là đặt lợi ích chung lên trên lợi ích riêng, công bằng, không thiên vị và không để lợi ích cá nhân chi phối việc đúng.";
+  }
+
+  if (normalizedQuestion.includes("trung voi nuoc") || normalizedQuestion.includes("hieu voi dan")) {
+    return "Trung với nước là trung thành với sự nghiệp dựng nước, giữ nước và con đường vì độc lập dân tộc. Hiếu với dân là hết lòng phục vụ nhân dân, lấy lợi ích của nhân dân làm điểm xuất phát.";
+  }
+
+  if (normalizedQuestion.includes("yeu thuong con nguoi")) {
+    return "Yêu thương con người trong tư tưởng Hồ Chí Minh là tình thương rộng mở, thiết thực, thể hiện bằng hành động cụ thể như giúp đỡ người khó khăn, hiến máu, thiện nguyện hoặc chăm lo cho trẻ em.";
+  }
+
+  if (
+    normalizedQuestion.includes("video") ||
+    normalizedQuestion.includes("covid") ||
+    normalizedQuestion.includes("thien tai") ||
+    normalizedQuestion.includes("bao lu")
+  ) {
+    return "Hai video về hỗ trợ nhân dân mùa thiên tai và tuyến đầu chống dịch COVID-19 phù hợp nhất với phẩm chất trung với nước, hiếu với dân, vì đều thể hiện trách nhiệm bảo vệ, chăm lo và phục vụ nhân dân khi khó khăn.";
+  }
+
+  if (
+    normalizedQuestion.includes("bep an") ||
+    normalizedQuestion.includes("hien mau") ||
+    normalizedQuestion.includes("hoc bong") ||
+    normalizedQuestion.includes("thien nguyen")
+  ) {
+    return "Các minh chứng như bếp ăn từ thiện, hiến máu tình nguyện, trao học bổng thể hiện phẩm chất yêu thương con người bằng hành động cụ thể, thiết thực.";
+  }
+
+  if (
+    normalizedQuestion.includes("lien hop quoc") ||
+    normalizedQuestion.includes("asean") ||
+    normalizedQuestion.includes("giao luu quoc te") ||
+    normalizedQuestion.includes("nhan dao quoc te")
+  ) {
+    return "Những minh chứng như gìn giữ hòa bình Liên Hợp Quốc, hợp tác ASEAN và hỗ trợ nhân đạo quốc tế thể hiện tinh thần quốc tế trong sáng.";
   }
 
   if (normalizedQuestion.includes("nguyen tac") || normalizedQuestion.includes("tu duong") || normalizedQuestion.includes("noi di doi voi lam")) {
     return "Nguyên tắc chính: nói đi đôi với làm; xây đi đôi với chống; tu dưỡng suốt đời; đặt lợi ích chung lên trên lợi ích cá nhân.";
+  }
+
+  if (normalizedQuestion.includes("phuong phap") || normalizedQuestion.includes("ren luyen")) {
+    return "Phương pháp tu dưỡng gồm: rèn luyện trong thực tiễn, tự phê bình và phê bình, học tập nâng cao lý luận, gắn bó với nhân dân, kiên trì bền bỉ và đấu tranh chống chủ nghĩa cá nhân.";
+  }
+
+  if (normalizedQuestion.includes("giao duc")) {
+    return "Giáo dục đạo đức cần ưu tiên thế hệ trẻ, kết hợp giáo dục với tự giáo dục, bồi dưỡng lý tưởng - lòng yêu nước, đồng thời xây dựng gương mẫu và môi trường lành mạnh.";
   }
 
   if (normalizedQuestion.includes("neu guong")) {
@@ -316,6 +362,10 @@ function buildLocalAnswer(question: string): string | null {
 
   if (normalizedQuestion.includes("quoc te trong sang") || (normalizedQuestion.includes("quoc te") && normalizedQuestion.includes("doan ket"))) {
     return "Tinh thần quốc tế trong sáng là đoàn kết với nhân dân lao động và các dân tộc tiến bộ, đồng thời gắn bó với chủ nghĩa yêu nước chân chính.";
+  }
+
+  if (normalizedQuestion.includes("pham chat")) {
+    return "Bốn phẩm chất cốt lõi là: trung với nước, hiếu với dân; cần, kiệm, liêm, chính, chí công vô tư; yêu thương con người; tinh thần quốc tế trong sáng.";
   }
 
   if (normalizedQuestion.includes("y nghia") || normalizedQuestion.includes("the he tre") || normalizedQuestion.includes("ung dung")) {
@@ -352,6 +402,19 @@ function isPresentationTopicQuestion(normalizedQuestion: string): boolean {
     "mini game",
     "caro",
     "quiz",
+    "video",
+    "covid",
+    "thien tai",
+    "bao lu",
+    "bep an",
+    "hien mau",
+    "hoc bong",
+    "thien nguyen",
+    "lien hop quoc",
+    "asean",
+    "nhan dao",
+    "phuong phap",
+    "giao duc",
   ].some((keyword) => normalizedQuestion.includes(keyword));
 }
 

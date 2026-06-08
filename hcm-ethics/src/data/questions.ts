@@ -61,16 +61,16 @@ export const quizQuestions: QuizQuestion[] = [
   },
   {
     id: "q05",
-    question: "Câu nói nào trong nội dung thể hiện quan hệ giữa tài và đức?",
+    question: "Quan hệ giữa đức và tài trong tư tưởng đạo đức Hồ Chí Minh được hiểu đúng là gì?",
     options: [
-      "Tài năng là tất cả",
-      "Có tài mà không có đức là người vô dụng; có đức mà không có tài thì làm việc gì cũng khó",
-      "Có đức thì không cần học tập",
-      "Đức và tài không liên quan đến nhau",
+      "Tài năng có thể thay thế hoàn toàn đạo đức",
+      "Đức là nền tảng, tài là năng lực để biến phẩm chất đạo đức thành hành động có ích",
+      "Có đức thì không cần học tập, rèn luyện năng lực",
+      "Đức và tài hoàn toàn không liên quan đến nhau",
     ],
     correctAnswerIndex: 1,
     explanation:
-      "Nội dung trích câu nói nhấn mạnh người cách mạng phải rèn cả đức và tài.",
+      "Nội dung nhấn mạnh đức là nền tảng định hướng, còn tài giúp con người hành động đúng và hiệu quả.",
     difficulty: "medium",
   },
   {
@@ -105,14 +105,14 @@ export const quizQuestions: QuizQuestion[] = [
     id: "q08",
     question: "'Chí công vô tư' trong nội dung được hiểu là gì?",
     options: [
-      "Lo trước thiên hạ, vui sau thiên hạ",
+      "Đặt lợi ích chung lên trên lợi ích riêng",
       "Ưu tiên lợi ích cá nhân",
       "Tránh mọi trách nhiệm xã hội",
       "Chỉ làm việc khi có lợi",
     ],
     correctAnswerIndex: 0,
     explanation:
-      "Nội dung nêu chí công vô tư là lo trước thiên hạ, vui sau thiên hạ, không để lợi ích cá nhân ảnh hưởng lợi ích chung.",
+      "Chí công vô tư là đặt lợi ích chung lên trên lợi ích riêng, không để lợi ích cá nhân chi phối việc đúng.",
     difficulty: "medium",
   },
   {
@@ -160,10 +160,10 @@ export const quizQuestions: QuizQuestion[] = [
   {
     id: "q12",
     question: "Hồ Chí Minh gọi chủ nghĩa cá nhân là gì?",
-    options: ["Động lực phát triển", "Giặc nội xâm", "Mục tiêu rèn luyện", "Biểu hiện của sáng tạo"],
+    options: ["Động lực phát triển", "Kẻ thù bên trong", "Mục tiêu rèn luyện", "Biểu hiện của sáng tạo"],
     correctAnswerIndex: 1,
     explanation:
-      "Trong phần xây đi đôi với chống, nội dung nêu Hồ Chí Minh coi chủ nghĩa cá nhân là giặc nội xâm.",
+      "Trong phần xây đi đôi với chống, nội dung nêu Hồ Chí Minh coi chủ nghĩa cá nhân là kẻ thù bên trong.",
     difficulty: "medium",
   },
   {
@@ -525,7 +525,75 @@ export const quizQuestions: QuizQuestion[] = [
       "Tư tưởng đạo đức Hồ Chí Minh nhấn mạnh rèn luyện bằng hành động cụ thể, thường xuyên và gắn với đời sống.",
     difficulty: "hard",
   },
+  {
+    id: "q39",
+    question: "Hai video về hỗ trợ nhân dân mùa thiên tai và tuyến đầu chống dịch COVID-19 phù hợp nhất với phẩm chất nào?",
+    options: [
+      "Trung với nước, hiếu với dân",
+      "Tinh thần quốc tế trong sáng",
+      "Cần, kiệm, liêm, chính",
+      "Tu dưỡng đạo đức suốt đời",
+    ],
+    correctAnswerIndex: 0,
+    explanation:
+      "Hai video đều nhấn mạnh tinh thần bảo vệ, chăm lo và phục vụ nhân dân trong hoàn cảnh khó khăn.",
+    difficulty: "easy",
+  },
+  {
+    id: "q40",
+    question: "Các hình ảnh như bếp ăn từ thiện, hiến máu tình nguyện và trao học bổng thể hiện phẩm chất nào?",
+    options: [
+      "Yêu thương con người",
+      "Chí công vô tư",
+      "Tinh thần quốc tế trong sáng",
+      "Nói đi đôi với làm",
+    ],
+    correctAnswerIndex: 0,
+    explanation:
+      "Những hoạt động này thể hiện tình yêu thương con người bằng hành động cụ thể, thiết thực.",
+    difficulty: "easy",
+  },
+  {
+    id: "q41",
+    question: "Việt Nam tham gia gìn giữ hòa bình Liên Hợp Quốc và hợp tác trong cộng đồng ASEAN thể hiện phẩm chất nào?",
+    options: [
+      "Tinh thần quốc tế trong sáng",
+      "Cần cù trong lao động",
+      "Tiết kiệm của công",
+      "Tự phê bình và phê bình",
+    ],
+    correctAnswerIndex: 0,
+    explanation:
+      "Đây là minh chứng cho tinh thần đoàn kết, hợp tác và trách nhiệm quốc tế của Việt Nam.",
+    difficulty: "medium",
+  },
+  {
+    id: "q42",
+    question: "Hình ảnh xét xử công khai và xử lý sai phạm của cán bộ phù hợp nhất với nội dung nào?",
+    options: [
+      "Liêm, chính và chí công vô tư",
+      "Chỉ yêu thương trong gia đình",
+      "Tránh phê bình sai phạm",
+      "Đặt lợi ích cá nhân lên trước",
+    ],
+    correctAnswerIndex: 0,
+    explanation:
+      "Xử lý sai phạm công khai thể hiện yêu cầu trong sạch, ngay thẳng, công bằng và không thiên vị.",
+    difficulty: "medium",
+  },
 ];
+
+function shuffleQuestionOptions(question: QuizQuestion): QuizQuestion {
+  const shuffledOptions = question.options
+    .map((option, index) => ({ index, option, sort: Math.random() }))
+    .sort((a, b) => a.sort - b.sort);
+
+  return {
+    ...question,
+    options: shuffledOptions.map(({ option }) => option),
+    correctAnswerIndex: shuffledOptions.findIndex(({ index }) => index === question.correctAnswerIndex),
+  };
+}
 
 export function getRandomQuestion(excludedIds: string[] = []): QuizQuestion | null {
   if (quizQuestions.length === 0) {
@@ -534,5 +602,5 @@ export function getRandomQuestion(excludedIds: string[] = []): QuizQuestion | nu
 
   const pool = quizQuestions.filter((question) => !excludedIds.includes(question.id));
   const available = pool.length > 0 ? pool : quizQuestions;
-  return available[Math.floor(Math.random() * available.length)];
+  return shuffleQuestionOptions(available[Math.floor(Math.random() * available.length)]);
 }
