@@ -24,10 +24,17 @@ export type PresentationDetailItem = {
 
 type PresentationDetailCardsProps = {
   columns?: "two" | "three";
+  concealFrontContent?: boolean;
+  mediaFirstInModal?: boolean;
   items: PresentationDetailItem[];
 };
 
-export default function PresentationDetailCards({ columns = "two", items }: PresentationDetailCardsProps) {
+export default function PresentationDetailCards({
+  columns = "two",
+  concealFrontContent = false,
+  mediaFirstInModal = false,
+  items,
+}: PresentationDetailCardsProps) {
   const [selectedItem, setSelectedItem] = useState<PresentationDetailItem | null>(null);
 
   useEffect(() => {
@@ -51,25 +58,80 @@ export default function PresentationDetailCards({ columns = "two", items }: Pres
   }, [selectedItem]);
 
   const gridClass = columns === "three" ? "md:grid-cols-3" : "md:grid-cols-2";
+  const mediaSection = selectedItem?.evidenceMedia?.length ? (
+    <section className="mt-6 rounded-2xl border border-[#ffd700]/45 bg-white p-5">
+      <div className="grid gap-4 md:grid-cols-2">
+        {selectedItem.evidenceMedia.map((media) => (
+          <article
+            className={`rounded-2xl border border-[#c8102e]/10 bg-[#fffaf0] p-3 ${
+              media.videoEmbedUrl ? "md:col-span-2" : ""
+            }`}
+            key={media.title}
+          >
+            {media.imageSrc ? (
+              <div className="relative aspect-video overflow-hidden rounded-2xl bg-[#fff0dc]">
+                <Image
+                  alt={media.imageAlt ?? media.title}
+                  className="object-cover"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 768px"
+                  src={media.imageSrc}
+                />
+              </div>
+            ) : null}
+
+            {media.videoEmbedUrl ? (
+              <div className="aspect-video overflow-hidden rounded-2xl bg-[#1a0a00]">
+                <iframe
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                  className="h-full w-full"
+                  loading="lazy"
+                  referrerPolicy="strict-origin-when-cross-origin"
+                  src={media.videoEmbedUrl}
+                  title={media.title}
+                />
+              </div>
+            ) : null}
+          </article>
+        ))}
+      </div>
+    </section>
+  ) : null;
+  const bodySection = selectedItem ? (
+    <div className="mt-5 space-y-4 text-base leading-8 text-[#3d1f00]">
+      {selectedItem.body.map((paragraph) => (
+        <p key={paragraph}>{paragraph}</p>
+      ))}
+    </div>
+  ) : null;
 
   return (
     <>
       <div className={`stagger-child grid gap-5 ${gridClass}`}>
-        {items.map((item, index) => (
-          <button
-            className="detail-card effect-card rounded-2xl border border-[#c8102e]/10 bg-white p-6 text-left"
-            key={item.title}
-            onClick={() => setSelectedItem(item)}
-            type="button"
-          >
-            <span className="rounded-full bg-gradient-to-r from-[#ffd700] to-[#f59e0b] px-3 py-1 text-xs font-black text-[#8b0000] shadow-sm">
-              {item.badge ?? `Mục ${index + 1}`}
-            </span>
-            <h3 className="mt-4 text-xl font-black text-[#8b0000]">{item.title}</h3>
-            <p className="mt-3 leading-7 text-[#3d1f00]">{item.summary}</p>
-            <span className="mt-5 inline-flex text-sm font-black text-[#c8102e]">Mở chi tiết</span>
-          </button>
-        ))}
+        {items.map((item, index) => {
+          const frontLabel = item.badge ?? `Mục ${index + 1}`;
+
+          return (
+            <button
+              className="detail-card effect-card rounded-2xl border border-[#c8102e]/10 bg-white p-6 text-left"
+              key={item.title}
+              onClick={() => setSelectedItem(item)}
+              type="button"
+            >
+              {concealFrontContent ? null : (
+                <span className="rounded-full bg-gradient-to-r from-[#ffd700] to-[#f59e0b] px-3 py-1 text-xs font-black text-[#8b0000] shadow-sm">
+                  {frontLabel}
+                </span>
+              )}
+              <h3 className={concealFrontContent ? "text-2xl font-black text-[#8b0000]" : "mt-4 text-xl font-black text-[#8b0000]"}>
+                {concealFrontContent ? frontLabel : item.title}
+              </h3>
+              {concealFrontContent ? null : <p className="mt-3 leading-7 text-[#3d1f00]">{item.summary}</p>}
+              <span className="mt-5 inline-flex text-sm font-black text-[#c8102e]">Mở chi tiết</span>
+            </button>
+          );
+        })}
       </div>
 
       {selectedItem ? (
@@ -100,81 +162,8 @@ export default function PresentationDetailCards({ columns = "two", items }: Pres
               </button>
             </header>
 
-            <div className="mt-5 space-y-4 text-base leading-8 text-[#3d1f00]">
-              {selectedItem.body.map((paragraph) => (
-                <p key={paragraph}>{paragraph}</p>
-              ))}
-            </div>
-
-            {selectedItem.examples?.length ? (
-              <section className="mt-6 rounded-2xl border border-[#ffd700]/45 bg-white p-5">
-                <h3 className="text-lg font-black text-[#8b0000]">Minh chứng gợi ý</h3>
-                <ul className="mt-3 space-y-3 leading-7 text-[#3d1f00]">
-                  {selectedItem.examples.map((example) => (
-                    <li className="pl-4 before:-ml-4 before:pr-2 before:text-[#c8102e] before:content-['•']" key={example}>
-                      {example}
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            ) : null}
-
-            {selectedItem.evidenceMedia?.length ? (
-              <section className="mt-6 rounded-2xl border border-[#ffd700]/45 bg-white p-5">
-                <h3 className="text-lg font-black text-[#8b0000]">Hình ảnh và video minh chứng</h3>
-                <div className="mt-4 grid gap-4 md:grid-cols-2">
-                  {selectedItem.evidenceMedia.map((media) => (
-                    <article
-                      className={`rounded-2xl border border-[#c8102e]/10 bg-[#fffaf0] p-3 ${
-                        media.videoEmbedUrl ? "md:col-span-2" : ""
-                      }`}
-                      key={media.title}
-                    >
-                      {media.imageSrc ? (
-                        <div className="relative aspect-video overflow-hidden rounded-2xl bg-[#fff0dc]">
-                          <Image
-                            alt={media.imageAlt ?? media.title}
-                            className="object-cover"
-                            fill
-                            sizes="(max-width: 768px) 100vw, 768px"
-                            src={media.imageSrc}
-                          />
-                        </div>
-                      ) : null}
-
-                      {media.videoEmbedUrl ? (
-                        <div className="aspect-video overflow-hidden rounded-2xl bg-[#1a0a00]">
-                          <iframe
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                            allowFullScreen
-                            className="h-full w-full"
-                            loading="lazy"
-                            referrerPolicy="strict-origin-when-cross-origin"
-                            src={media.videoEmbedUrl}
-                            title={media.title}
-                          />
-                        </div>
-                      ) : null}
-
-                      <div className="mt-3">
-                        <h4 className="font-black text-[#8b0000]">{media.title}</h4>
-                        {media.description ? <p className="mt-1 leading-7 text-[#3d1f00]">{media.description}</p> : null}
-                        {media.sourceUrl ? (
-                          <a
-                            className="mt-2 inline-flex text-sm font-black text-[#c8102e]"
-                            href={media.sourceUrl}
-                            rel="noreferrer"
-                            target="_blank"
-                          >
-                            Mở nguồn video
-                          </a>
-                        ) : null}
-                      </div>
-                    </article>
-                  ))}
-                </div>
-              </section>
-            ) : null}
+            {mediaFirstInModal ? mediaSection : bodySection}
+            {mediaFirstInModal ? bodySection : mediaSection}
 
             {selectedItem.takeaway ? (
               <p className="mt-6 rounded-2xl bg-[#8b0000] px-5 py-4 font-bold leading-7 text-[#fff0a0]">

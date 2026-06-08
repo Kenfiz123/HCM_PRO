@@ -77,7 +77,6 @@ const roleCards: PresentationDetailItem[] = [
       "Đạo đức giúp người cách mạng vượt qua thử thách, không dao động trước lợi ích cá nhân và luôn đặt lợi ích của Tổ quốc, nhân dân lên trước.",
     ],
     summary: "Đạo đức là nền móng để người cách mạng đứng vững và hoàn thành sứ mệnh.",
-    takeaway: "Ý chốt khi thuyết trình: tài năng có thể tạo hiệu quả nhất thời, nhưng đạo đức mới tạo niềm tin bền vững.",
     title: "Đạo đức là gốc của người cách mạng",
   },
   {
@@ -114,8 +113,8 @@ const qualityCards: PresentationDetailItem[] = [
   {
     badge: "Phẩm chất 1",
     body: [
-      "Trung với nước là trung thành với sự nghiệp dựng nước, giữ nước và con đường cách mạng vì độc lập dân tộc, hạnh phúc nhân dân.",
-      "Hiếu với dân là hết lòng phục vụ nhân dân, lấy dân làm gốc, việc gì có lợi cho dân thì làm, việc gì có hại cho dân thì tránh.",
+      "Trung với nước là trung thành với mục tiêu độc lập dân tộc, chủ quyền đất nước và con đường cách mạng vì hạnh phúc của nhân dân.",
+      "Hiếu với dân là hết lòng phục vụ nhân dân, lấy dân làm gốc, lắng nghe dân và đặt lợi ích thiết thực của nhân dân lên trước lợi ích cá nhân hay cục bộ.",
     ],
     examples: [
       "Trong đại dịch COVID-19, nhiều y bác sĩ, công an, bộ đội và tình nguyện viên vào tâm dịch, chấp nhận nguy hiểm để bảo vệ tính mạng nhân dân.",
@@ -148,14 +147,13 @@ const qualityCards: PresentationDetailItem[] = [
       },
     ],
     summary: "Trung thành với đất nước và tận tụy phục vụ nhân dân là phẩm chất đứng đầu.",
-    takeaway: "Có thể dẫn bằng câu hỏi: nếu nói yêu nước nhưng thờ ơ với đời sống nhân dân, liệu đó có phải là trung với nước không?",
     title: "Trung với nước, hiếu với dân",
   },
   {
     badge: "Phẩm chất 2",
     body: [
-      "Cần là siêng năng, chăm chỉ, làm việc có kế hoạch và sáng tạo. Kiệm là tiết kiệm thời gian, sức lực, của cải của mình và của nhân dân.",
-      "Liêm là trong sạch, không tham lam, không biến của công thành của tư. Chính là ngay thẳng, thật thà. Chí công vô tư là đặt lợi ích chung lên trên lợi ích riêng.",
+      "Cần là siêng năng, chăm chỉ, làm việc có kế hoạch và có trách nhiệm. Kiệm là sử dụng hợp lý thời gian, sức lực, tiền của của mình và của nhân dân, tránh lãng phí nhưng không keo kiệt.",
+      "Liêm là trong sạch, không tham lam, không biến của công thành của tư. Chính là ngay thẳng, trung thực, sống và làm việc đúng đắn. Chí công vô tư là công bằng, đặt lợi ích chung lên trên lợi ích riêng.",
     ],
     examples: [
       "Các chiến dịch phòng chống tham nhũng thể hiện yêu cầu liêm, chính và chí công vô tư trong xây dựng bộ máy nhà nước trong sạch.",
@@ -197,8 +195,8 @@ const qualityCards: PresentationDetailItem[] = [
   {
     badge: "Phẩm chất 3",
     body: [
-      "Hồ Chí Minh coi yêu thương con người là phẩm chất cao quý của người cách mạng. Tình yêu đó không dừng ở gia đình, làng xóm mà mở rộng đến nhân dân lao động và các dân tộc bị áp bức.",
-      "Yêu thương con người trong tư tưởng của Người là tình thương thiết thực, thể hiện bằng hành động cụ thể, không chỉ bằng lời nói.",
+      "Hồ Chí Minh coi yêu thương con người là phẩm chất cao quý của người cách mạng. Tình yêu đó không chỉ giới hạn trong gia đình hay cộng đồng gần gũi, mà mở rộng đến nhân dân lao động, người yếu thế và những con người bị áp bức.",
+      "Yêu thương con người trong tư tưởng của Người là tình thương thiết thực: tôn trọng, nâng đỡ, giúp con người vượt qua khó khăn và phát triển tốt đẹp hơn.",
     ],
     examples: [
       "Các phong trào thiện nguyện như quỹ vì người nghèo, quán cơm giá rẻ, ATM gạo hay hỗ trợ bệnh nhi cho thấy tinh thần thương người trong cộng đồng.",
@@ -236,8 +234,8 @@ const qualityCards: PresentationDetailItem[] = [
   {
     badge: "Phẩm chất 4",
     body: [
-      "Tinh thần quốc tế trong sáng thể hiện ở sự đoàn kết với giai cấp công nhân, nhân dân lao động thế giới và các dân tộc đấu tranh vì độc lập, tự do.",
-      "Hồ Chí Minh gắn chủ nghĩa yêu nước với chủ nghĩa quốc tế vô sản, đặt cách mạng Việt Nam trong dòng chảy chung của phong trào cách mạng thế giới.",
+      "Tinh thần quốc tế trong sáng thể hiện ở sự đoàn kết, tôn trọng và hợp tác với nhân dân các nước, đặc biệt là những dân tộc đấu tranh vì độc lập, tự do, hòa bình và tiến bộ.",
+      "Hồ Chí Minh gắn chủ nghĩa yêu nước chân chính với trách nhiệm quốc tế, xem cách mạng Việt Nam là một phần của phong trào chung vì giải phóng con người.",
     ],
     examples: [
       "Lực lượng mũ nồi xanh Việt Nam tham gia gìn giữ hòa bình Liên Hợp Quốc, vừa làm nhiệm vụ chuyên môn vừa hỗ trợ đời sống người dân địa phương.",
@@ -573,7 +571,7 @@ export default function PresentationPage() {
         <AnimateOnScroll className="mx-auto max-w-6xl">
           <SectionTitle
             subtitle="Một số hình ảnh tiêu biểu gắn với các giá trị đạo đức Hồ Chí Minh"
-            title="Hình Ảnh Minh Họa Tư Tưởng Đạo Đức Hồ Chí Minh"
+            title="Tư Tưởng Đạo Đức Hồ Chí Minh"
           />
           <div className="visual-story-grid stagger-child grid gap-5 md:grid-cols-2 lg:grid-cols-4">
             {visualMoments.map((moment) => (
@@ -581,9 +579,9 @@ export default function PresentationPage() {
                 <div className="relative aspect-[16/10]">
                   <Image alt={moment.title} className="object-cover" fill sizes="(max-width: 768px) 100vw, 25vw" src={moment.src} />
                 </div>
-                <figcaption className="p-5">
-                  <h3 className="text-lg font-black text-[#8b0000]">{moment.title}</h3>
-                  <p className="visual-ethic-link mt-3 rounded-xl px-3 py-2 text-sm font-black">{moment.caption}</p>
+                <figcaption className="visual-story-caption p-5">
+                  <h3 className="visual-story-title text-lg font-black text-[#8b0000]">{moment.title}</h3>
+                  <p className="visual-ethic-link rounded-xl px-3 py-2 text-sm font-black">{moment.caption}</p>
                 </figcaption>
               </figure>
             ))}
@@ -601,7 +599,6 @@ export default function PresentationPage() {
       <section className="lesson-section px-5 py-20" id="pham-chat">
         <AnimateOnScroll className="mx-auto max-w-6xl">
           <SectionTitle subtitle="Bốn phẩm chất then chốt tạo nên nhân cách người cách mạng" title="Phẩm Chất Đạo Đức" />
-          <PresentationDetailCards items={qualityCards} />
           <div className="effect-panel stagger-child mt-8 rounded-2xl border border-[#ffd700]/50 bg-white p-6 shadow-lg">
             <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
               <div>
@@ -609,7 +606,7 @@ export default function PresentationPage() {
                 <h3 className="mt-2 text-2xl font-black text-[#8b0000]">Xem video và đoán phẩm chất đạo đức</h3>
               </div>
               <p className="max-w-xl font-semibold leading-7 text-[#6b4226]">
-                Sau khi xem hai video, hãy hỏi người xem: những hành động này thuộc phẩm chất đạo đức nào trong bốn phẩm chất bên dưới?
+                Sau khi xem hai video, hãy hỏi người xem: những hành động này là ví dụ của phẩm chất đạo đức nào?
               </p>
             </div>
 
@@ -640,7 +637,7 @@ export default function PresentationPage() {
             <div className="mt-6 rounded-2xl bg-[#8b0000] p-5 text-white">
               <p className="text-xl font-black text-[#fff0a0]">Câu hỏi cho người xem</p>
               <p className="mt-2 leading-7">
-                Hai video trên thể hiện phẩm chất nào: Trung với nước, hiếu với dân; Cần, kiệm, liêm, chính; Yêu thương con người; hay Tinh thần quốc tế trong sáng?
+                Hai video trên thể hiện phẩm chất đạo đức nào? Hãy đoán trước khi mở các ô phẩm chất bên dưới.
               </p>
               <details className="mt-4 rounded-xl bg-white/10 p-4">
                 <summary className="cursor-pointer font-black text-[#fff0a0]">Đáp án gợi ý sau khi thảo luận</summary>
@@ -649,6 +646,9 @@ export default function PresentationPage() {
                 </p>
               </details>
             </div>
+          </div>
+          <div className="mt-8">
+            <PresentationDetailCards concealFrontContent mediaFirstInModal items={qualityCards} />
           </div>
         </AnimateOnScroll>
       </section>
