@@ -123,7 +123,7 @@ export default function PresentationChatbot() {
                 }`}
                 key={message.id}
               >
-                <p>{message.content}</p>
+                <p className="whitespace-pre-line">{message.content}</p>
               </div>
             ))}
 
