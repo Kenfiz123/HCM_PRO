@@ -533,6 +533,10 @@ input {
 }
 
 @media (max-width: 640px) {
+  .mobile-play-shell {
+    padding-top: max(0.5rem, env(safe-area-inset-top));
+  }
+
   .game-shell {
     background-size: 28px 28px;
   }
@@ -578,6 +582,18 @@ input {
 
   .mobile-stat {
     min-width: 0;
+  }
+
+  .mobile-play-header {
+    min-height: 2rem;
+  }
+
+  .mobile-card-message {
+    display: -webkit-box;
+    max-height: 3.25rem;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
   }
 
   .target-banner {

@@ -742,7 +742,7 @@ export default function PlayPage() {
             : "Lượt của bạn";
 
   return (
-    <main className="game-shell game-aurora min-h-screen px-2 py-3 sm:px-4 sm:py-5">
+    <main className="mobile-play-shell game-shell game-aurora min-h-screen px-2 py-2 sm:px-4 sm:py-5">
       <div className="mx-auto grid max-w-[1560px] gap-3 sm:gap-5 xl:grid-cols-[330px_1fr_390px]">
         <aside className="order-2 hidden space-y-4 xl:order-1 xl:block">
           <div className="game-panel rounded-[1.5rem] border border-white/10 bg-white/[0.07] p-5 shadow-xl shadow-cyan-950/20 backdrop-blur">
@@ -782,49 +782,49 @@ export default function PlayPage() {
         </aside>
 
         <section className="play-board-panel order-1 rounded-[1.25rem] border border-white/10 bg-white/[0.06] p-2 shadow-2xl shadow-fuchsia-950/20 backdrop-blur sm:rounded-[2rem] sm:p-4 xl:order-2">
-          <div className="mb-3 flex flex-col justify-between gap-3 sm:mb-4 sm:flex-row sm:items-center">
-            <div>
-              <p className="text-xs font-black uppercase tracking-[0.24em] text-cyan-200">Caro Quiz Battle</p>
-              <h2 className="mt-1 text-xl font-black text-white sm:text-2xl">{turnLabel}</h2>
+          <div className="mobile-play-header mb-2 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2 sm:mb-4 sm:flex sm:justify-between sm:gap-3">
+            <div className="min-w-0">
+              <p className="hidden text-xs font-black uppercase tracking-[0.24em] text-cyan-200 sm:block">Caro Quiz Battle</p>
+              <h2 className="truncate text-base font-black leading-tight text-white sm:mt-1 sm:text-2xl">{turnLabel}</h2>
             </div>
-            <div className="grid grid-cols-2 gap-2 sm:flex">
+            <div className="flex shrink-0 gap-1.5 sm:gap-2">
               <button
-                className="rounded-xl border border-white/10 px-3 py-2.5 text-xs font-bold text-white transition hover:border-cyan-300 hover:bg-cyan-300/10 sm:rounded-2xl sm:px-4 sm:py-3 sm:text-sm"
+                className="min-h-8 rounded-lg border border-white/10 px-2.5 py-1.5 text-[0.68rem] font-bold text-white transition hover:border-cyan-300 hover:bg-cyan-300/10 sm:min-h-0 sm:rounded-2xl sm:px-4 sm:py-3 sm:text-sm"
                 onClick={resetGame}
                 type="button"
               >
-                Chơi lại từ 0
+                Chơi lại
               </button>
               <Link
-                className="rounded-xl bg-white/10 px-3 py-2.5 text-center text-xs font-bold text-white transition hover:bg-white/15 sm:rounded-2xl sm:px-4 sm:py-3 sm:text-sm"
+                className="min-h-8 rounded-lg bg-white/10 px-2.5 py-1.5 text-center text-[0.68rem] font-bold text-white transition hover:bg-white/15 sm:min-h-0 sm:rounded-2xl sm:px-4 sm:py-3 sm:text-sm"
                 href="/leaderboard"
               >
-                Leaderboard
+                BXH
               </Link>
             </div>
           </div>
 
-          <div className="mb-3 grid grid-cols-4 gap-2 xl:hidden">
-            <div className="mobile-stat rounded-xl bg-cyan-300/10 px-2 py-2 text-center">
-              <p className="text-[0.65rem] font-bold text-slate-300">Điểm</p>
-              <p className="text-lg font-black text-cyan-100">{score}</p>
+          <div className="mb-2 grid grid-cols-4 gap-1.5 xl:hidden">
+            <div className="mobile-stat rounded-lg bg-cyan-300/10 px-1.5 py-1.5 text-center">
+              <p className="text-[0.58rem] font-bold leading-none text-slate-300">Điểm</p>
+              <p className="mt-0.5 text-base font-black leading-none text-cyan-100">{score}</p>
             </div>
-            <div className="mobile-stat rounded-xl bg-fuchsia-300/10 px-2 py-2 text-center">
-              <p className="text-[0.65rem] font-bold text-slate-300">Lượt</p>
-              <p className="text-lg font-black text-fuchsia-100">{totalMoves}</p>
+            <div className="mobile-stat rounded-lg bg-fuchsia-300/10 px-1.5 py-1.5 text-center">
+              <p className="text-[0.58rem] font-bold leading-none text-slate-300">Lượt</p>
+              <p className="mt-0.5 text-base font-black leading-none text-fuchsia-100">{totalMoves}</p>
             </div>
-            <div className="mobile-stat rounded-xl bg-emerald-300/10 px-2 py-2 text-center">
-              <p className="text-[0.65rem] font-bold text-slate-300">Đúng</p>
-              <p className="text-lg font-black text-emerald-100">{correctAnswers}</p>
+            <div className="mobile-stat rounded-lg bg-emerald-300/10 px-1.5 py-1.5 text-center">
+              <p className="text-[0.58rem] font-bold leading-none text-slate-300">Đúng</p>
+              <p className="mt-0.5 text-base font-black leading-none text-emerald-100">{correctAnswers}</p>
             </div>
-            <div className="mobile-stat rounded-xl bg-rose-300/10 px-2 py-2 text-center">
-              <p className="text-[0.65rem] font-bold text-slate-300">Sai</p>
-              <p className="text-lg font-black text-rose-100">{wrongAnswers}</p>
+            <div className="mobile-stat rounded-lg bg-rose-300/10 px-1.5 py-1.5 text-center">
+              <p className="text-[0.58rem] font-bold leading-none text-slate-300">Sai</p>
+              <p className="mt-0.5 text-base font-black leading-none text-rose-100">{wrongAnswers}</p>
             </div>
           </div>
 
           {cardMessage ? (
-            <div className="mb-3 rounded-xl border border-cyan-300/25 bg-cyan-300/10 px-3 py-2 text-xs font-semibold leading-5 text-cyan-50 xl:hidden">
+            <div className="mobile-card-message mb-2 rounded-lg border border-cyan-300/25 bg-cyan-300/10 px-3 py-1.5 text-xs font-semibold leading-4 text-cyan-50 xl:hidden">
               {cardMessage}
             </div>
           ) : null}
