@@ -601,6 +601,124 @@ input {
   }
 }
 
+@media (orientation: landscape) and (max-height: 560px) and (max-width: 980px) {
+  .mobile-play-shell {
+    height: 100svh;
+    min-height: 100svh;
+    overflow-y: auto;
+    padding:
+      max(0.35rem, env(safe-area-inset-top))
+      max(0.5rem, env(safe-area-inset-right))
+      max(0.35rem, env(safe-area-inset-bottom))
+      max(0.5rem, env(safe-area-inset-left));
+  }
+
+  .play-page-grid {
+    gap: 0.5rem;
+    max-width: none;
+  }
+
+  .play-board-panel {
+    display: grid;
+    grid-template-areas:
+      "board header"
+      "board stats"
+      "board message"
+      "board result";
+    grid-template-columns: minmax(0, calc(100svh - 1.4rem)) minmax(10rem, 1fr);
+    grid-template-rows: auto auto auto 1fr;
+    align-items: start;
+    gap: 0.4rem 0.55rem;
+    min-height: calc(100svh - 0.7rem);
+    overflow: hidden;
+    padding: 0.35rem;
+  }
+
+  .play-board-panel .board-wrap {
+    grid-area: board;
+    align-self: center;
+    width: min(100%, calc(100svh - 1.55rem));
+    max-width: calc(100svh - 1.55rem);
+  }
+
+  .play-board-panel .game-board {
+    padding: 0.25rem;
+  }
+
+  .mobile-play-header {
+    grid-area: header;
+    margin-bottom: 0;
+    min-height: 0;
+  }
+
+  .mobile-play-header h2 {
+    font-size: 0.92rem;
+    line-height: 1.15;
+  }
+
+  .mobile-play-header a,
+  .mobile-play-header button {
+    min-height: 1.9rem;
+    padding: 0.35rem 0.5rem;
+    font-size: 0.66rem;
+  }
+
+  .mobile-stat-grid {
+    grid-area: stats;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 0.35rem;
+    margin-bottom: 0;
+  }
+
+  .mobile-stat {
+    padding: 0.4rem 0.35rem;
+  }
+
+  .mobile-stat p:first-child {
+    font-size: 0.56rem;
+  }
+
+  .mobile-stat p:last-child {
+    font-size: 0.98rem;
+  }
+
+  .mobile-card-message {
+    grid-area: message;
+    margin-bottom: 0;
+    max-height: 2.8rem;
+    padding: 0.45rem 0.55rem;
+    font-size: 0.68rem;
+    line-height: 1.25;
+    -webkit-line-clamp: 2;
+  }
+
+  .mobile-round-result {
+    grid-area: result;
+    margin-top: 0;
+    max-height: 8.5rem;
+    overflow-y: auto;
+    padding: 0.65rem;
+  }
+
+  .mobile-round-result h3 {
+    font-size: 1.45rem;
+  }
+
+  .mobile-round-result p {
+    font-size: 0.72rem;
+    line-height: 1.35;
+  }
+
+  .play-side-panel {
+    margin-top: 0.5rem;
+  }
+
+  .target-banner {
+    max-height: calc(100svh - 1rem);
+    overflow-y: auto;
+  }
+}
+
 .neon-title {
   background: linear-gradient(90deg, #67e8f9, #f0abfc, #fde68a, #67e8f9);
   background-clip: text;

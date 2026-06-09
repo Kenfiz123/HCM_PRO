@@ -743,7 +743,7 @@ export default function PlayPage() {
 
   return (
     <main className="mobile-play-shell game-shell game-aurora min-h-screen px-2 py-2 sm:px-4 sm:py-5">
-      <div className="mx-auto grid max-w-[1560px] gap-3 sm:gap-5 xl:grid-cols-[330px_1fr_390px]">
+      <div className="play-page-grid mx-auto grid max-w-[1560px] gap-3 sm:gap-5 xl:grid-cols-[330px_1fr_390px]">
         <aside className="order-2 hidden space-y-4 xl:order-1 xl:block">
           <div className="game-panel rounded-[1.5rem] border border-white/10 bg-white/[0.07] p-5 shadow-xl shadow-cyan-950/20 backdrop-blur">
             <p className="text-sm font-bold uppercase tracking-[0.22em] text-cyan-200">Người chơi</p>
@@ -804,7 +804,7 @@ export default function PlayPage() {
             </div>
           </div>
 
-          <div className="mb-2 grid grid-cols-4 gap-1.5 xl:hidden">
+          <div className="mobile-stat-grid mb-2 grid grid-cols-4 gap-1.5 xl:hidden">
             <div className="mobile-stat rounded-lg bg-cyan-300/10 px-1.5 py-1.5 text-center">
               <p className="text-[0.58rem] font-bold leading-none text-slate-300">Điểm</p>
               <p className="mt-0.5 text-base font-black leading-none text-cyan-100">{score}</p>
@@ -846,7 +846,7 @@ export default function PlayPage() {
           />
 
           {roundResult ? (
-            <div className="round-result-pop mt-5 rounded-[1.5rem] border border-yellow-300/30 bg-yellow-300/10 p-5 text-center">
+            <div className="mobile-round-result round-result-pop mt-5 rounded-[1.5rem] border border-yellow-300/30 bg-yellow-300/10 p-5 text-center">
               <p className="text-sm font-bold uppercase tracking-[0.22em] text-yellow-100">Kết quả ván</p>
               <h3 className="mt-2 text-4xl font-black text-white">{getResultLabel(roundResult)}</h3>
               <p className="mt-2 text-slate-200">
@@ -857,7 +857,7 @@ export default function PlayPage() {
           ) : null}
         </section>
 
-        <aside className="order-3 space-y-3 sm:space-y-4">
+        <aside className="play-side-panel order-3 space-y-3 sm:space-y-4">
           <Leaderboard
             captureEnabled
             clearEnabled
