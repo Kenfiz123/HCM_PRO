@@ -742,9 +742,9 @@ export default function PlayPage() {
             : "Lượt của bạn";
 
   return (
-    <main className="game-shell game-aurora min-h-screen px-4 py-5">
-      <div className="mx-auto grid max-w-[1560px] gap-5 xl:grid-cols-[330px_1fr_390px]">
-        <aside className="order-2 space-y-4 xl:order-1">
+    <main className="game-shell game-aurora min-h-screen px-2 py-3 sm:px-4 sm:py-5">
+      <div className="mx-auto grid max-w-[1560px] gap-3 sm:gap-5 xl:grid-cols-[330px_1fr_390px]">
+        <aside className="order-2 hidden space-y-4 xl:order-1 xl:block">
           <div className="game-panel rounded-[1.5rem] border border-white/10 bg-white/[0.07] p-5 shadow-xl shadow-cyan-950/20 backdrop-blur">
             <p className="text-sm font-bold uppercase tracking-[0.22em] text-cyan-200">Người chơi</p>
             <h1 className="mt-2 text-2xl font-black text-white">{playerName}</h1>
@@ -781,28 +781,53 @@ export default function PlayPage() {
           ) : null}
         </aside>
 
-        <section className="play-board-panel order-1 rounded-[2rem] border border-white/10 bg-white/[0.06] p-4 shadow-2xl shadow-fuchsia-950/20 backdrop-blur xl:order-2">
-          <div className="mb-4 flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
+        <section className="play-board-panel order-1 rounded-[1.25rem] border border-white/10 bg-white/[0.06] p-2 shadow-2xl shadow-fuchsia-950/20 backdrop-blur sm:rounded-[2rem] sm:p-4 xl:order-2">
+          <div className="mb-3 flex flex-col justify-between gap-3 sm:mb-4 sm:flex-row sm:items-center">
             <div>
               <p className="text-xs font-black uppercase tracking-[0.24em] text-cyan-200">Caro Quiz Battle</p>
-              <h2 className="mt-1 text-2xl font-black text-white">{turnLabel}</h2>
+              <h2 className="mt-1 text-xl font-black text-white sm:text-2xl">{turnLabel}</h2>
             </div>
-            <div className="flex gap-2">
+            <div className="grid grid-cols-2 gap-2 sm:flex">
               <button
-                className="rounded-2xl border border-white/10 px-4 py-3 text-sm font-bold text-white transition hover:border-cyan-300 hover:bg-cyan-300/10"
+                className="rounded-xl border border-white/10 px-3 py-2.5 text-xs font-bold text-white transition hover:border-cyan-300 hover:bg-cyan-300/10 sm:rounded-2xl sm:px-4 sm:py-3 sm:text-sm"
                 onClick={resetGame}
                 type="button"
               >
                 Chơi lại từ 0
               </button>
               <Link
-                className="rounded-2xl bg-white/10 px-4 py-3 text-sm font-bold text-white transition hover:bg-white/15"
+                className="rounded-xl bg-white/10 px-3 py-2.5 text-center text-xs font-bold text-white transition hover:bg-white/15 sm:rounded-2xl sm:px-4 sm:py-3 sm:text-sm"
                 href="/leaderboard"
               >
                 Leaderboard
               </Link>
             </div>
           </div>
+
+          <div className="mb-3 grid grid-cols-4 gap-2 xl:hidden">
+            <div className="mobile-stat rounded-xl bg-cyan-300/10 px-2 py-2 text-center">
+              <p className="text-[0.65rem] font-bold text-slate-300">Điểm</p>
+              <p className="text-lg font-black text-cyan-100">{score}</p>
+            </div>
+            <div className="mobile-stat rounded-xl bg-fuchsia-300/10 px-2 py-2 text-center">
+              <p className="text-[0.65rem] font-bold text-slate-300">Lượt</p>
+              <p className="text-lg font-black text-fuchsia-100">{totalMoves}</p>
+            </div>
+            <div className="mobile-stat rounded-xl bg-emerald-300/10 px-2 py-2 text-center">
+              <p className="text-[0.65rem] font-bold text-slate-300">Đúng</p>
+              <p className="text-lg font-black text-emerald-100">{correctAnswers}</p>
+            </div>
+            <div className="mobile-stat rounded-xl bg-rose-300/10 px-2 py-2 text-center">
+              <p className="text-[0.65rem] font-bold text-slate-300">Sai</p>
+              <p className="text-lg font-black text-rose-100">{wrongAnswers}</p>
+            </div>
+          </div>
+
+          {cardMessage ? (
+            <div className="mb-3 rounded-xl border border-cyan-300/25 bg-cyan-300/10 px-3 py-2 text-xs font-semibold leading-5 text-cyan-50 xl:hidden">
+              {cardMessage}
+            </div>
+          ) : null}
 
           <GameBoard
             board={board}
@@ -832,7 +857,7 @@ export default function PlayPage() {
           ) : null}
         </section>
 
-        <aside className="order-3 space-y-4">
+        <aside className="order-3 space-y-3 sm:space-y-4">
           <Leaderboard
             captureEnabled
             clearEnabled
@@ -861,7 +886,7 @@ export default function PlayPage() {
             }
           />
 
-          <div className="game-panel rounded-[1.5rem] border border-white/10 bg-slate-950/50 p-5 text-sm leading-6 text-slate-300 backdrop-blur">
+          <div className="game-panel hidden rounded-[1.5rem] border border-white/10 bg-slate-950/50 p-5 text-sm leading-6 text-slate-300 backdrop-blur sm:block">
             <h2 className="mb-3 text-lg font-black text-white">Luật nhanh</h2>
             <p>Bàn 15x15. Người chơi là X, bot là O. Ai có 5 quân liên tiếp theo ngang, dọc hoặc chéo sẽ thắng.</p>
             <p className="mt-3">Sau mỗi 3 lượt của bạn, game mở quiz. Đúng: +30 điểm và chọn 1 lá bài. Sai: mất 50% điểm.</p>
@@ -873,18 +898,18 @@ export default function PlayPage() {
       </div>
 
       {cardChoices ? (
-        <div className="modal-backdrop fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 p-4 backdrop-blur-md">
-          <div className="modal-pop w-full max-w-4xl rounded-[1.75rem] border border-white/10 bg-slate-950 p-5 text-white shadow-2xl shadow-fuchsia-900/30">
+        <div className="modal-backdrop fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 p-2 backdrop-blur-md sm:p-4">
+          <div className="modal-pop max-h-[calc(100svh-1rem)] w-full max-w-4xl overflow-y-auto rounded-[1.25rem] border border-white/10 bg-slate-950 p-3 text-white shadow-2xl shadow-fuchsia-900/30 sm:rounded-[1.75rem] sm:p-5">
             <div className="mb-5 text-center">
               <p className="text-sm font-black uppercase tracking-[0.24em] text-cyan-200">Chọn phần thưởng</p>
-              <h2 className="mt-2 text-3xl font-black">Chọn 1 trong 3 lá bài</h2>
+              <h2 className="mt-2 text-2xl font-black sm:text-3xl">Chọn 1 trong 3 lá bài</h2>
               <p className="mt-2 text-sm text-slate-300">Có lá tăng điểm, có lá rủi ro. Chọn xong game sẽ tiếp tục.</p>
             </div>
-            <div className="grid gap-4 md:grid-cols-3">
+            <div className="grid gap-3 md:grid-cols-3 md:gap-4">
               {cardChoices.map((card) => (
                 <button
                   className={[
-                    "card-choice min-h-56 rounded-[1.5rem] border p-5 text-center transition",
+                    "card-choice min-h-44 rounded-[1.1rem] border p-4 text-center transition sm:min-h-56 sm:rounded-[1.5rem] sm:p-5",
                     revealedCardId === card.id
                       ? "border-yellow-200 bg-gradient-to-br from-yellow-300/20 via-fuchsia-500/20 to-cyan-300/20 shadow-2xl shadow-yellow-400/20"
                       : "border-cyan-300/30 bg-gradient-to-br from-slate-900 via-indigo-950 to-fuchsia-950 hover:-translate-y-1 hover:border-cyan-200 hover:shadow-2xl hover:shadow-cyan-500/20",
@@ -905,7 +930,7 @@ export default function PlayPage() {
                           {card.badge}
                         </span>
                       </div>
-                      <h3 className="mt-8 text-2xl font-black text-white">{card.title}</h3>
+                      <h3 className="mt-5 text-xl font-black text-white sm:mt-8 sm:text-2xl">{card.title}</h3>
                       <p className="mt-4 text-sm font-semibold leading-6 text-slate-100">{card.description}</p>
                       <div className="mt-6 rounded-full bg-yellow-200/20 px-4 py-2 text-xs font-black uppercase tracking-[0.16em] text-yellow-100">
                         Đang áp dụng...
@@ -913,10 +938,10 @@ export default function PlayPage() {
                     </>
                   ) : (
                     <>
-                      <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full border border-cyan-200/40 bg-cyan-200/10 text-5xl font-black text-cyan-100">
+                      <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full border border-cyan-200/40 bg-cyan-200/10 text-4xl font-black text-cyan-100 sm:h-20 sm:w-20 sm:text-5xl">
                         ?
                       </div>
-                      <h3 className="mt-8 text-2xl font-black text-white">Lá bài bí mật</h3>
+                      <h3 className="mt-5 text-xl font-black text-white sm:mt-8 sm:text-2xl">Lá bài bí mật</h3>
                       <p className="mt-4 text-sm font-semibold leading-6 text-slate-300">
                         Nội dung đang úp. Chọn lá này để lật và đọc hiệu ứng.
                       </p>
@@ -933,7 +958,7 @@ export default function PlayPage() {
       ) : null}
 
       {targetingCard ? (
-        <div className="target-banner fixed bottom-4 left-1/2 z-50 w-[min(92vw,680px)] -translate-x-1/2 rounded-[1.5rem] border border-cyan-300/30 bg-slate-950/95 p-4 text-center text-white shadow-2xl shadow-cyan-900/40">
+        <div className="target-banner fixed bottom-[max(0.75rem,env(safe-area-inset-bottom))] left-1/2 z-50 w-[min(94vw,680px)] -translate-x-1/2 rounded-[1rem] border border-cyan-300/30 bg-slate-950/95 p-3 text-center text-white shadow-2xl shadow-cyan-900/40 sm:bottom-4 sm:rounded-[1.5rem] sm:p-4">
           <p className="text-sm font-black uppercase tracking-[0.2em] text-cyan-200">{targetingCard.title}</p>
           <p className="mt-1 text-sm text-slate-200">
             {targetingCard.kind === "steal"

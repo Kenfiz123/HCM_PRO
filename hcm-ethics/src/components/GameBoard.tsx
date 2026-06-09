@@ -28,9 +28,9 @@ export default function GameBoard({
   onCellClick,
 }: GameBoardProps) {
   return (
-    <div className="board-wrap relative mx-auto w-full max-w-[min(94vw,760px)]">
+    <div className="board-wrap relative mx-auto w-full max-w-[min(100%,calc(100svw-0.75rem),760px)]">
       <div
-        className="game-board grid w-full gap-0.5 rounded-[1.5rem] border border-white/15 bg-slate-950/70 p-2 shadow-2xl shadow-fuchsia-900/20 backdrop-blur"
+        className="game-board grid w-full gap-px rounded-[1rem] border border-white/15 bg-slate-950/70 p-1 shadow-2xl shadow-fuchsia-900/20 backdrop-blur sm:gap-0.5 sm:rounded-[1.5rem] sm:p-2"
         style={{ gridTemplateColumns: `repeat(${board.length}, minmax(0, 1fr))` }}
       >
         {board.map((row, rowIndex) =>
@@ -43,7 +43,7 @@ export default function GameBoard({
               <button
                 aria-label={`Ô ${rowIndex + 1}-${colIndex + 1}`}
                 className={[
-                  "board-cell aspect-square rounded-md border text-[clamp(0.78rem,3.2vw,1.7rem)] font-black leading-none transition duration-200",
+                  "board-cell aspect-square min-w-0 rounded-[0.28rem] border text-[clamp(0.62rem,4.5vw,1.7rem)] font-black leading-none transition duration-200 sm:rounded-md sm:text-[clamp(0.78rem,3.2vw,1.7rem)]",
                   "focus:outline-none focus:ring-2 focus:ring-cyan-300",
                   cell === "X"
                     ? "border-cyan-300/60 bg-cyan-400/15 text-cyan-200 shadow-lg shadow-cyan-500/20"

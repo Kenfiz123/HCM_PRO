@@ -532,6 +532,59 @@ input {
   animation: target-float 2.8s ease-in-out infinite, panel-glow 5s ease-in-out infinite;
 }
 
+@media (max-width: 640px) {
+  .game-shell {
+    background-size: 28px 28px;
+  }
+
+  .game-aurora {
+    overflow-x: hidden;
+  }
+
+  .game-aurora::before {
+    opacity: 0.82;
+  }
+
+  .play-board-panel,
+  .game-panel,
+  .preview-board,
+  .game-start-panel {
+    animation-duration: 0.45s, 8s;
+  }
+
+  .board-wrap {
+    perspective: none;
+  }
+
+  .game-board::after {
+    display: none;
+  }
+
+  .board-cell {
+    touch-action: manipulation;
+  }
+
+  .board-cell:not(:empty)::after {
+    inset: 8%;
+    filter: blur(9px);
+    opacity: 0.18;
+  }
+
+  .frost-overlay {
+    padding: 1rem;
+    font-size: 0.9rem;
+    line-height: 1.35;
+  }
+
+  .mobile-stat {
+    min-width: 0;
+  }
+
+  .target-banner {
+    animation: panel-glow 5s ease-in-out infinite;
+  }
+}
+
 .neon-title {
   background: linear-gradient(90deg, #67e8f9, #f0abfc, #fde68a, #67e8f9);
   background-clip: text;

@@ -188,18 +188,18 @@ export default function Leaderboard({
   }
 
   return (
-    <div className="overflow-hidden rounded-[1.5rem] border border-white/10 bg-white/[0.06] shadow-2xl shadow-fuchsia-900/20 backdrop-blur">
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 px-5 py-4">
+    <div className="overflow-hidden rounded-[1.25rem] border border-white/10 bg-white/[0.06] shadow-2xl shadow-fuchsia-900/20 backdrop-blur sm:rounded-[1.5rem]">
+      <div className="flex flex-col items-stretch justify-between gap-3 border-b border-white/10 px-4 py-4 sm:flex-row sm:items-center sm:px-5">
         <div>
           <h2 className={compact ? "text-xl font-black text-white" : "text-2xl font-black text-white"}>
             Bảng xếp hạng
           </h2>
           {selectMode ? <p className="mt-1 text-xs font-semibold text-cyan-100">{selectMode.helper}</p> : null}
         </div>
-        <div className="flex flex-wrap items-center justify-end gap-2">
+        <div className="flex flex-wrap items-center gap-2 sm:justify-end">
           {captureEnabled ? (
             <button
-              className="rounded-full bg-cyan-300 px-3 py-1.5 text-xs font-black text-slate-950 transition hover:bg-cyan-200"
+              className="min-h-9 rounded-full bg-cyan-300 px-3 py-1.5 text-xs font-black text-slate-950 transition hover:bg-cyan-200"
               onClick={() => drawLeaderboardImage(displayRows, compact)}
               type="button"
             >
@@ -209,9 +209,9 @@ export default function Leaderboard({
           {clearEnabled ? (
             <LeaderboardClearButton
               className="rounded-full bg-rose-300 px-3 py-1.5 text-xs font-black text-slate-950 transition hover:bg-rose-200 disabled:cursor-not-allowed disabled:opacity-60"
-              inputClassName="w-28 rounded-full border border-white/10 bg-slate-950/40 px-3 py-1.5 text-xs font-semibold text-white outline-none transition placeholder:text-slate-400 focus:border-cyan-300"
+              inputClassName="min-h-9 w-24 rounded-full border border-white/10 bg-slate-950/40 px-3 py-1.5 text-xs font-semibold text-white outline-none transition placeholder:text-slate-400 focus:border-cyan-300 sm:w-28"
               onCleared={() => setRows([])}
-              wrapperClassName="flex flex-wrap items-center justify-end gap-2"
+              wrapperClassName="flex flex-wrap items-center gap-2 sm:justify-end"
             />
           ) : null}
           <span className="rounded-full bg-emerald-300/15 px-3 py-1 text-xs font-bold text-emerald-100">
@@ -225,11 +225,11 @@ export default function Leaderboard({
       ) : displayRows.length === 0 ? (
         <div className="p-8 text-center text-slate-300">Chưa có điểm. Hãy là người đầu tiên lên bảng.</div>
       ) : compact ? (
-        <div className="space-y-3 p-4">
+        <div className="space-y-2 p-3 sm:space-y-3 sm:p-4">
           {displayRows.map((row, index) => {
             const disabled = Boolean(selectMode?.disabledPlayerName && row.player_name === selectMode.disabledPlayerName);
             const className = [
-              "flex w-full items-center justify-between gap-3 rounded-2xl border px-4 py-3 text-left transition",
+              "flex min-h-14 w-full items-center justify-between gap-3 rounded-xl border px-3 py-2.5 text-left transition sm:rounded-2xl sm:px-4 sm:py-3",
               selectMode && !disabled ? "hover:-translate-y-0.5 hover:border-cyan-300 hover:bg-cyan-300/15" : "",
               disabled ? "cursor-not-allowed opacity-45" : "",
               index === 0
