@@ -782,6 +782,7 @@ export default function PlayPage() {
         </aside>
 
         <section className="play-board-panel order-1 rounded-[1.25rem] border border-white/10 bg-white/[0.06] p-2 shadow-2xl shadow-fuchsia-950/20 backdrop-blur sm:rounded-[2rem] sm:p-4 xl:order-2">
+          <div className="mobile-play-controls">
           <div className="mobile-play-header mb-2 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2 sm:mb-4 sm:flex sm:justify-between sm:gap-3">
             <div className="min-w-0">
               <p className="hidden text-xs font-black uppercase tracking-[0.24em] text-cyan-200 sm:block">Caro Quiz Battle</p>
@@ -828,6 +829,7 @@ export default function PlayPage() {
               {cardMessage}
             </div>
           ) : null}
+          </div>
 
           <GameBoard
             board={board}
